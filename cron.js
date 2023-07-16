@@ -30,6 +30,11 @@ module.exports = class WebsitePing {
                 websites.forEach((website) => {
                     cron.schedule(CRON_SCHEDULE, () => {
                         request(website.url, (error, response, body) => {
+                            if (error) {
+                                this.logger.error("Error retrieving " + website.title + ": \n");
+                                console.log(error);
+                                return;
+                            }
                             if (response.statusCode !== 200) {
                                 // this.logger.error("Error " + response.statusCode + " " + website.title);
                                 let error_msg =
@@ -88,7 +93,25 @@ module.exports = class WebsitePing {
                                         ),
                                         1
                                     );
+                                    
+                                    this.mailOptions.to = website.emails;
+                                    this.mailOptions.text = success_msg;
+                                    
+                                    this.transporter.sendMail(
+                                        this.mailOptions,
+                                        (error, info) => {
+                                            if (error) {
+                                                console.log("Email error: " + error);
+                                            } else {
+                                                this.logger.info(
+                                                    "Email sent to " +
+                                                        website.emails +
+                                                        "."
+                                                );
+                                            }
+                                        });
                                 }
+                                
                             }
                         });
                     });
