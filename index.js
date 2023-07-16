@@ -1,12 +1,50 @@
 const express = require("express");
-// const cron = require("./cron");
-// import WebsitePing from "./cron";
 const WebsitePing = require("./cron");
-// const cron = require("node-cron");
+const fs = require("fs");
+const winston = require("winston");
+const { combine, timestamp, cli, json, printf, colorize } = winston.format;
 
 const app = express();
 
-websitePing = new WebsitePing();
+if (!fs.existsSync("logs")) {
+    fs.mkdirSync("logs");
+}
+
+const logger = winston.createLogger({
+    level: "info",
+    // format: combine(timestamp(), json()),
+    format: combine(
+        timestamp({
+            format: 'YYYY-MM-DD hh:mm:ss.SSS',
+        }),
+        printf((info) => {
+            return `${info.timestamp} ${info.level}: ${info.message}`;
+        })      
+    ),
+    // transports: [new winston.transports.Console()]
+    transports: [
+        new winston.transports.File({
+            filename: "logs/combined.log"
+        }),
+        new winston.transports.File({
+            filename: "logs/error.log",
+            level: "error"
+        }),
+        new winston.transports.Console({
+            format: combine(
+                colorize({ all: true }),
+                timestamp({
+                    format: 'YYYY-MM-DD hh:mm:ss.SSS',
+                }),
+                printf((info) => {
+                    return `${info.timestamp} ${info.level}: ${info.message}`;
+                })      
+            ),
+        })
+    ]
+})
+
+websitePing = new WebsitePing(logger);
 websitePing.setupJobs();
 
 // cron.schedule("*/1 * * * *", () => {
