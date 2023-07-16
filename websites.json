@@ -7,8 +7,8 @@
             "emails": "ikehunter5@gmail.com"
         },
         {
-            "url": "http://localhost:8000",
-            "title": "Localhost",
+            "url": "https://www.ikehunter.com/404",
+            "title": "IkeHunter.com 404 Test",
             "statusCode": 200,
             "emails": "ikehunter5@gmail.com"
         }
