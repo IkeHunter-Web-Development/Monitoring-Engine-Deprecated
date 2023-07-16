@@ -1,0 +1,11 @@
+{
+  "name": "business-utilities",
+  "version": "1.0.0",
+  "description": "Collection of jobs and tasks used for business operations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Isaac Hunter",
+  "license": "ISC"
+}
