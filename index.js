@@ -2,6 +2,8 @@ const express = require("express");
 const WebsitePing = require("./cron");
 const fs = require("fs");
 const winston = require("winston");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 const { combine, timestamp, cli, json, printf, colorize } = winston.format;
 
 const app = express();
@@ -24,13 +26,15 @@ const logger = winston.createLogger({
     // transports: [new winston.transports.Console()]
     transports: [
         new winston.transports.File({
-            filename: "logs/combined.log"
+            filename: "logs/combined.log",
+            level: "info"
         }),
         new winston.transports.File({
             filename: "logs/error.log",
             level: "error"
         }),
         new winston.transports.Console({
+            level: "verbose",
             format: combine(
                 colorize({ all: true }),
                 timestamp({
@@ -44,7 +48,18 @@ const logger = winston.createLogger({
     ]
 })
 
-websitePing = new WebsitePing(logger);
+user = process.env.EMAIL_USER;
+pass = process.env.EMAIL_PASS;
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: user,
+        pass: pass
+    }
+});
+
+
+websitePing = new WebsitePing(logger, transporter);
 websitePing.setupJobs();
 
 // cron.schedule("*/1 * * * *", () => {
