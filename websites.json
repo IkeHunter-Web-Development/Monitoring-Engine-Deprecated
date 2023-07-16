@@ -1,0 +1,14 @@
+{
+    "websites": [
+        {
+            "url": "https://ikehunter.com/",
+            "title": "IkeHunter.com",
+            "status_code": 200
+        },
+        {
+            "url": "https://ikehunter.com/404",
+            "title": "IkeHunter.com/404",
+            "status_code": 200
+        }
+    ]
+}
