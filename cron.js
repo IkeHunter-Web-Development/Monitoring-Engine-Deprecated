@@ -6,22 +6,14 @@ const request = require("request");
 const fs = require("fs");
 const Mailer = require("./emails");
 
-mailer = new Mailer();
-
 const WEBSITE_FILE = "websites.json";
 const CRON_SCHEDULE = "*/1 * * * *";
 
 module.exports = class WebsitePing {
-    constructor(logger, transporter) {
+    constructor(logger) {
         this.logger = logger;
-        this.transporter = transporter;
-        this.mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: "",
-            subject: "Website Status Alert",
-            text: "",
-        };
         this.error_websites = [];
+        this.mailer = new Mailer(logger);
     }
 
     websiteHasError(website) {
@@ -49,18 +41,11 @@ module.exports = class WebsitePing {
         );
     }
 
-    // sendEmail(website, message) {
-    //     this.mailOptions.to = website.emails;
-    //     this.mailOptions.text = message;
-
-    //     this.transporter.sendMail(this.mailOptions, (error, info) => {
-    //         if (error) {
-    //             console.log("Email error: " + error);
-    //         } else {
-    //             this.logger.info("Email sent to " + website.emails + ".");
-    //         }
-    //     });
-    // }
+    getBackOnlineMessage(website, statusCode) {
+        return (
+            website.title + " is back online. Status code: " + statusCode + "."
+        );
+    }
 
     removeErrorWebsite(website) {
         this.error_websites.splice(
@@ -93,21 +78,27 @@ module.exports = class WebsitePing {
                         );
                     } else {
                         this.error_websites.push(website.title);
-
-                        // this.sendEmail(website, error_msg);
-                        mailer.sendWebsiteErrorEmail(website, error_msg);
+                        this.mailer.sendWebsiteErrorEmail(website, error_msg);
                     }
                 } else {
                     let success_msg = this.getSuccessMessage(
                         website,
                         response.statusCode
                     );
-                    this.logger.info(success_msg);
 
                     if (this.websiteHasError(website)) {
+                        let success_msg = this.getBackOnlineMessage(
+                            website,
+                            response.statusCode
+                        );
                         this.removeErrorWebsite(website);
-                        // this.sendEmail(website, success_msg);
-                        mailer.sendWebsiteOnlineEmail(website, success_msg);
+                        this.mailer.sendWebsiteOnlineEmail(
+                            website,
+                            success_msg
+                        );
+                        this.logger.info(success_msg);
+                    } else {
+                        this.logger.verbose(success_msg);
                     }
                 }
             });

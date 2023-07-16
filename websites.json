@@ -11,12 +11,6 @@
             "title": "IkeHunter.com 404 Test",
             "statusCode": 200,
             "emails": "ikehunter5@gmail.com"
-        },
-        {
-            "url": "http://localhost:8000/",
-            "title": "Localhost",
-            "statusCode": 200,
-            "emails": "ikehunter5@gmail.com"
         }
     ]
 }

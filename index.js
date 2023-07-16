@@ -2,11 +2,10 @@ const express = require("express");
 const WebsitePing = require("./cron");
 const fs = require("fs");
 const winston = require("winston");
-const nodemailer = require("nodemailer");
-require("dotenv").config();
-const { combine, timestamp, cli, json, printf, colorize } = winston.format;
 
-require("./emails")
+require("dotenv").config();
+
+const { combine, timestamp, printf, colorize } = winston.format;
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
@@ -17,54 +16,59 @@ if (!fs.existsSync("logs")) {
     fs.mkdirSync("logs");
 }
 
+const logFormat = () => {
+    if (process.env.NODE_ENV === "production") {
+        return combine(
+            timestamp({
+                format: "YYYY-MM-DD hh:mm:ss.SSS",
+            }),
+            printf((info) => {
+                return `${info.timestamp} ${info.level}: ${info.message}`;
+            })
+        );
+    } else {
+        return combine(
+            colorize({ all: true }),
+            timestamp({
+                format: "YYYY-MM-DD hh:mm:ss.SSS",
+            }),
+            printf((info) => {
+                return `${info.timestamp} ${info.level}: ${info.message}`;
+            })
+        );
+    }
+}
+
 const logger = winston.createLogger({
     level: "info",
 
     format: combine(
         timestamp({
-            format: 'YYYY-MM-DD hh:mm:ss.SSS',
+            format: "YYYY-MM-DD hh:mm:ss.SSS",
         }),
         printf((info) => {
             return `${info.timestamp} ${info.level}: ${info.message}`;
-        })      
+        })
     ),
 
     transports: [
         new winston.transports.File({
             filename: "logs/combined.log",
-            level: "info"
+            level: "info",
         }),
         new winston.transports.File({
             filename: "logs/error.log",
-            level: "error"
+            level: "error",
         }),
         new winston.transports.Console({
             level: process.env.LOGGING_LEVEL,
-            format: combine(
-                colorize({ all: true }),
-                timestamp({
-                    format: 'YYYY-MM-DD hh:mm:ss.SSS',
-                }),
-                printf((info) => {
-                    return `${info.timestamp} ${info.level}: ${info.message}`;
-                })      
-            ),
-        })
-    ]
-})
-
-user = process.env.EMAIL_USER;
-pass = process.env.EMAIL_PASS;
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: user,
-        pass: pass
-    }
+            format: logFormat(),
+        }),
+    ],
 });
 
 
-websitePing = new WebsitePing(logger, transporter);
+websitePing = new WebsitePing(logger);
 websitePing.setupJobs();
 
 server.listen(PORT, HOST, () => {
