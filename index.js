@@ -6,6 +6,8 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 const { combine, timestamp, cli, json, printf, colorize } = winston.format;
 
+require("./emails")
+
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 

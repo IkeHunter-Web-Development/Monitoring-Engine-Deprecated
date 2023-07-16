@@ -4,6 +4,9 @@
 const cron = require("node-cron");
 const request = require("request");
 const fs = require("fs");
+const Mailer = require("./emails");
+
+mailer = new Mailer();
 
 const WEBSITE_FILE = "websites.json";
 const CRON_SCHEDULE = "*/1 * * * *";
@@ -46,18 +49,18 @@ module.exports = class WebsitePing {
         );
     }
 
-    sendEmail(website, message) {
-        this.mailOptions.to = website.emails;
-        this.mailOptions.text = message;
+    // sendEmail(website, message) {
+    //     this.mailOptions.to = website.emails;
+    //     this.mailOptions.text = message;
 
-        this.transporter.sendMail(this.mailOptions, (error, info) => {
-            if (error) {
-                console.log("Email error: " + error);
-            } else {
-                this.logger.info("Email sent to " + website.emails + ".");
-            }
-        });
-    }
+    //     this.transporter.sendMail(this.mailOptions, (error, info) => {
+    //         if (error) {
+    //             console.log("Email error: " + error);
+    //         } else {
+    //             this.logger.info("Email sent to " + website.emails + ".");
+    //         }
+    //     });
+    // }
 
     removeErrorWebsite(website) {
         this.error_websites.splice(
@@ -91,7 +94,8 @@ module.exports = class WebsitePing {
                     } else {
                         this.error_websites.push(website.title);
 
-                        this.sendEmail(website, error_msg);
+                        // this.sendEmail(website, error_msg);
+                        mailer.sendWebsiteErrorEmail(website, error_msg);
                     }
                 } else {
                     let success_msg = this.getSuccessMessage(
@@ -102,7 +106,8 @@ module.exports = class WebsitePing {
 
                     if (this.websiteHasError(website)) {
                         this.removeErrorWebsite(website);
-                        this.sendEmail(website, success_msg);
+                        // this.sendEmail(website, success_msg);
+                        mailer.sendWebsiteOnlineEmail(website, success_msg);
                     }
                 }
             });
