@@ -6,7 +6,10 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 const { combine, timestamp, cli, json, printf, colorize } = winston.format;
 
-const app = express();
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
+
+const server = express();
 
 if (!fs.existsSync("logs")) {
     fs.mkdirSync("logs");
@@ -14,7 +17,7 @@ if (!fs.existsSync("logs")) {
 
 const logger = winston.createLogger({
     level: "info",
-    // format: combine(timestamp(), json()),
+
     format: combine(
         timestamp({
             format: 'YYYY-MM-DD hh:mm:ss.SSS',
@@ -23,7 +26,7 @@ const logger = winston.createLogger({
             return `${info.timestamp} ${info.level}: ${info.message}`;
         })      
     ),
-    // transports: [new winston.transports.Console()]
+
     transports: [
         new winston.transports.File({
             filename: "logs/combined.log",
@@ -34,7 +37,7 @@ const logger = winston.createLogger({
             level: "error"
         }),
         new winston.transports.Console({
-            level: "verbose",
+            level: process.env.LOGGING_LEVEL,
             format: combine(
                 colorize({ all: true }),
                 timestamp({
@@ -62,10 +65,6 @@ const transporter = nodemailer.createTransport({
 websitePing = new WebsitePing(logger, transporter);
 websitePing.setupJobs();
 
-// cron.schedule("*/1 * * * *", () => {
-//     console.log("running a task every minute");
-// });
-
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+server.listen(PORT, HOST, () => {
+    console.log(`Server running at ${HOST}:${PORT}`);
 });
