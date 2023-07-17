@@ -47,6 +47,12 @@
             "title": "CKR | CKGroupRealtors.com",
             "statusCode": 200,
             "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://greenenergyfund.org/",
+            "title": "GEF | GreenEnergyFund.org",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
         }
     ]
 }
