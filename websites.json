@@ -11,6 +11,42 @@
             "title": "IkeHunter.com 404 Test",
             "statusCode": 200,
             "emails": "ikehunter5@gmail.com"
+        },
+        {
+            "url": "https://kilaueape.com/",
+            "title": "KPE | kilaueape.com",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://www.thewanderingrv.com/",
+            "title": "TWRV | TheWanderingRV.com",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://acannability.com/",
+            "title": "ACB | Acannability.com",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://emmasproject.org/",
+            "title": "EMP | EmmasProject.org",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://tapatiocliffshilton.com/",
+            "title": "REYM | TapatioCliffsHilton.com",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
+        },
+        {
+            "url": "https://ckgrouprealtors.com/",
+            "title": "CKR | CKGroupRealtors.com",
+            "statusCode": 200,
+            "emails": "isaac.hunter@ikehunter.com"
         }
     ]
 }

@@ -61,6 +61,7 @@ module.exports = class WebsitePing {
                     this.logger.error(
                         "Error retrieving " + website.title + ": \n"
                     );
+                    this.mailer.sendWebsiteErrorEmail(website, error);
                     console.log(error);
                     return;
                 }
