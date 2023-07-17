@@ -4,13 +4,13 @@
             "url": "https://ikehunter.com/",
             "title": "IkeHunter.com",
             "statusCode": 200,
-            "emails": "ikehunter5@gmail.com"
+            "emails": "isaac.hunter@ikehunter.com"
         },
         {
             "url": "https://ikehunter.com/test-page/",
-            "title": "IkeHunter.com 404 Test",
+            "title": "TEST | IkeHunter.com Test Page",
             "statusCode": 200,
-            "emails": "ikehunter5@gmail.com"
+            "emails": "isaac.hunter@ikehunter.com"
         },
         {
             "url": "https://kilaueape.com/",
