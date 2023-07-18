@@ -5,6 +5,8 @@ const cron = require("node-cron");
 const request = require("request");
 const fs = require("fs");
 const Mailer = require("./emails");
+const websiteModel = require("./models");
+// const client = require("./mongodb");
 
 const WEBSITE_FILE = "websites.json";
 const CRON_SCHEDULE = "*/1 * * * *";
@@ -14,6 +16,15 @@ module.exports = class WebsitePing {
         this.logger = logger;
         this.error_websites = [];
         this.mailer = new Mailer(logger);
+
+    }
+    
+    async getWebsites() {
+        const websites = await websiteModel.find({});
+        // const count = await websiteModel.countDocuments({});
+        let count = websites.length;
+        this.logger.info(`Retrieved ${count} websites from the database.`);
+        return websites;
     }
 
     websiteHasError(website) {
@@ -107,15 +118,10 @@ module.exports = class WebsitePing {
     }
 
     pingWebsiteJobs() {
-        fs.readFile(WEBSITE_FILE, "utf8", (err, data) => {
-            if (err) {
-                console.log(err);
-            } else {
-                let websites = JSON.parse(data).websites;
-                websites.forEach((website) => {
-                    this.createWebsiteCronJob(website);
-                });
-            }
+        this.getWebsites().then((websites) => {
+            websites.forEach((website) => {
+                this.createWebsiteCronJob(website);
+            });
         });
     }
 

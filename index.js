@@ -2,8 +2,29 @@ const express = require("express");
 const WebsitePing = require("./cron");
 const fs = require("fs");
 const winston = require("winston");
+const mongoose = require("mongoose");
 
 require("dotenv").config();
+
+username = process.env.MONGO_USER
+password = process.env.MONGO_PASS
+cluster = 'utilitiescluster.vbeshqw'
+dbname = 'ping_websites'
+
+// MONGO_DB_URI = `mongodb+srv://${username}:${password}@utilitiescluster.vbeshqw.mongodb.net/?retryWrites=true&w=majority`;
+MONGO_DB_URI = `mongodb+srv://${username}:${password}@${cluster}.mongodb.net/${dbname}?retryWrites=true&w=majority`
+
+mongoose.connect(MONGO_DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+    console.log("Connected to database successfully.")
+});
+
 
 const { combine, timestamp, printf, colorize } = winston.format;
 
