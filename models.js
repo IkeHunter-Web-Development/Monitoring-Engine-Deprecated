@@ -1,3 +1,7 @@
+/**
+ * Models for MongoDB.
+ */
+
 const mongoose = require("mongoose");
 
 const WebsiteSchema = new mongoose.Schema({
@@ -9,7 +13,7 @@ const WebsiteSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    code: {
+    symbol: {
         type: String,
         required: true,  
     },

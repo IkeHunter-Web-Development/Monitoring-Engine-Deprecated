@@ -3,25 +3,24 @@
  */
 const cron = require("node-cron");
 const request = require("request");
-const fs = require("fs");
 const Mailer = require("./emails");
 const websiteModel = require("./models");
-// const client = require("./mongodb");
 
-const WEBSITE_FILE = "websites.json";
 const CRON_SCHEDULE = "*/1 * * * *";
+const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
+const CRON_UPDATE_DELAY = 15000;
 
 module.exports = class WebsitePing {
     constructor(logger) {
         this.logger = logger;
         this.error_websites = [];
         this.mailer = new Mailer(logger);
-
+        this.jobs = [];
     }
-    
+
     async getWebsites() {
         const websites = await websiteModel.find({});
-        // const count = await websiteModel.countDocuments({});
+        this.websites = websites;
         let count = websites.length;
         this.logger.info(`Retrieved ${count} websites from the database.`);
         return websites;
@@ -66,7 +65,14 @@ module.exports = class WebsitePing {
     }
 
     createWebsiteCronJob(website) {
-        cron.schedule(CRON_SCHEDULE, () => {
+        if (website.active === false) {
+            this.logger.verbose(
+                "Skipping " + website.title + " because it is inactive."
+            );
+            return;
+        }
+        
+        let job = cron.schedule(CRON_SCHEDULE, () => {
             request(website.url, (error, response, body) => {
                 if (error) {
                     this.logger.error(
@@ -115,6 +121,8 @@ module.exports = class WebsitePing {
                 }
             });
         });
+
+        this.jobs.push(job);
     }
 
     pingWebsiteJobs() {
@@ -124,9 +132,24 @@ module.exports = class WebsitePing {
             });
         });
     }
+    refreshDatabaseJob() {
+        cron.schedule(CRON_UPDATE_SCHEDULE, () => {
+            setTimeout(() => {
+                this.logger.info("Refreshing database...");
+
+                this.jobs.forEach((job) => {
+                    job.stop();
+                });
+                this.jobs = [];
+
+                this.pingWebsiteJobs();
+            }, CRON_UPDATE_DELAY);
+        });
+    }
 
     setupJobs() {
         console.log("Setting up cron jobs...");
         this.pingWebsiteJobs();
+        this.refreshDatabaseJob();
     }
 };
