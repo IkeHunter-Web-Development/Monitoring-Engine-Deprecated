@@ -1,7 +1,7 @@
 {
-  "name": "business-utilities",
+  "name": "website-monitor",
   "version": "1.0.0",
-  "description": "Collection of jobs and tasks used for business operations.",
+  "description": "Monitors list of websites to detect downtime using cron jobs.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
