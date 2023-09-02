@@ -4,6 +4,8 @@ const fs = require("fs");
 const winston = require("winston");
 const mongoose = require("mongoose");
 
+const router = require("./router");
+
 const { combine, timestamp, printf, colorize } = winston.format;
 
 const HOST = process.env.HOST;
@@ -90,6 +92,8 @@ const logger = winston.createLogger({
 
 websitePing = new WebsitePing(logger);
 websitePing.setupJobs();
+
+server.use(router);
 
 server.listen(PORT, HOST, () => {
     console.log(`Server running at ${HOST}:${PORT}`);

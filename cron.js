@@ -16,6 +16,7 @@ module.exports = class WebsitePing {
         this.error_websites = [];
         this.mailer = new Mailer(logger);
         this.jobs = [];
+        this.centralEngine = new CentralEngine();
     }
 
     async getWebsites() {
@@ -89,6 +90,8 @@ module.exports = class WebsitePing {
                     );
 
                     this.logger.error(error_msg);
+                    
+                    this.centralEngine.notify(url=website.url, status_code=response.statusCode, message=error_msg);
 
                     if (this.websiteHasError(website)) {
                         this.logger.verbose(
