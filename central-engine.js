@@ -1,5 +1,6 @@
 const request = require("request");
 const _ = require("lodash");
+const { logger } = require("./logger");
 
 // TODO: create notify and get methods
 
@@ -8,6 +9,7 @@ module.exports = class CentralEngine {
         this.centralUrl = process.env.CENTRAL_ENGINE_URL
         this.notifyEndpoint = process.env.CENTRAL_NOTIFY_ENDPOINT
         this.getEndpoint = process.env.CENTRAL_GET_ENDPOINT
+        this.logger = logger;
     }
     notify(url, status_code, message) {
         request.post({
@@ -19,7 +21,8 @@ module.exports = class CentralEngine {
             }
         }, (err, res, body) => {
             if (err) {
-                console.log(err);
+                // console.log(err);
+                this.logger.error(err);
                 return;
             }
         });

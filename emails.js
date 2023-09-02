@@ -4,9 +4,10 @@
 
 const sgMail = require("@sendgrid/mail");
 require("dotenv").config();
+const { logger } = require("./logger");
 
 module.exports = class Mailer {
-    constructor(logger) {
+    constructor() {
         this.sgMail = sgMail;
         this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
         this.logger = logger;
@@ -32,11 +33,7 @@ module.exports = class Mailer {
 
     sendWebsiteErrorEmail(website, log) {
         const subject = "Website Status Alert";
-        const text =
-            "Website issue detected with " +
-            website.title +
-            "!\nLog message:\n" +
-            log;
+        const text = "Website issue detected with " + website.title + "!\nLog message:\n" + log;
         this.sendEmail(website.users, subject, text);
     }
     sendWebsiteOnlineEmail(website, log) {
@@ -45,4 +42,3 @@ module.exports = class Mailer {
         this.sendEmail(website.users, subject, text);
     }
 };
-
