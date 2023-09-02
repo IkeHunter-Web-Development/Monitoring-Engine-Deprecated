@@ -4,7 +4,6 @@
 const cron = require("node-cron");
 const request = require("request");
 const Mailer = require("./emails");
-const websiteModel = require("./models");
 const CentralEngine = require("./central-engine");
 const LogManager = require("./logger");
 const logger = LogManager.logger;

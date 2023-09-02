@@ -1,7 +1,6 @@
 /**
  * Mailer class to send emails using SendGrid.
  */
-
 const sgMail = require("@sendgrid/mail");
 require("dotenv").config();
 const { logger } = require("./logger");
@@ -23,7 +22,6 @@ module.exports = class Mailer {
         this.sgMail
             .send(msg)
             .then(() => {
-                // console.log("Email sent");
                 this.logger.info("Email sent to " + recipient);
             })
             .catch((error) => {
