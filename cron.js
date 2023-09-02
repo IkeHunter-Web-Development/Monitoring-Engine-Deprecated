@@ -5,6 +5,7 @@ const cron = require("node-cron");
 const request = require("request");
 const Mailer = require("./emails");
 const websiteModel = require("./models");
+const CentralEngine = require("./central-engine");
 
 const CRON_SCHEDULE = "*/1 * * * *";
 const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
@@ -20,7 +21,8 @@ module.exports = class WebsitePing {
     }
 
     async getWebsites() {
-        const websites = await websiteModel.find({});
+        const websites = await this.centralEngine.getWebsites();
+        // const websites = await websiteModel.find({});
         this.websites = websites;
         let count = websites.length;
         this.logger.info(`Retrieved ${count} websites from the database.`);
@@ -36,7 +38,7 @@ module.exports = class WebsitePing {
             "Website issue detected with " +
             website.title +
             "! Expected: " +
-            website.statusCode +
+            website.status_code +
             ", received: " +
             statusCode +
             "."
@@ -83,15 +85,15 @@ module.exports = class WebsitePing {
                     console.log(error);
                     return;
                 }
-                if (response.statusCode !== 200) {
-                    let error_msg = this.getErrorMessage(
+                if (response.statusCode !== website.status_code) {
+                    let errorMsg = this.getErrorMessage(
                         website,
                         response.statusCode
                     );
 
-                    this.logger.error(error_msg);
-                    
-                    this.centralEngine.notify(url=website.url, status_code=response.statusCode, message=error_msg);
+                    this.logger.error(errorMsg);
+                    console.log("url: " + website.url);
+                    this.centralEngine.notify(website.url, response.statusCode, errorMsg);
 
                     if (this.websiteHasError(website)) {
                         this.logger.verbose(
@@ -99,27 +101,28 @@ module.exports = class WebsitePing {
                         );
                     } else {
                         this.error_websites.push(website.title);
-                        this.mailer.sendWebsiteErrorEmail(website, error_msg);
+                        this.mailer.sendWebsiteErrorEmail(website, errorMsg);
                     }
                 } else {
-                    let success_msg = this.getSuccessMessage(
+                    let successMsg = this.getSuccessMessage(
                         website,
                         response.statusCode
                     );
 
                     if (this.websiteHasError(website)) {
-                        let success_msg = this.getBackOnlineMessage(
+                        let successMsg = this.getBackOnlineMessage(
                             website,
                             response.statusCode
                         );
                         this.removeErrorWebsite(website);
                         this.mailer.sendWebsiteOnlineEmail(
                             website,
-                            success_msg
+                            successMsg
                         );
-                        this.logger.info(success_msg);
+                        this.logger.info(successMsg);
+                        this.centralEngine.notify(website.url, response.statusCode, successMsg);
                     } else {
-                        this.logger.verbose(success_msg);
+                        this.logger.verbose(successMsg);
                     }
                 }
             });

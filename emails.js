@@ -37,12 +37,12 @@ module.exports = class Mailer {
             website.title +
             "!\nLog message:\n" +
             log;
-        this.sendEmail(website.emails, subject, text);
+        this.sendEmail(website.users, subject, text);
     }
     sendWebsiteOnlineEmail(website, log) {
         const subject = "Website Status Alert";
         const text = website.title + " is operating normally.\nLog:\n" + log;
-        this.sendEmail(website.emails, subject, text);
+        this.sendEmail(website.users, subject, text);
     }
 };
 
