@@ -77,6 +77,16 @@ class Logger {
             "."
         );
     }
+    
+    getErrorResponseMessage(website, error) {
+        return (
+            "Website issue detected with " +
+            website.title +
+            "! Error: " +
+            error +
+            "."
+        );
+    }
 
     getSuccessMessage(website, statusCode) {
         return website.title + " is operating normally. Status code: " + statusCode + ".";

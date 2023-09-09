@@ -45,18 +45,23 @@ module.exports = class WebsitePing {
 
         let job = cron.schedule(CRON_SCHEDULE, () => {
             request(website.url, (error, response, body) => {
-                if (error) {
-                    this.logger.error("Error retrieving " + website.title + ": \n");
-                    this.mailer.sendWebsiteErrorEmail(website, error);
-                    console.log(error);
-                    return;
-                }
-                if (response.statusCode !== website.status_code) {
-                    let errorMsg = LogManager.getErrorMessage(website, response.statusCode);
-
+                // if (error) {
+                //     this.logger.error("Error retrieving " + website.title + ": \n");
+                //     this.mailer.sendWebsiteErrorEmail(website, error);
+                //     console.log(error);
+                //     return;
+                // }
+                if (error || response.statusCode !== website.status_code) {
+                    let errorMsg = "";
+                    let statusCode = response ? response.statusCode : 500;
+                    if (error) {
+                        errorMsg = LogManager.getErrorResponseMessage(website, error);
+                    } else {
+                        errorMsg = LogManager.getErrorMessage(website, statusCode);
+                    }
                     this.logger.error(errorMsg);
                     console.log("url: " + website.url);
-                    this.centralEngine.notify(website.url, response.statusCode, errorMsg);
+                    this.centralEngine.notify(website.url, statusCode, errorMsg);
 
                     if (this.websiteHasError(website)) {
                         this.logger.verbose("Already sent email for " + website.title + ".");
