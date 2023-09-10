@@ -14,6 +14,8 @@ FROM setup AS build
 COPY ./src /src
 EXPOSE 3000
 
+VOLUME "/logs"
+
 CMD ["npm", "start"]
 
 
