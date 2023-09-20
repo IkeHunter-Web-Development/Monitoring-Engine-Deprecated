@@ -61,7 +61,7 @@ Deploy Staging:
   stage: Deploy
   script:
     - echo Queueing new ECS service...
-    - aws ecs update-service --cluster devsuite-staging-cluster --service devsuite-staging-main --force-new-deployment --region us-east-1
+    - aws ecs update-service --cluster devsuite-staging-cluster --service devsuite-staging-main --force-new-deployment --region us-east-1 || echo "Staging not active, skipping..."
   rules:
     - if: "$CI_COMMIT_BRANCH == 'main'"
 

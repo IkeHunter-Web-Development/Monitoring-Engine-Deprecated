@@ -12,8 +12,12 @@ const logger = LogManager.logger;
 const CRON_SCHEDULE = "*/1 * * * *";
 const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
 const CRON_UPDATE_DELAY = 15000;
-const RETRY_COUNT = 3;
-const RETRY_DELAY = 1000;
+const RETRY_COUNT = 5;
+const RETRY_DELAY = 2000;
+
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 module.exports = class WebsitePing {
     constructor() {
@@ -55,18 +59,19 @@ module.exports = class WebsitePing {
         return [returnStatus, returnError];
     }
 
-    handleWebsiteError(website, statusCode, error) {
+    async handleWebsiteError(website, statusCode, error) {
         let down = true;
 
         for (let i = 0; i < RETRY_COUNT; i++) {
             this.logger.verbose("Issue with " + website.title + ", retrying... " + i);
-            setTimeout(async () => {
-                let [retryStatus, retryErr] = await this.getWebsiteStatus(website.url);
 
-                if (!retryErr && retryStatus === website.status_code) {
-                    down = false;
-                }
-            }, RETRY_DELAY);
+            await sleep(RETRY_DELAY).then(() => {
+                this.getWebsiteStatus(website.url).then(([retryStatus, retryErr]) => {
+                    if (!retryErr && retryStatus === website.status_code) {
+                        down = false;
+                    }
+                });
+            });
 
             if (!down) {
                 break;
