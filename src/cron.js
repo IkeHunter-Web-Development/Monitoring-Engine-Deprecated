@@ -6,11 +6,14 @@ const request = require("request");
 const Mailer = require("./emails");
 const CentralEngine = require("./central-engine");
 const LogManager = require("./logger");
+const { stat } = require("fs");
 const logger = LogManager.logger;
 
 const CRON_SCHEDULE = "*/1 * * * *";
 const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
 const CRON_UPDATE_DELAY = 15000;
+const RETRY_COUNT = 3;
+const RETRY_DELAY = 1000;
 
 module.exports = class WebsitePing {
     constructor() {
@@ -37,55 +40,89 @@ module.exports = class WebsitePing {
         this.error_websites.splice(this.error_websites.indexOf(website.title), 1);
     }
 
+    async getWebsiteStatus(url) {
+        let returnStatus;
+        let returnError;
+
+        await fetch(url, { cache: "no-cache" })
+            .then((res) => {
+                returnStatus = res.status;
+            })
+            .catch((err) => {
+                returnError = err;
+            });
+
+        return [returnStatus, returnError];
+    }
+
+    handleWebsiteError(website, statusCode, error) {
+        let down = true;
+
+        for (let i = 0; i < RETRY_COUNT; i++) {
+            this.logger.verbose("Issue with " + website.title + ", retrying... " + i);
+            setTimeout(async () => {
+                let [retryStatus, retryErr] = await this.getWebsiteStatus(website.url);
+
+                if (!retryErr && retryStatus === website.status_code) {
+                    down = false;
+                }
+            }, RETRY_DELAY);
+
+            if (!down) {
+                break;
+            }
+        }
+
+        if (down) {
+            let errorMsg = "";
+            statusCode = statusCode ? statusCode : 500;
+            if (error) {
+                errorMsg = LogManager.getErrorResponseMessage(website, error);
+            } else {
+                errorMsg = LogManager.getErrorMessage(website, statusCode);
+            }
+            this.logger.error(errorMsg);
+            this.centralEngine.notify(website.url, statusCode, errorMsg);
+
+            if (this.websiteHasError(website)) {
+                this.logger.verbose("Already sent email for " + website.title + ".");
+            } else {
+                this.error_websites.push(website.title);
+                this.mailer.sendWebsiteErrorEmail(website, errorMsg);
+            }
+        } else {
+            this.handleWebsiteOnline(website, statusCode);
+        }
+    }
+
+    handleWebsiteOnline(website, statusCode) {
+        let successMsg = LogManager.getSuccessMessage(website, statusCode);
+
+        if (this.websiteHasError(website)) {
+            let successMsg = LogManager.getBackOnlineMessage(website, statusCode);
+            this.removeErrorWebsite(website);
+            this.mailer.sendWebsiteOnlineEmail(website, successMsg);
+            this.logger.info(successMsg);
+            this.centralEngine.notify(website.url, statusCode, successMsg);
+        } else {
+            this.logger.verbose(successMsg);
+        }
+    }
+
     createWebsiteCronJob(website) {
         if (website.active === false) {
             this.logger.verbose("Skipping " + website.title + " because it is inactive.");
             return;
         }
 
-        let job = cron.schedule(CRON_SCHEDULE, () => {
-            request(website.url, (error, response, body) => {
-                // if (error) {
-                //     this.logger.error("Error retrieving " + website.title + ": \n");
-                //     this.mailer.sendWebsiteErrorEmail(website, error);
-                //     console.log(error);
-                //     return;
-                // }
-                if (error || response.statusCode !== website.status_code) {
-                    let errorMsg = "";
-                    let statusCode = response ? response.statusCode : 500;
-                    if (error) {
-                        errorMsg = LogManager.getErrorResponseMessage(website, error);
-                    } else {
-                        errorMsg = LogManager.getErrorMessage(website, statusCode);
-                    }
-                    this.logger.error(errorMsg);
-                    console.log("url: " + website.url);
-                    this.centralEngine.notify(website.url, statusCode, errorMsg);
+        let job = cron.schedule(CRON_SCHEDULE, async () => {
+            let [statusCode, error] = await this.getWebsiteStatus(website.url);
 
-                    if (this.websiteHasError(website)) {
-                        this.logger.verbose("Already sent email for " + website.title + ".");
-                    } else {
-                        this.error_websites.push(website.title);
-                        this.mailer.sendWebsiteErrorEmail(website, errorMsg);
-                    }
-                } else {
-                    let successMsg = LogManager.getSuccessMessage(website, response.statusCode);
-
-                    if (this.websiteHasError(website)) {
-                        let successMsg = LogManager.getBackOnlineMessage(
-                            website,
-                            response.statusCode
-                        );
-                        this.removeErrorWebsite(website);
-                        this.mailer.sendWebsiteOnlineEmail(website, successMsg);
-                        this.logger.info(successMsg);
-                        this.centralEngine.notify(website.url, response.statusCode, successMsg);
-                    } else {
-                        this.logger.verbose(successMsg);
-                    }
-                }
-            });
+            if (error || statusCode !== website.status_code) {
+                this.handleWebsiteError(website, statusCode, error);
+            } else {
+                this.handleWebsiteOnline(website, statusCode);
+            }
         });
 
         this.jobs.push(job);
