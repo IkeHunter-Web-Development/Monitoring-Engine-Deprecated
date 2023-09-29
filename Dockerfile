@@ -12,7 +12,7 @@ RUN npm install
 FROM setup AS build
 
 COPY ./src /src
-EXPOSE 3000
+EXPOSE 8000
 
 VOLUME "/logs"
 

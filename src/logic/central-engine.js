@@ -54,18 +54,18 @@ module.exports = class CentralEngine {
             );
         });
     }
-    async getWebsites() {
-        console.log("get websites");
+    // async getWebsites() {
+    //     console.log("get websites");
 
-        while (true) {
-            try {
-                let websites = await this.getWebsitesRequest();
-                console.log("Central engine ready, returning websites: " + websites.length)
-                return websites;
-            } catch (err) {
-                console.log("Central engine not ready, trying again...");
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-            }
-        }
-    }
+    //     while (true) {
+    //         try {
+    //             let websites = await this.getWebsitesRequest();
+    //             console.log("Central engine ready, returning websites: " + websites.length)
+    //             return websites;
+    //         } catch (err) {
+    //             console.log("Central engine not ready, trying again...");
+    //             await new Promise((resolve) => setTimeout(resolve, 1000));
+    //         }
+    //     }
+    // }
 };
