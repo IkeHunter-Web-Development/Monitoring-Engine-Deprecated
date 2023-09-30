@@ -5,7 +5,9 @@ services:
     build: .
     ports:
       - "8001:8000"
+    restart: always
     volumes:
+      - ./src:/src
       - ./logs:/logs
     environment:
       - HOST=api
@@ -19,6 +21,7 @@ services:
       - MONGO_URI=mongodb://root:changeme@mongo:27017
     depends_on:
       - mongo
+    command: npm run dev
   
   mongo:
     image: mongo:6.0.9

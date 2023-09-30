@@ -1,7 +1,7 @@
 const express = require("express");
 const WebsitePing = require("./logic/cron");
-const router = require("./router");
 const mongoose = require("mongoose");
+const router = require("./router"); 
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
@@ -23,7 +23,12 @@ mongoose
   .catch((err) => {
     console.error.bind("Error connecting to MongoDB: ", err);
   });
+  
+const urlencodedParser = express.urlencoded({ extended: false });
+const jsonParser = express.json();
 
+server.use(urlencodedParser);
+server.use(jsonParser);
 server.use(router);
 
 server.listen(PORT, HOST, () => {

@@ -3,9 +3,11 @@
 FROM node:20-alpine3.17 AS setup
 LABEL maintainer="web@ikehunter.dev"
 
+ENV GENERATE_SOURCEMAP=false
+
 COPY ./package.json /package.json
 
-RUN npm install
+RUN npm install && npm install -g nodemon
 
 # STAGE 2: Build
 ################################

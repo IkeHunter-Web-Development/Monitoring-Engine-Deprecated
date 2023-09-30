@@ -80,7 +80,7 @@ module.exports = class WebsitePing {
 
       await sleep(RETRY_DELAY).then(() => {
         this.getWebsiteStatus(website.url).then(([retryStatus, retryErr]) => {
-          if (!retryErr && retryStatus === website.status_code) {
+          if (!retryErr && retryStatus === website.statusCode) {
             down = false;
           }
         });
@@ -136,7 +136,7 @@ module.exports = class WebsitePing {
     let job = cron.schedule(CRON_SCHEDULE, async () => {
       let [statusCode, error] = await this.getWebsiteStatus(website.url);
 
-      if (error || statusCode !== website.status_code) {
+      if (error || statusCode !== website.statusCode) {
         this.handleWebsiteError(website, statusCode, error);
       } else {
         this.handleWebsiteOnline(website, statusCode);
