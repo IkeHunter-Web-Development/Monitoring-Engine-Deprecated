@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const MainController = require("./controllers/main.controller");
-const MonitorController = require("./controllers/monitor.controller");
+import * as MainController from "./controllers/main.controller";
+import * as MonitorController from "./controllers/monitor.controller";
 
 router.get("/", MainController.healthCheck);
 
@@ -13,6 +13,6 @@ router.put("/monitors/:id", MonitorController.updateMonitor);
 
 router.delete("/monitors/:id", MonitorController.deleteMonitor);
 
-module.exports = router;
+export default router;
 
 

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   id: {
@@ -40,4 +40,4 @@ const monitorSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("Monitor", monitorSchema);
+export default mongoose.model("Monitor", monitorSchema);

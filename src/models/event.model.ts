@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Monitor = require("./monitor.model");
+import mongoose from "mongoose";
+import Monitor from "./monitor.model";
 
 const eventSchema = new mongoose.Schema({
   monitor: {
@@ -24,4 +24,4 @@ const eventSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Event", eventSchema);
+export default mongoose.model("Event", eventSchema);

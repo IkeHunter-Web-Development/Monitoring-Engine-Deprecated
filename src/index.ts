@@ -1,10 +1,10 @@
-const express = require("express");
-const WebsitePing = require("./logic/cron");
-const mongoose = require("mongoose");
-const router = require("./router"); 
+import express from "express";
+import WebsitePing from "./logic/cron";
+import mongoose from "mongoose";
+import router from "./router"; 
 
-const HOST = process.env.HOST;
-const PORT = process.env.PORT;
+const HOST = process.env.HOST || "localhost";
+const PORT = +(process.env.PORT || 3000);
 
 require("dotenv").config();
 
@@ -20,7 +20,7 @@ mongoose
     let websitePing = new WebsitePing();
     websitePing.setupJobs();
   })
-  .catch((err) => {
+  .catch((err: any) => {
     console.error.bind("Error connecting to MongoDB: ", err);
   });
   

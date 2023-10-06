@@ -1,14 +1,16 @@
 /**
  * Cron jobs to run on a schedule.
  */
-const cron = require("node-cron");
-const request = require("request");
-const Mailer = require("./emails");
-const CentralEngine = require("./central-engine");
-const LogManager = require("./logger");
-const { stat } = require("fs");
-const logger = LogManager.logger;
-const Monitor = require("../models/monitor.model");
+import cron from "node-cron";
+import request from "request";
+import Mailer from "./emails";
+import CentralEngine from "./central-engine";
+import Logger from "./logger";
+import { stat } from "fs";
+// const logger = LogManager.logger;
+import Monitor from "../models/monitor.model";
+
+let LogManager: Logger = new Logger();
 
 const CRON_SCHEDULE = "*/1 * * * *";
 const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
@@ -16,15 +18,21 @@ const CRON_UPDATE_DELAY = 15000;
 const RETRY_COUNT = 5;
 const RETRY_DELAY = 2000;
 
-function sleep(ms) {
+const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports = class WebsitePing {
+export default class WebsitePing {
+  logger: any;
+  error_websites: string[];
+  mailer: Mailer;
+  jobs: any[];
+  centralEngine: CentralEngine;
+  
   constructor() {
-    this.logger = logger;
+    // this.logger = logger;
     this.error_websites = [];
-    this.mailer = new Mailer(logger);
+    this.mailer = new Mailer();
     this.jobs = [];
     this.centralEngine = new CentralEngine();
   }
@@ -49,15 +57,15 @@ module.exports = class WebsitePing {
     return websites;
   }
 
-  websiteHasError(website) {
+  websiteHasError(website: any) {
     return this.error_websites.includes(website.title);
   }
 
-  removeErrorWebsite(website) {
+  removeErrorWebsite(website: any) {
     this.error_websites.splice(this.error_websites.indexOf(website.title), 1);
   }
 
-  async getWebsiteStatus(url) {
+  async getWebsiteStatus(url: string) {
     let returnStatus;
     let returnError;
 
@@ -72,7 +80,7 @@ module.exports = class WebsitePing {
     return [returnStatus, returnError];
   }
 
-  async handleWebsiteError(website, statusCode, error) {
+  async handleWebsiteError(website: any, statusCode: number, error: String) {
     let down = true;
 
     for (let i = 0; i < RETRY_COUNT; i++) {
@@ -100,7 +108,7 @@ module.exports = class WebsitePing {
         errorMsg = LogManager.getErrorMessage(website, statusCode);
       }
       this.logger.error(errorMsg);
-      this.centralEngine.notify(website.url, statusCode, errorMsg);
+      // this.centralEngine.notify(website.url, statusCode, errorMsg);
 
       if (this.websiteHasError(website)) {
         this.logger.verbose("Already sent email for " + website.title + ".");
@@ -113,7 +121,7 @@ module.exports = class WebsitePing {
     }
   }
 
-  handleWebsiteOnline(website, statusCode) {
+  handleWebsiteOnline(website: any, statusCode: number) {
     let successMsg = LogManager.getSuccessMessage(website, statusCode);
 
     if (this.websiteHasError(website)) {
@@ -121,20 +129,22 @@ module.exports = class WebsitePing {
       this.removeErrorWebsite(website);
       this.mailer.sendWebsiteOnlineEmail(website, successMsg);
       this.logger.info(successMsg);
-      this.centralEngine.notify(website.url, statusCode, successMsg);
+      // this.centralEngine.notify(website.url, statusCode, successMsg);
     } else {
       this.logger.verbose(successMsg);
     }
   }
 
-  createWebsiteCronJob(website) {
+  createWebsiteCronJob(website: any) {
     if (website.active === false) {
       this.logger.verbose("Skipping " + website.title + " because it is inactive.");
       return;
     }
 
     let job = cron.schedule(CRON_SCHEDULE, async () => {
-      let [statusCode, error] = await this.getWebsiteStatus(website.url);
+      let [returnCode, returnError] = await this.getWebsiteStatus(website.url);
+      let statusCode: number = returnCode ? returnCode : 500;
+      let error: String = returnError ? returnError : "";
 
       if (error || statusCode !== website.statusCode) {
         this.handleWebsiteError(website, statusCode, error);
