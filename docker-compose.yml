@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  api:
+  monitor:
     build: .
     ports:
       - "8001:8000"
@@ -10,7 +10,7 @@ services:
       - ./src:/src
       - ./logs:/logs
     environment:
-      - HOST=api
+      - HOST=0.0.0.0
       - PORT=8000
       - LOGGING_LEVEL=verbose
       - EMAIL_USER=tests@ikehunter.dev
@@ -18,14 +18,16 @@ services:
       - CENTRAL_ENGINE_URL=http://localhost:8000
       - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
       - CENTRAL_GET_ENDPOINT=/engine/get/
-      - MONGO_URI=mongodb://root:changeme@mongo:27017
+      - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
     depends_on:
-      - mongo
+      - mongo-monitor
     command: npm run dev
+    networks:
+      - cluster
   
-  mongo:
+  mongo-monitor:
     image: mongo:6.0.9
-    container_name: mongo-dsm
+    # container_name: mongo-monitor
     restart: always
     ports:
       - 27017:27017
@@ -34,10 +36,17 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: changeme
     volumes:
       - mongo-data-dsm:/data/db
-    command: mongod --quiet --logpath /dev/null
+    command: mongod --quiet --logpath /dev/null --bind_ip_all
+    networks:
+      - cluster
     
 volumes:
   mongo-data-dsm:
+
+networks:
+  cluster:
+    name: clientcrm_default
+    external: true
 
       
     

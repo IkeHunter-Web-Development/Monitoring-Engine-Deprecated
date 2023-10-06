@@ -32,5 +32,5 @@ server.use(jsonParser);
 server.use(router);
 
 server.listen(PORT, HOST, () => {
-  console.log(`Server running at ${HOST}:${PORT}`);
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });
