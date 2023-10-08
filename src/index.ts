@@ -3,6 +3,8 @@ import WebsitePing from "./logic/cron";
 import mongoose from "mongoose";
 import router from "./router"; 
 import 'dotenv/config';
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger/swagger_output.json";
 
 const HOST = process.env.HOST || "localhost";
 const PORT = +(process.env.PORT || 3000);
@@ -26,6 +28,7 @@ mongoose
 const urlencodedParser = express.urlencoded({ extended: false });
 const jsonParser = express.json();
 
+server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 server.use(urlencodedParser);
 server.use(jsonParser);
 server.use(router);
