@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   
 });
 
-const monitorSchema = new mongoose.Schema({
+export const monitorSchema = new mongoose.Schema({
   projectId: {
     type: String,
     required: true,

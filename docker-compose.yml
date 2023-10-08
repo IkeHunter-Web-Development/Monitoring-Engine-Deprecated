@@ -2,9 +2,10 @@ version: '3.9'
 
 services:
   monitor:
-    build: .
+    build:
+      context: .
     ports:
-      - "8001:8000"
+      - "8000:8000"
     restart: always
     volumes:
       - ./src:/src
@@ -18,16 +19,19 @@ services:
       - CENTRAL_ENGINE_URL=http://localhost:8000
       - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
       - CENTRAL_GET_ENDPOINT=/engine/get/
-      - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
+      - MONGO_URI=mongodb://root:changeme@mongo-monitor
+      
+      - MONGO_PORT=27017
+      - MONGO_DB=monitor
     depends_on:
       - mongo-monitor
     command: npm run dev
-    networks:
-      - cluster
+    # networks:
+    #   - cluster
   
   mongo-monitor:
     image: mongo:6.0.9
-    # container_name: mongo-monitor
+    container_name: mongo-monitor
     restart: always
     ports:
       - 27017:27017
@@ -37,16 +41,16 @@ services:
     volumes:
       - mongo-data-dsm:/data/db
     command: mongod --quiet --logpath /dev/null --bind_ip_all
-    networks:
-      - cluster
+    # networks:
+    #   - cluster
     
 volumes:
   mongo-data-dsm:
 
-networks:
-  cluster:
-    name: clientcrm_default
-    external: true
+# networks:
+#   cluster:
+#     name: clientcrm_default
+#     external: true
 
       
     

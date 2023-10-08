@@ -11,6 +11,7 @@ import { stat } from "fs";
 import Monitor from "../models/monitor.model";
 
 let LogManager: Logger = new Logger();
+const logger = LogManager.logger;
 
 const CRON_SCHEDULE = "*/1 * * * *";
 const CRON_UPDATE_SCHEDULE = "*/10 * * * *";
@@ -30,7 +31,7 @@ export default class WebsitePing {
   centralEngine: CentralEngine;
   
   constructor() {
-    // this.logger = logger;
+    this.logger = logger;
     this.error_websites = [];
     this.mailer = new Mailer();
     this.jobs = [];

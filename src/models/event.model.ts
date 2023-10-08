@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
-import Monitor from "./monitor.model";
+import Monitor, { monitorSchema } from "./monitor.model";
 
 const eventSchema = new mongoose.Schema({
-  monitor: {
-    type: Monitor,
-    required: true,
-  },
+  monitor: monitorSchema,
   statusCode: {
     type: Number,
     required: true,

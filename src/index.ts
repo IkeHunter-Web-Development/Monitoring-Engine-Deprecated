@@ -2,15 +2,17 @@ import express from "express";
 import WebsitePing from "./logic/cron";
 import mongoose from "mongoose";
 import router from "./router"; 
+import 'dotenv/config';
 
 const HOST = process.env.HOST || "localhost";
 const PORT = +(process.env.PORT || 3000);
 
-require("dotenv").config();
+// require("dotenv").config();
 
 const server = express();
 
-const uri = process.env.MONGO_URI || "";
+// const uri = process.env.MONGO_URI || "";
+const uri = `${process.env.MONGO_URI}:${process.env.MONGO_PORT}`;
 
 mongoose
   .connect(uri)
