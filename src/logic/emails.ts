@@ -2,8 +2,8 @@
  * Mailer class to send emails using SendGrid.
  */
 import sgMail from "@sendgrid/mail";
-require("dotenv").config();
 import logger from "./logger";
+import 'dotenv/config';
 
 export default class Mailer {
   sgMail: any;

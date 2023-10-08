@@ -1,8 +1,9 @@
 import express from "express";
-const router = express.Router();
-
+import { Router } from "express";
 import * as MainController from "./controllers/main.controller";
 import * as MonitorController from "./controllers/monitor.controller";
+
+const router = Router();
 
 router.get("/", MainController.healthCheck);
 

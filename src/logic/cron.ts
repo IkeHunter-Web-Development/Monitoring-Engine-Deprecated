@@ -2,12 +2,8 @@
  * Cron jobs to run on a schedule.
  */
 import cron from "node-cron";
-import request from "request";
 import Mailer from "./emails";
-import CentralEngine from "./central-engine";
 import Logger from "./logger";
-import { stat } from "fs";
-// const logger = LogManager.logger;
 import Monitor from "../models/monitor.model";
 
 let LogManager: Logger = new Logger();
@@ -28,23 +24,14 @@ export default class WebsitePing {
   error_websites: string[];
   mailer: Mailer;
   jobs: any[];
-  centralEngine: CentralEngine;
   
   constructor() {
     this.logger = logger;
     this.error_websites = [];
     this.mailer = new Mailer();
     this.jobs = [];
-    this.centralEngine = new CentralEngine();
   }
 
-  // async getWebsites() {
-  //   const websites = await this.centralEngine.getWebsites();
-  //   this.websites = websites;
-  //   let count = websites.length;
-  //   this.logger.info(`Retrieved ${count} websites from the database.`);
-  //   return websites;
-  // }
   async getWebsites() {
     let websites = Monitor.find({ active: true })
       .then((websites) => {

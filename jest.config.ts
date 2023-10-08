@@ -2,9 +2,9 @@
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
-
 import type {Config} from 'jest';
 import type { JestConfigWithTsJest } from 'ts-jest'
+
 
 const config: JestConfigWithTsJest = {
   preset: 'ts-jest',

@@ -7,12 +7,9 @@ import 'dotenv/config';
 const HOST = process.env.HOST || "localhost";
 const PORT = +(process.env.PORT || 3000);
 
-// require("dotenv").config();
-
 const server = express();
 
-// const uri = process.env.MONGO_URI || "";
-const uri = `${process.env.MONGO_URI}:${process.env.MONGO_PORT}`;
+const uri = process.env.MONGO_URI || "";
 
 mongoose
   .connect(uri)
