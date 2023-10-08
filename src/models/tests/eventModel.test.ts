@@ -1,8 +1,8 @@
 /**
  * @fileoverview Tests for the Event model.
  */
-import Monitor from "./monitor.model";
-import Event from "./event.model";
+import Monitor from "../monitor.model";
+import Event from "../event.model";
 
 /**
  * Tests for the Event model.
@@ -69,7 +69,7 @@ describe("Event", () => {
 
     expect(events[0].online).toEqual(false);
   });
-  
+
   /**
    * Event models should be able to be retrieved.
    */
