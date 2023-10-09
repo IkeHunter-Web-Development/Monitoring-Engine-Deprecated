@@ -8,8 +8,8 @@ services:
       - "8000:8000"
     restart: always
     volumes:
-      - ./src:/src
-      - ./logs:/logs
+      - ./src:/app/src
+      - ./logs:/app/logs
     environment:
       - HOST=0.0.0.0
       - PORT=8000

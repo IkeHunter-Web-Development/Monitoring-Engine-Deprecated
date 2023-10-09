@@ -24,9 +24,6 @@ EXPOSE 8000
 
 COPY ./src ./src
 
-RUN npm install -D supertest @types/supertest && \
-    npm install -g jest
-
 RUN npm run swagger-autogen && \
     npm run build
 
