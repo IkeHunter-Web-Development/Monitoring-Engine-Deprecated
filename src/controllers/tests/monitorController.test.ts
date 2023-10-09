@@ -4,6 +4,7 @@
 import request from "supertest";
 import server from "../../server";
 import Monitor, { monitorSchema } from "../../models/monitor.model";
+import MonitorManager from "../../models/monitor.manager";
 
 const defaultMonitor = {
   projectId: "123",
@@ -13,22 +14,28 @@ const defaultMonitor = {
 };
 
 describe("Monitor controller", () => {
-  // TODO: create monitor
+  /**==========
+   * CRUD TESTS
+   ============*/
+
   /**
    * Create monitor route should create a monitor
    * and return a 201 status code.
    */
   it("should create a monitor", async () => {
+    let pre = await MonitorManager.getMonitors();
+    expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
+    
     const res = await request(server).post("/monitors").send(defaultMonitor);
 
     expect(res.status).toEqual(201);
 
-    let monitors = await Monitor.find({});
+    // let monitors = await Monitor.find({});
+    let monitors = await MonitorManager.getMonitors();
     expect(monitors.length).toEqual(1);
     expect(monitors[0].projectId).toEqual(defaultMonitor.projectId);
   });
 
-  // TODO: update monitor
   /**
    * Update monitor route should update a monitor
    * and return a 200 status code.
@@ -45,7 +52,6 @@ describe("Monitor controller", () => {
     expect(query!.title).toEqual("Yahoo");
   });
 
-  // TODO: get monitor
   /**
    * Get monitor route should return a monitor
    * and return a 200 status code.
@@ -59,7 +65,6 @@ describe("Monitor controller", () => {
     expect(res.body._id).toEqual(monitor._id.toString());
   });
 
-  // TODO: delete monitor
   /**
    * Delete monitor route should delete a monitor
    * and return a 200 status code.
@@ -75,7 +80,6 @@ describe("Monitor controller", () => {
     expect(query).toBeNull();
   });
 
-  // TODO: get all monitors
   /**
    * Get all monitors route should return all monitors
    * and return a 200 status code.
@@ -107,4 +111,19 @@ describe("Monitor controller", () => {
     expect(sorted[1].projectId).toEqual(monitor2.projectId);
     expect(sorted[2].projectId).toEqual(monitor3.projectId);
   });
+  
+  /**=================
+   * MANAGEMENT ROUTES
+   ===================*/
+   
+   // TODO: Add user to monitor
+   
+   // TODO: Remove user from monitor
+   
+   // TODO: Check if site is online
+   
+   // TODO: set retries
+   
+   // TODO: set timeout
+   
 });
