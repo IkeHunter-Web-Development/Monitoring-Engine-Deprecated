@@ -12,6 +12,23 @@ const defaultMonitor = {
   users: [],
   title: "Google",
 };
+const u1 = {
+  userId: "123",
+  email: "u1@example.com"
+}
+const u2 = {
+  userId: "456",
+  email: "u2@example.com"
+}
+const u3 = {
+  userId: "789",
+  email: "u3@example.com"
+}
+const u4 = {
+  userId: "012",
+  email: "u4@example.com"
+}
+
 
 describe("Monitor controller", () => {
   /**==========
@@ -123,8 +140,9 @@ describe("Monitor controller", () => {
    */
   it("should return true if the site is online", async () => {
     let monitor = await MonitorManager.createMonitor(defaultMonitor);
-
-    const res = await request(server).get(`/monitors/${monitor._id}/online`);
+    console.log(`monitor id: ${monitor._id}`)
+    let id = monitor._id;
+    const res = await request(server).get(`/monitors/${id}/online`);
 
     expect(res.status).toEqual(200);
     expect(res.body).toEqual(true);
@@ -132,16 +150,17 @@ describe("Monitor controller", () => {
 
   /**
    * GET /monitors/search/?project=id should return monitors
+   * that belong to a project.
    */
   it("should return monitors", async () => {
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
-      users: ["123", "456"],
+      users: [u1, u2],
     });
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       projectId: "456",
-      users: ["789", "012"],
+      users: [u3, u4],
     });
 
     const res = await request(server).get(`/monitors/search/?project=${m1.projectId}`);
@@ -159,12 +178,12 @@ describe("Monitor controller", () => {
   it("should return monitors that a user is subscribed to", async () => {
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
-      users: ["123", "456"],
+      users: [u1, u2],
     });
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       projectId: "456",
-      users: ["789", "012"],
+      users: [u3, u4],
     });
     
     const res2 = await request(server).get(`/monitors/search/?user=${m2.users[0]}`);

@@ -30,7 +30,7 @@ describe("Event", () => {
    */
   it("should add an event", async () => {
     const event = {
-      monitor: monitor,
+      monitorId: monitor._id,
       statusCode: 200,
       online: true,
       timestamp: new Date(),
@@ -48,7 +48,7 @@ describe("Event", () => {
    */
   it("should update an event", async () => {
     const event = {
-      monitor: monitor,
+      monitorId: monitor._id,
       statusCode: 200,
       online: true,
       timestamp: new Date(),
@@ -57,7 +57,7 @@ describe("Event", () => {
     await new Event(event).save();
 
     const updatedEvent = {
-      monitor: monitor,
+      monitorId: monitor._id,
       statusCode: 200,
       online: false,
       timestamp: new Date(),
@@ -75,7 +75,7 @@ describe("Event", () => {
    */
   it("should get an event", async () => {
     const event = {
-      monitor: monitor,
+      monitorId: monitor._id,
       statusCode: 200,
       online: true,
       timestamp: new Date(),
@@ -93,7 +93,7 @@ describe("Event", () => {
    */
   it("should delete an event", async () => {
     const event = {
-      monitor: monitor,
+      monitorId: monitor._id,
       statusCode: 200,
       online: true,
       timestamp: new Date(),

@@ -16,7 +16,7 @@ const defaultMonitor = {
 };
 
 const defaultEvent = {
-  monitorId: "123",
+  // monitorId: "123",
   timestamp: Date.now(),
   message: "Monitor is offline",
   statusCode: 500,
@@ -36,12 +36,26 @@ let e6: EventType;
 
 describe("Event controller", () => {
   beforeEach(async () => {
+    /**
+     * Monitor 1: Google
+     */
     m1 = await MonitorManager.createMonitor(defaultMonitor);
     e1 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m1._id,
+      online: false,
     });
     
+    e4 = await EventManager.createEvent({
+      ...defaultEvent,
+      monitorId: m1._id,
+      online: true,
+      message: "Monitor is online",
+    });
+    
+    /**
+     * Monitor 2: Yahoo
+     */
     m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       projectId: "456",
@@ -65,13 +79,6 @@ describe("Event controller", () => {
       timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2,
     });
     
-    e4 = await EventManager.createEvent({
-      ...defaultEvent,
-      monitorId: m1._id,
-      online: true,
-      message: "Monitor is online",
-    });
-    
     e5 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
@@ -90,10 +97,15 @@ describe("Event controller", () => {
     
     
   });
+  
+  // afterEach(async () => {
+  //   await Monitor.deleteMany({});
+  //   await Event.deleteMany({});
+  // });
 
-  /**==========
-   * CRUD TESTS
-   ============*/
+  /**===========*
+   * CRUD TESTS *
+   *============*/
   /**
    * GET /events/:id should return an event.
    */
@@ -113,15 +125,18 @@ describe("Event controller", () => {
     expect(res.body.message).toEqual("Event deleted");
   });
 
+  /**=============*
+   * SEARCH TESTS *
+   *==============*/
   // TODO: get events for monitor
   /**
    * GET /events/search/?monitor=id should get events for a monitor.
    */
   it("should get events for a monitor", async () => {
-    const res = await request(server).get(`/events/search/?monitor=${m1._id}`);
+    const res = await request(server).get(`/events-search/?monitor=${m1._id}`);
 
     expect(res.status).toEqual(200);
-    expect(res.body.length).toEqual(1);
+    expect(res.body.length).toEqual(2);
     expect(res.body[0]._id).toEqual(e1._id.toString());
   });
   // TODO: get offline events for monitor
@@ -129,7 +144,7 @@ describe("Event controller", () => {
    * GET /events/search/?monitor=id&online=false should get offline events for a monitor.
    */
   it("should get offline events for a monitor", async () => {
-    const res = await request(server).get(`/events/search/?monitor=${m1._id}&online=false`);
+    const res = await request(server).get(`/events-search/?monitor=${m1._id}&online=false`);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(1);
@@ -141,10 +156,10 @@ describe("Event controller", () => {
    * last time a monitor was offline.
    */
   it("should get the last time a monitor was offline", async () => {
-    const res = await request(server).get(`/events/search/?monitor=${m2._id}&online=false&last=true`);
+    const res = await request(server).get(`/events-search/?monitor=${m2._id}&online=false&last=true`);
 
     expect(res.status).toEqual(200);
-    expect(res.body._id).toEqual(e5._id.toString());
+    expect(res.body[0]._id).toEqual(e5._id.toString());
   });
   // TODO: get last time monitor was online
   /**
@@ -152,10 +167,10 @@ describe("Event controller", () => {
    * last time a monitor was online.
    */
   it("should get the last time a monitor was online", async () => {
-    const res = await request(server).get(`/events/search/?monitor=${m2._id}&online=true&last=true`);
+    const res = await request(server).get(`/events-search/?monitor=${m2._id}&online=true&last=true`);
 
     expect(res.status).toEqual(200);
-    expect(res.body._id).toEqual(e6._id.toString());
+    expect(res.body[0]._id).toEqual(e6._id.toString());
   });
 
 });

@@ -1,3 +1,0 @@
-/**
- * @fileoverview Events controller
- */
