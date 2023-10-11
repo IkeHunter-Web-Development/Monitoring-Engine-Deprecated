@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema({
   },
   online: {
     type: Boolean,
-    required: true,
+    default: true,
   },
   timestamp: {
     type: Date,

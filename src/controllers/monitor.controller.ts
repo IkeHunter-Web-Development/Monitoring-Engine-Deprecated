@@ -71,3 +71,5 @@ export const getMonitors = async (req: Request, res: Response) => {
       return res.status(500).json(err);
     });
 };
+
+export const getMonitorsByProjectId = async (req: Request, res: Response) => {};

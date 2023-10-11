@@ -19,13 +19,13 @@ describe("Monitor controller", () => {
    ============*/
 
   /**
-   * Create monitor route should create a monitor
+   * POST /monitors/:id should create a monitor
    * and return a 201 status code.
    */
   it("should create a monitor", async () => {
     let pre = await MonitorManager.getMonitors();
     expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
-    
+
     const res = await request(server).post("/monitors").send(defaultMonitor);
 
     expect(res.status).toEqual(201);
@@ -37,7 +37,7 @@ describe("Monitor controller", () => {
   });
 
   /**
-   * Update monitor route should update a monitor
+   * PUT /monitors/:id should update a monitor
    * and return a 200 status code.
    */
   it("should update a monitor", async () => {
@@ -53,7 +53,7 @@ describe("Monitor controller", () => {
   });
 
   /**
-   * Get monitor route should return a monitor
+   * GET /monitors/:id should return a monitor
    * and return a 200 status code.
    */
   it("should get a monitor", async () => {
@@ -66,7 +66,7 @@ describe("Monitor controller", () => {
   });
 
   /**
-   * Delete monitor route should delete a monitor
+   * DELETE /monitors/:id should delete a monitor
    * and return a 200 status code.
    */
   it("should delete a monitor", async () => {
@@ -81,7 +81,7 @@ describe("Monitor controller", () => {
   });
 
   /**
-   * Get all monitors route should return all monitors
+   * GET /monitors should return all monitors
    * and return a 200 status code.
    */
   it("should get all monitors", async () => {
@@ -102,28 +102,76 @@ describe("Monitor controller", () => {
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(3);
-    
+
     let sorted = res.body.sort((a: any, b: any) => {
       return a.projectId - b.projectId;
     });
-    
+
     expect(sorted[0].projectId).toEqual(monitor.projectId);
     expect(sorted[1].projectId).toEqual(monitor2.projectId);
     expect(sorted[2].projectId).toEqual(monitor3.projectId);
   });
-  
+
   /**=================
    * MANAGEMENT ROUTES
    ===================*/
-   
-   // TODO: Add user to monitor
-   
-   // TODO: Remove user from monitor
-   
-   // TODO: Check if site is online
-   
-   // TODO: set retries
-   
-   // TODO: set timeout
-   
+
+  // TODO: Check if site is online
+  /**
+   * GET /monitors/:id/online should return true
+   * if the site is online
+   */
+  it("should return true if the site is online", async () => {
+    let monitor = await MonitorManager.createMonitor(defaultMonitor);
+
+    const res = await request(server).get(`/monitors/${monitor._id}/online`);
+
+    expect(res.status).toEqual(200);
+    expect(res.body).toEqual(true);
+  });
+
+  /**
+   * GET /monitors/search/?project=id should return monitors
+   */
+  it("should return monitors", async () => {
+    let m1 = await MonitorManager.createMonitor({
+      ...defaultMonitor,
+      users: ["123", "456"],
+    });
+    let m2 = await MonitorManager.createMonitor({
+      ...defaultMonitor,
+      projectId: "456",
+      users: ["789", "012"],
+    });
+
+    const res = await request(server).get(`/monitors/search/?project=${m1.projectId}`);
+
+    expect(res.status).toEqual(200);
+    expect(res.body.length).toEqual(1);
+    expect(res.body[0].projectId).toEqual(m1.projectId);
+
+    
+  });
+  /**
+   * GET /monitors/search/?user=id should return monitors
+   * that a user is subscribed to.
+   */
+  it("should return monitors that a user is subscribed to", async () => {
+    let m1 = await MonitorManager.createMonitor({
+      ...defaultMonitor,
+      users: ["123", "456"],
+    });
+    let m2 = await MonitorManager.createMonitor({
+      ...defaultMonitor,
+      projectId: "456",
+      users: ["789", "012"],
+    });
+    
+    const res2 = await request(server).get(`/monitors/search/?user=${m2.users[0]}`);
+
+    expect(res2.status).toEqual(200);
+    expect(res2.body.length).toEqual(1);
+    expect(res2.body[0].projectId).toEqual(m2.projectId);
+  });
+
 });
