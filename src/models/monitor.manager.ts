@@ -106,4 +106,39 @@ export default class MonitorManager {
     
     return status;
   }
+  
+  /**
+   * Search for monitors.
+   * @param query The query to search for.
+   * 
+   * @returns The monitors that match the query.
+   */
+  static async searchMonitors(query: any) {
+    // let monitors = await Monitor.find(query);
+    // let filters = {
+    //   projectId: query.projectId || "",
+    //   url: query.url || "",
+    //   title: query.title || "",
+    // };
+    let filters = {};
+    
+    filters = query.projectId ? {...filters, projectId: query.projectId} : filters;
+    filters = query.url ? {...filters, url: query.url} : filters;
+    filters = query.title ? {...filters, title: query.title} : filters;
+    // filters = query.userId ? {...filters, users: [{userId: query.userId}]} : filters;
+    
+    let monitors = await Monitor.find(filters);
+    
+    if (query.userId) {
+      monitors = monitors.filter((monitor: any) => {
+        return monitor.users.some((user: any) => {
+          return user.userId === query.userId;
+        });
+      });
+    }
+
+    if (!monitors) return [];
+    return monitors;
+  }
+
 }

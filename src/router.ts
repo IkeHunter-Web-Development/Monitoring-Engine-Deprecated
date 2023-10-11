@@ -18,6 +18,8 @@ router.get("/monitors/:id", MonitorController.getMonitor);
 router.post("/monitors/", MonitorController.createMonitor);
 router.put("/monitors/:id", MonitorController.updateMonitor);
 router.delete("/monitors/:id", MonitorController.deleteMonitor);
+router.get("/monitors/:id/online", MonitorController.getMonitorOnlineStatus);
+router.get("/monitors-search/", MonitorController.searchMonitors);
 
 /**
  * Event Routes

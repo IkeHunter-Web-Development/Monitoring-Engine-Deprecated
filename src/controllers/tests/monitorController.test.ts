@@ -14,21 +14,20 @@ const defaultMonitor = {
 };
 const u1 = {
   userId: "123",
-  email: "u1@example.com"
-}
+  email: "u1@example.com",
+};
 const u2 = {
   userId: "456",
-  email: "u2@example.com"
-}
+  email: "u2@example.com",
+};
 const u3 = {
   userId: "789",
-  email: "u3@example.com"
-}
+  email: "u3@example.com",
+};
 const u4 = {
   userId: "012",
-  email: "u4@example.com"
-}
-
+  email: "u4@example.com",
+};
 
 describe("Monitor controller", () => {
   /**==========
@@ -139,13 +138,15 @@ describe("Monitor controller", () => {
    * if the site is online
    */
   it("should return true if the site is online", async () => {
-    let monitor = await MonitorManager.createMonitor(defaultMonitor);
-    console.log(`monitor id: ${monitor._id}`)
-    let id = monitor._id;
-    const res = await request(server).get(`/monitors/${id}/online`);
+    let monitor = await MonitorManager.createMonitor({ 
+      ...defaultMonitor, 
+      online: true 
+    });
+
+    const res = await request(server).get(`/monitors/${monitor._id}/online`);
 
     expect(res.status).toEqual(200);
-    expect(res.body).toEqual(true);
+    expect(res.body).toEqual({ online: true });
   });
 
   /**
@@ -163,13 +164,11 @@ describe("Monitor controller", () => {
       users: [u3, u4],
     });
 
-    const res = await request(server).get(`/monitors/search/?project=${m1.projectId}`);
+    const res = await request(server).get(`/monitors-search/?projectId=${m1.projectId}`);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(1);
     expect(res.body[0].projectId).toEqual(m1.projectId);
-
-    
   });
   /**
    * GET /monitors/search/?user=id should return monitors
@@ -185,12 +184,11 @@ describe("Monitor controller", () => {
       projectId: "456",
       users: [u3, u4],
     });
-    
-    const res2 = await request(server).get(`/monitors/search/?user=${m2.users[0]}`);
+
+    const res2 = await request(server).get(`/monitors-search/?userId=${m2.users[0].userId}`);
 
     expect(res2.status).toEqual(200);
     expect(res2.body.length).toEqual(1);
     expect(res2.body[0].projectId).toEqual(m2.projectId);
   });
-
 });

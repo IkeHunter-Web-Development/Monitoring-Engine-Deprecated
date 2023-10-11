@@ -72,4 +72,31 @@ export const getMonitors = async (req: Request, res: Response) => {
     });
 };
 
-export const getMonitorsByProjectId = async (req: Request, res: Response) => {};
+export const searchMonitors = async (req: Request, res: Response) => {
+  const params = req.query || {};
+
+  MonitorManager.searchMonitors(params)
+    .then((events: any) => {
+      return res.status(200).json(events);
+    })
+    .catch((err: any) => {
+      console.log(err);
+      return res.status(500).json(err);
+    });
+};
+
+export const getMonitorOnlineStatus = async (req: Request, res: Response) => {
+  const id = req.params.id || "";
+
+  let monitor = await MonitorManager.getMonitor(id);
+
+  if (!monitor) {
+    return res.status(404).json({ message: "Monitor not found" });
+  }
+
+  if (!monitor.online) {
+    return res.status(200).json({ online: false });
+  } else {
+    return res.status(200).json({ online: true });
+  }
+};

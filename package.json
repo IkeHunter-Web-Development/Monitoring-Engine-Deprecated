@@ -12,7 +12,7 @@
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts",
     "build": "rimraf ./build && tsc",
-    "swagger-autogen": "npm run build && node ./build/swagger/swagger.js"
+    "swagger-autogen": "node ./src/swagger/swagger.ts"
   },
   "author": "Isaac Hunter",
   "license": "ISC",

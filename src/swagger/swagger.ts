@@ -1,12 +1,12 @@
 // const swaggerAutogen = require('swagger-autogen')()
 const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
 
-const outputFile = "/src/swagger/swagger_output.json";
+// const outputFile = "/src/swagger/swagger_output.json";
+const outputFile = "./swagger_output.json";
 
 const endpointsFiles = [
   "../router",
-  "../controllers/main.controller",
-  "../controllers/monitor.controller",
+  "../controllers/*",
 ];
 
 const doc = {
