@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
 });
 
 export const monitorSchema = new mongoose.Schema({
+  // TODO: Add monitor type
   projectId: {
     type: String,
     required: true,

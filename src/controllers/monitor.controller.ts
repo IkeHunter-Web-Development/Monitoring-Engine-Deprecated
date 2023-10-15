@@ -7,18 +7,146 @@ import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 
 export const createMonitor = async (req: Request, res: Response) => {
+  /**======================*
+    @swagger Create Monitor
+    swagger.requestBody = {
+      description: "Monitor object",  
+      required: true,
+      content: {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "example": "Example Monitor" 
+              },
+              "projectId": {
+                "example": "1234567" 
+              },
+              "url": {
+                "example": "https://ikehunter.com"
+              },
+              "statusCode": {
+                "example": "200"
+              },
+              "users": {
+                "example": [
+                  {
+                    "userId": "123456",
+                    "email": "user@example.com"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    #swagger.parameters['body'] = {
+      in: "body",
+      name: "body",
+      description: "Monitor object",
+      required: true,
+      schema: {
+        projectId: "123456",
+        url: "https://ikehunter.com",
+        statusCode: 200,
+        title: "Example Monitor",
+        users: [
+          {
+            userId: "123456",
+            email: "user@example.com"
+          }
+        ]
+        
+      }
+    }
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for creating a monitor.'
+    #swagger.responses[201] = {
+      schema: { $ref: "#/definitions/Monitor" },
+      description: "Monitor created"
+    }
+    #swagger.responses[500] = {
+      schema: {
+        message: "Error message..."
+      }
+    }
+   *========================*/
+  
+  // let payload = {
+  //   title: req.body.title,
+  //   projectId: req.body.projectId,
+  //   url: req.body.url,
+  //   statusCode: req.body.statusCode,
+  //   users: req.body.users,
+  
+  // }
+
   MonitorManager.createMonitor(req.body)
     .then((monitor: any) => {
       return res.status(201).json(monitor);
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json(err);
+      let payload = {
+        message: err.message,
+      };
+      return res.status(500).json(payload);
     });
 };
 
 export const updateMonitor = async (req: Request, res: Response) => {
-  const id = req.params.id || req.body._id;
+  /**======================*
+    @swagger Update Monitor
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for updating a monitor.'
+    #swagger.parameters['id'] = { description: 'Monitor ID' }
+    #swagger.requestBody = {
+      description: "Monitor object",
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            "type": "object",
+            "properties": {
+              "title": {
+                "example": "Example Monitor"
+              },
+              "projectId": {
+                "example": "1234567"
+              },
+              "url": {
+                "example": "https://ikehunter.com"
+              },
+              "statusCode": {
+                "example": 200
+              },
+              "users": {
+                "example": [
+                  {
+                    "userId": "123456",
+                    "email": "user@example.com"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+        schema: { $ref: "#/definitions/Monitor" },
+        description: "Monitor updated"
+    }
+
+    #swagger.responses[500] = {
+      schema: {
+        message: "Error message..."
+      }
+    }
+   *=======================*/
+  const id = req.params.id || "";
 
   MonitorManager.updateMonitor(id, req.body)
     .then((monitor: any) => {
@@ -29,11 +157,29 @@ export const updateMonitor = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json(err);
+      let payload = {
+        message: err.message,
+      };
+      return res.status(500).json(payload);
     });
 };
 
 export const getMonitor = async (req: Request, res: Response) => {
+  /**==========================*
+    @swagger Get Single Monitor
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for getting a single monitor.'
+    #swagger.parameters['id'] = { description: 'Monitor ID' }
+    #swagger.responses[200] = {
+          schema: { $ref: "#/definitions/Monitor" },
+          description: "Monitor updated"
+      }
+    #swagger.responses[500] = {
+      schema: {
+        message: "Error message..."
+      }
+    }
+   *===========================*/
   const id = req.params.id || "";
 
   MonitorManager.getMonitor(id)

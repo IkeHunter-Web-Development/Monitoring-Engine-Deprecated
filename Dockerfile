@@ -24,8 +24,7 @@ EXPOSE 8000
 
 COPY ./src ./src
 
-RUN npm run swagger-autogen && \
-    npm run build
+RUN npm run build
 
 VOLUME "/app/logs"
 
