@@ -1,9 +1,10 @@
-import { createMonitor, createMonitorBody, monitorBody } from "./api/monitor.doc";
+import { eventResponse } from "./api/event.doc";
+import { monitorBody, monitorResponse } from "./api/monitor.doc";
 import swaggerAutogen from "swagger-autogen";
-swaggerAutogen({ openapi: "3.0.0"});
+swaggerAutogen({ openapi: "3.0.0" });
 import "dotenv/config";
 
-let host = process.env.HOST !== '0.0.0.0' ? process.env.HOST : "localhost";
+let host = process.env.HOST !== "0.0.0.0" ? process.env.HOST : "localhost";
 
 const outputFile = "./docs/swagger_output.json";
 
@@ -66,42 +67,21 @@ const doc = {
     },
   ],
   definitions: {
-    Monitor: { ...monitorBody },
-    // createMonitorBody,
-    CreateMonitor: { ...createMonitor },
-    CreateMonitorBody: {
-      content: {
-        "application/json": {
-          type: "object",
-          properties: {
-            title: {
-              example: "Example Monitor",
-            },
-            projectId: {
-              example: "1234567",
-            },
-            url: {
-              example: "https://ikehunter.com",
-            },
-            statusCode: {
-              example: 200,
-            },
-            users: {
-              example: [
-                {
-                  userId: "123456",
-                  email: "user@example.com",
-                },
-              ],
-            },
-          },
-        },
-      },
+    MonitorBody: { ...monitorBody },
+    MonitorResponse: { ...monitorResponse },
+    EventResponse: { ...eventResponse },
+
+    Error500: {
+      status: 500,
+      message: "Error message...",
+    },
+    Error404: {
+      status: 404,
+      message: "Error message...",
     },
   },
 };
 
-
 export const initializeSwagger = async () => {
   await swaggerAutogen(outputFile, endpointsFiles, doc);
-}
+};

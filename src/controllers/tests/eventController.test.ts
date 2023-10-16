@@ -163,7 +163,7 @@ describe("Event controller", () => {
   });
   // TODO: get last time monitor was online
   /**
-   * GET /events/search/?monitor=id&onlinee=true&last=true should get the 
+   * GET /events/search/?monitor=id&online=true&last=true should get the 
    * last time a monitor was online.
    */
   it("should get the last time a monitor was online", async () => {

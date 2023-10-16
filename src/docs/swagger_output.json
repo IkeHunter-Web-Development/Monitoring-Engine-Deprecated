@@ -73,13 +73,28 @@
     },
     "/monitors/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting all monitors.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       },
@@ -95,41 +110,7 @@
             "description": "Monitor object",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "projectId": {
-                  "type": "string",
-                  "example": "123456"
-                },
-                "url": {
-                  "type": "string",
-                  "example": "https://ikehunter.com"
-                },
-                "statusCode": {
-                  "type": "number",
-                  "example": 200
-                },
-                "title": {
-                  "type": "string",
-                  "example": "Example Monitor"
-                },
-                "users": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "userId": {
-                        "type": "string",
-                        "example": "123456"
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "user@example.com"
-                      }
-                    }
-                  }
-                }
-              }
+              "$ref": "#/definitions/MonitorBody"
             }
           }
         ],
@@ -137,22 +118,13 @@
           "201": {
             "description": "Monitor created",
             "schema": {
-              "$ref": "#/definitions/Monitor"
+              "$ref": "#/definitions/MonitorResponse"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Error message..."
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/Error500"
             }
           }
         }
@@ -177,25 +149,19 @@
           "200": {
             "description": "Monitor updated",
             "schema": {
-              "$ref": "#/definitions/Monitor"
+              "$ref": "#/definitions/MonitorResponse"
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string",
-                  "example": "Error message..."
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/Error500"
             }
           }
         }
@@ -212,181 +178,352 @@
             "required": true,
             "type": "string",
             "description": "Monitor ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Monitor object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MonitorBody"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Monitor updated",
             "schema": {
-              "$ref": "#/definitions/Monitor"
+              "$ref": "#/definitions/MonitorResponse"
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
             "description": "Internal Server Error",
             "schema": {
+              "$ref": "#/definitions/Error500"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for deleting a single monitor.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Monitor ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Monitor deleted successfully",
+            "schema": {
               "type": "object",
               "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 200
+                },
                 "message": {
                   "type": "string",
-                  "example": "Error message..."
+                  "example": "Monitor deleted"
                 }
               },
               "xml": {
                 "name": "main"
               }
             }
-          }
-        },
-        "requestBody": {
-          "description": "Monitor object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "example": "Example Monitor"
-                  },
-                  "projectId": {
-                    "example": "1234567"
-                  },
-                  "url": {
-                    "example": "https://ikehunter.com"
-                  },
-                  "statusCode": {
-                    "example": 200
-                  },
-                  "users": {
-                    "example": [
-                      {
-                        "userId": "123456",
-                        "email": "user@example.com"
-                      }
-                    ]
-                  }
-                }
-              }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
             }
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       }
     },
     "/monitors/{id}/online": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting online status for monitor.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Monitor ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "True if online, false if offline"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/monitors-search/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for searching monitors.",
+        "parameters": [
+          {
+            "name": "project",
+            "description": "Project ID",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "user",
+            "description": "User ID",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       }
     },
     "/events/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Endpoint for getting a single event.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Event ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/EventResponse"
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Endpoint for deleting a single event.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Event ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Event deleted"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       }
     },
     "/events-search/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Events"
+        ],
+        "description": "Endpoint for searching events.",
+        "parameters": [
+          {
+            "name": "monitor",
+            "description": "Monitor ID",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "online",
+            "description": "Online status",
+            "type": "boolean",
+            "in": "query"
+          },
+          {
+            "name": "last",
+            "description": "Last event",
+            "type": "boolean",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EventResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         }
       }
     }
   },
   "definitions": {
-    "Monitor": {
+    "MonitorBody": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "number",
+          "example": 0
+        },
+        "url": {
+          "type": "string",
+          "example": "http://www.example.com"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string",
+                "example": "123"
+              },
+              "email": {
+                "type": "string",
+                "example": "user@example.com"
+              }
+            }
+          }
+        },
+        "statusCode": {
+          "type": "number",
+          "example": 200
+        },
+        "active": {
+          "type": "boolean",
+          "example": true
+        },
+        "title": {
+          "type": "string",
+          "example": "Example"
+        }
+      }
+    },
+    "MonitorResponse": {
       "type": "object",
       "properties": {
         "projectId": {
@@ -428,151 +565,62 @@
         }
       }
     },
-    "CreateMonitor": {
+    "EventResponse": {
       "type": "object",
       "properties": {
-        "tags": {
-          "type": "array",
-          "example": [
-            "Monitor"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "description": {
+        "monitorId": {
           "type": "string",
-          "example": "Endpoint for creating a monitor."
+          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
         },
-        "operationId": {
+        "statusCode": {
+          "type": "number",
+          "example": 200
+        },
+        "online": {
+          "type": "boolean",
+          "example": true
+        },
+        "timestamp": {
           "type": "string",
-          "example": "createMonitor"
+          "example": "2020-10-30T15:31:15.000Z"
         },
-        "consumes": {
-          "type": "array",
-          "example": [
-            "application/json"
-          ],
-          "items": {
-            "type": "string"
-          }
+        "message": {
+          "type": "string",
+          "example": "Example log message."
         },
-        "produces": {
-          "type": "array",
-          "example": [
-            "application/json"
-          ],
-          "items": {
-            "type": "string"
-          }
+        "_id": {
+          "type": "string",
+          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
         },
-        "parameters": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "in": {
-                "type": "string",
-                "example": "body"
-              },
-              "name": {
-                "type": "string",
-                "example": "body"
-              },
-              "description": {
-                "type": "string",
-                "example": "Monitor object"
-              },
-              "required": {
-                "type": "boolean",
-                "example": true
-              },
-              "schema": {
-                "$ref": "#/components/schemas/createMonitorBody"
-              }
-            }
-          }
+        "__v": {
+          "type": "number",
+          "example": 0
         }
       }
     },
-    "CreateMonitorBody": {
+    "Error500": {
       "type": "object",
       "properties": {
-        "content": {
-          "type": "object",
-          "properties": {
-            "application/json": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "object",
-                      "properties": {
-                        "example": {
-                          "type": "string",
-                          "example": "Example Monitor"
-                        }
-                      }
-                    },
-                    "projectId": {
-                      "type": "object",
-                      "properties": {
-                        "example": {
-                          "type": "string",
-                          "example": "1234567"
-                        }
-                      }
-                    },
-                    "url": {
-                      "type": "object",
-                      "properties": {
-                        "example": {
-                          "type": "string",
-                          "example": "https://ikehunter.com"
-                        }
-                      }
-                    },
-                    "statusCode": {
-                      "type": "object",
-                      "properties": {
-                        "example": {
-                          "type": "number",
-                          "example": 200
-                        }
-                      }
-                    },
-                    "users": {
-                      "type": "object",
-                      "properties": {
-                        "example": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "userId": {
-                                "type": "string",
-                                "example": "123456"
-                              },
-                              "email": {
-                                "type": "string",
-                                "example": "user@example.com"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+        "status": {
+          "type": "number",
+          "example": 500
+        },
+        "message": {
+          "type": "string",
+          "example": "Error message..."
+        }
+      }
+    },
+    "Error404": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 404
+        },
+        "message": {
+          "type": "string",
+          "example": "Error message..."
         }
       }
     }

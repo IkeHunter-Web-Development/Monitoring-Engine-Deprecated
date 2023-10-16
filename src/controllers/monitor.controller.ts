@@ -8,80 +8,24 @@ import { Request, Response, NextFunction } from "express";
 
 export const createMonitor = async (req: Request, res: Response) => {
   /**======================*
-    @swagger Create Monitor
-    swagger.requestBody = {
-      description: "Monitor object",  
-      required: true,
-      content: {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "example": "Example Monitor" 
-              },
-              "projectId": {
-                "example": "1234567" 
-              },
-              "url": {
-                "example": "https://ikehunter.com"
-              },
-              "statusCode": {
-                "example": "200"
-              },
-              "users": {
-                "example": [
-                  {
-                    "userId": "123456",
-                    "email": "user@example.com"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    }
+    @swagger Create monitor
     #swagger.parameters['body'] = {
       in: "body",
       name: "body",
       description: "Monitor object",
       required: true,
-      schema: {
-        projectId: "123456",
-        url: "https://ikehunter.com",
-        statusCode: 200,
-        title: "Example Monitor",
-        users: [
-          {
-            userId: "123456",
-            email: "user@example.com"
-          }
-        ]
-        
-      }
+      schema: {$ref: "#/definitions/MonitorBody"}
     }
     #swagger.tags = ['Monitor']
     #swagger.description = 'Endpoint for creating a monitor.'
     #swagger.responses[201] = {
-      schema: { $ref: "#/definitions/Monitor" },
+      schema: { $ref: "#/definitions/MonitorResponse" },
       description: "Monitor created"
     }
     #swagger.responses[500] = {
-      schema: {
-        message: "Error message..."
-      }
+      schema: {$ref: "#/definitions/Error500"},
     }
    *========================*/
-  
-  // let payload = {
-  //   title: req.body.title,
-  //   projectId: req.body.projectId,
-  //   url: req.body.url,
-  //   statusCode: req.body.statusCode,
-  //   users: req.body.users,
-  
-  // }
 
   MonitorManager.createMonitor(req.body)
     .then((monitor: any) => {
@@ -89,61 +33,37 @@ export const createMonitor = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      let payload = {
+      return res.status(500).json({
+        status: 500,
         message: err.message,
-      };
-      return res.status(500).json(payload);
+      });
     });
 };
 
 export const updateMonitor = async (req: Request, res: Response) => {
   /**======================*
-    @swagger Update Monitor
+    @swagger Update monitor
     #swagger.tags = ['Monitor']
     #swagger.description = 'Endpoint for updating a monitor.'
     #swagger.parameters['id'] = { description: 'Monitor ID' }
-    #swagger.requestBody = {
+    #swagger.parameters['body'] = {
+      in: "body",
+      name: "body",
       description: "Monitor object",
       required: true,
-      content: {
-        "application/json": {
-          schema: {
-            "type": "object",
-            "properties": {
-              "title": {
-                "example": "Example Monitor"
-              },
-              "projectId": {
-                "example": "1234567"
-              },
-              "url": {
-                "example": "https://ikehunter.com"
-              },
-              "statusCode": {
-                "example": 200
-              },
-              "users": {
-                "example": [
-                  {
-                    "userId": "123456",
-                    "email": "user@example.com"
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+      schema: {$ref: "#/definitions/MonitorBody"}
     }
     #swagger.responses[200] = {
-        schema: { $ref: "#/definitions/Monitor" },
+        schema: { $ref: "#/definitions/MonitorResponse" },
         description: "Monitor updated"
     }
 
     #swagger.responses[500] = {
-      schema: {
-        message: "Error message..."
-      }
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
     }
    *=======================*/
   const id = req.params.id || "";
@@ -157,27 +77,28 @@ export const updateMonitor = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      let payload = {
+      return res.status(500).json({
+        status: 500,
         message: err.message,
-      };
-      return res.status(500).json(payload);
+      });
     });
 };
 
 export const getMonitor = async (req: Request, res: Response) => {
   /**==========================*
-    @swagger Get Single Monitor
+    @swagger Get single monitor
     #swagger.tags = ['Monitor']
     #swagger.description = 'Endpoint for getting a single monitor.'
     #swagger.parameters['id'] = { description: 'Monitor ID' }
     #swagger.responses[200] = {
-          schema: { $ref: "#/definitions/Monitor" },
+          schema: { $ref: "#/definitions/MonitorResponse" },
           description: "Monitor updated"
       }
     #swagger.responses[500] = {
-      schema: {
-        message: "Error message..."
-      }
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
     }
    *===========================*/
   const id = req.params.id || "";
@@ -191,47 +112,136 @@ export const getMonitor = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json(err);
+      return res.status(500).json({
+        status: 500,
+        message: err.message,
+      });
     });
 };
 
 export const deleteMonitor = async (req: Request, res: Response) => {
+  /**==========================*
+    @swagger Delete single monitor
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for deleting a single monitor.'
+    #swagger.parameters['id'] = { description: 'Monitor ID' }
+    #swagger.responses[200] = {
+      description: "Monitor deleted successfully",
+      schema: { 
+        status: 200,
+        message: "Monitor deleted"
+      }
+    }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
+    }
+   *===========================*/
   const id = req.params.id || "";
 
   MonitorManager.deleteMonitor(id)
-    .then(() => {
-      return res.status(200).json({ message: "Monitor deleted" });
+    .then((success) => {
+      if (!success) {
+        return res.status(404).json({
+          status: 404,
+          message: "Monitor not found.",
+        });
+      }
+      return res.status(200).json({
+        status: 200,
+        message: "Monitor deleted.",
+      });
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json(err);
+      return res.status(500).json({
+        status: 500,
+        message: err.message,
+      });
     });
 };
 
 export const getMonitors = async (req: Request, res: Response) => {
+  /**==========================*
+    @swagger Get all monitors
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for getting all monitors.'
+    #swagger.responses[200] = {
+      description: "Success",
+      schema: [{$ref: "#/definitions/MonitorResponse"}],
+    }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+    }
+   *===========================*/
   MonitorManager.getMonitors()
     .then((monitors: any) => {
       return res.status(200).json(monitors);
     })
     .catch((err: any) => {
-      return res.status(500).json(err);
+      return res.status(500).json({
+        status: 500,
+        message: err.message,
+      });
     });
 };
 
 export const searchMonitors = async (req: Request, res: Response) => {
+  /**================================*
+    @swagger Search monitors by query
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for searching monitors.'
+    #swagger.parameters['project'] = { description: 'Project ID' }
+    #swagger.parameters['user'] = { description: 'User ID' }
+    #swagger.responses[200] = {
+      description: "Success",
+      schema: [{$ref: "#/definitions/MonitorResponse"}],
+    }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
+    }
+   *=================================*/
   const params = req.query || {};
 
   MonitorManager.searchMonitors(params)
-    .then((events: any) => {
-      return res.status(200).json(events);
+    .then((monitors: any) => {
+      if (!monitors)
+        return res.status(404).json({
+          status: 404,
+          message: "No monitors found",
+        });
+      return res.status(200).json(monitors);
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json(err);
+      return res.status(500).json({
+        status: 500,
+        message: err.message,
+      });
     });
 };
 
 export const getMonitorOnlineStatus = async (req: Request, res: Response) => {
+  /**=================================*
+    @swagger Get monitor online status
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for getting online status for monitor.'
+    #swagger.parameters['id'] = { description: 'Monitor ID' }
+    #swagger.responses[200] = {
+      description: "True if online, false if offline",
+    }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
+    }
+   *==================================*/
   const id = req.params.id || "";
 
   let monitor = await MonitorManager.getMonitor(id);
@@ -241,8 +251,9 @@ export const getMonitorOnlineStatus = async (req: Request, res: Response) => {
   }
 
   if (!monitor.online) {
-    return res.status(200).json({ online: false });
+    // return res.status(200).json({ online: false });
+    return res.status(200).send(false);
   } else {
-    return res.status(200).json({ online: true });
+    return res.status(200).send(true);
   }
 };

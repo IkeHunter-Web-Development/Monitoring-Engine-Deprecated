@@ -1,11 +1,8 @@
-import { NextFunction } from 'express';
 import WebsitePing from "./logic/cron";
 import mongoose from "mongoose";
 import "dotenv/config";
 import server from "./server";
 import swaggerUi from "swagger-ui-express";
-import swaggerJSDoc from "swagger-jsdoc";
-// import swaggerDocument from "./docs/swagger_output.json";
 import { initializeSwagger } from "./docs/swagger";
 
 const HOST = process.env.HOST || "localhost";
@@ -25,7 +22,7 @@ mongoose
     console.error.bind("Error connecting to MongoDB: ", err);
   });
 
-initializeSwagger().then(async () => {
+initializeSwagger().then(() => {
   const swaggerDocument = require('./docs/swagger_output.json');
   server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
 })

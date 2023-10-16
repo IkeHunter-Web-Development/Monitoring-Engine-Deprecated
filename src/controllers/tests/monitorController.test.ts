@@ -131,8 +131,6 @@ describe("Monitor controller", () => {
   /**=================
    * MANAGEMENT ROUTES
    ===================*/
-
-  // TODO: Check if site is online
   /**
    * GET /monitors/:id/online should return true
    * if the site is online
@@ -146,7 +144,7 @@ describe("Monitor controller", () => {
     const res = await request(server).get(`/monitors/${monitor._id}/online`);
 
     expect(res.status).toEqual(200);
-    expect(res.body).toEqual({ online: true });
+    expect(res.body).toEqual(true);
   });
 
   /**
