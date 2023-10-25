@@ -13,7 +13,6 @@
     "dev": "ts-node-dev --respawn --pretty --transpile-only --ignore-watch swagger_output.json src/index.ts",
     "build": "rimraf ./build && tsc"
   },
-
   "author": "Isaac Hunter",
   "license": "ISC",
   "dependencies": {
