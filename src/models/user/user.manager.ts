@@ -44,11 +44,9 @@ export default class UserManager {
 
     let user = User.create(payload)
       .then((user: any) => {
-        console.log("User created: ", user);
         return user;
       })
       .catch((err: any) => {
-        console.log(err);
         throw err;
       });
 
@@ -168,22 +166,18 @@ export default class UserManager {
    * @returns Random User.
    */
   static async getRandomUser(): Promise<any> {
-    let users = await User.find({}).then((users) => {
-      console.log("all users in manager: ", users)
-      return users;
-    }).catch((err) => {
-      console.log("Error getting users: ", err);
-      return [];
-    });
-    console.log("Users: ", users)
+    let users = await User.find({})
+      .catch((err) => {
+        console.log("Error getting users: ", err);
+        return [];
+      });
 
-    // if (users.length === 0) return undefined;
+    if (users.length === 0) return undefined;
 
-    // let max = users.length - 1;
-    // let min = 0;
-    // let index = Math.floor(Math.random() * (max - min + 1) + min);
+    let max = users.length - 1;
+    let min = 0;
+    let index = Math.floor(Math.random() * (max - min + 1) + min);
 
-    // return users[index];
-    return users[0];
+    return users[index];
   }
 }

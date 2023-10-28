@@ -35,7 +35,7 @@ export const verifyUser = async (token: string): Promise<AuthServiceResponse> =>
   };
 
   if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "network") {
-    console.log("Verifying user with auth service, token: ", token)
+    console.log("Verifying user with auth service, token: ", token);
     let authRes: any = await fetch(process.env.AUTH_SERVICE_URL + "/api/auth/verify", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -53,32 +53,20 @@ export const verifyUser = async (token: string): Promise<AuthServiceResponse> =>
       return data;
     }
   } else {
-    console.log("Mocking auth service response, token: ", token);
     if (token === invalidToken) {
       data.status = 401;
       return data;
     }
-    let users = await User.find({}).then((users) => {
-      console.log("all users in verify: ", users);
-      return users;
-    });
 
-    let selectedUser = users !== undefined ? users[0] : null;
-    
-    data.email = selectedUser !== null ? selectedUser.email : "";
-    data.userId = selectedUser !== null ? selectedUser.userId : "";
+    const randomUser = await UserManager.getRandomUser();
+
+    if (!randomUser) throw new Error("Error mocking user request.");
+
+    data.userId = randomUser.userId;
+    data.email = randomUser.email;
     data.status = 200;
-    
-    // UserManager.getRandomUser().then((data) => {
-    //   if (!data) throw new Error("Error mocking user request.");
-    //   let user: InstanceType<typeof User> = data;
 
-    //   data.userId = user.userId;
-    //   data.email = user.email;
-    //   data.status = 200;
-
-    //   return data;
-    // });
+    return data;
   }
   return data;
 };

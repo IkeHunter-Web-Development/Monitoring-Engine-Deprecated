@@ -24,10 +24,6 @@ describe("Authorization middleware", () => {
       // status: jest.fn(),
     };
 
-    // mockUser = await User.create({
-    //   userId: "abc123",
-    //   email: "user@example.com",
-    // });
     mockUser = await UserManager.createUser("abc123", "user@example.com");
   });
 
@@ -54,13 +50,27 @@ describe("Authorization middleware", () => {
     expect(mockResponse.json).toHaveBeenCalledWith(expectedResponse);
   });
 
-  test("with header, valid token", async () => {
+  test("with header, valid token, user not in db", async () => {
     mockRequest = {
       headers: {
         authorization: "Bearer validToken",
       },
     };
-    console.log("user in test: ", mockUser);
+
+    await isAuthenticated(mockRequest as Request, mockResponse as Response, nextFunction);
+
+    expect(nextFunction).toBeCalledTimes(1);
+  });
+
+  test("with header, valid token, user in db", async () => {
+    const token = "validToken";
+    let newUser = UserManager.createUser("def456", "user@example.com", { token: token });
+
+    mockRequest = {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    };
 
     await isAuthenticated(mockRequest as Request, mockResponse as Response, nextFunction);
 
