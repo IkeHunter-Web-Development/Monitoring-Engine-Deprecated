@@ -4,7 +4,7 @@
 import cron from "node-cron";
 import Mailer from "./emails";
 import Logger from "./logger";
-import Monitor from "../models/monitor.model";
+import Monitor from "../models/monitor/monitor.model";
 
 let LogManager: Logger = new Logger();
 const logger = LogManager.logger;
@@ -17,14 +17,14 @@ const RETRY_DELAY = 2000;
 
 const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
+};
 
 export default class WebsitePing {
   logger: any;
   error_websites: string[];
   mailer: Mailer;
   jobs: any[];
-  
+
   constructor() {
     this.logger = logger;
     this.error_websites = [];
@@ -150,7 +150,7 @@ export default class WebsitePing {
         this.logger.info("No websites found in database.");
         return;
       }
-      
+
       websites.forEach((website) => {
         this.createWebsiteCronJob(website);
       });
@@ -176,4 +176,4 @@ export default class WebsitePing {
     this.pingWebsiteJobs();
     this.refreshDatabaseJob();
   }
-};
+}

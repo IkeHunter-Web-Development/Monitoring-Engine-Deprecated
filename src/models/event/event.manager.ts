@@ -2,8 +2,8 @@
  * @fileoverview Event manager class.
  */
 import Event, { EventType } from "./event.model";
-import MonitorManager from "./monitor.manager";
-import { MonitorType } from "./monitor.model";
+import MonitorManager from "../monitor/monitor.manager";
+import { MonitorType } from "../monitor/monitor.model";
 
 export default class EventManager {
   /**
@@ -175,8 +175,8 @@ export default class EventManager {
       filteredEvents = filteredEvents.sort((a: EventType, b: EventType) => {
         return b.timestamp.getTime() - a.timestamp.getTime();
       });
-      
-      filteredEvents = [filteredEvents[0]]
+
+      filteredEvents = [filteredEvents[0]];
     }
 
     return filteredEvents || [];
@@ -205,7 +205,6 @@ export default class EventManager {
           console.log(err);
           throw err;
         });
-
     } else {
       throw new Error("No monitor specified");
     }

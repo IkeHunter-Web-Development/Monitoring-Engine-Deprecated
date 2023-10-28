@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Monitor, { monitorSchema } from "./monitor.model";
+import Monitor, { monitorSchema } from "../monitor/monitor.model";
 
 const eventSchema = new mongoose.Schema({
   // monitor: monitorSchema,

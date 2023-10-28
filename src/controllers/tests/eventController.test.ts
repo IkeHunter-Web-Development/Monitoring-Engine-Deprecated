@@ -3,13 +3,14 @@
  */
 import request from "supertest";
 import server from "../../server";
-import Monitor, { MonitorType } from "../../models/monitor.model";
-import Event, { EventType } from "../../models/event.model";
-import MonitorManager from "../../models/monitor.manager";
-import EventManager from "../../models/event.manager";
+import Monitor, { MonitorType } from "../../models/monitor/monitor.model";
+import Event, { EventType } from "../../models/event/event.model";
+import MonitorManager from "../../models/monitor/monitor.manager";
+import EventManager from "../../models/event/event.manager";
 
 const defaultMonitor = {
   projectId: "123",
+  companyId: "456",
   url: "https://www.google.com",
   users: [],
   title: "Google",
@@ -45,14 +46,14 @@ describe("Event controller", () => {
       monitorId: m1._id,
       online: false,
     });
-    
+
     e4 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m1._id,
       online: true,
       message: "Monitor is online",
     });
-    
+
     /**
      * Monitor 2: Yahoo
      */
@@ -62,7 +63,7 @@ describe("Event controller", () => {
       url: "https://www.yahoo.com",
       title: "Yahoo",
     });
-    
+
     e2 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
@@ -70,7 +71,7 @@ describe("Event controller", () => {
       message: "Monitor is online",
       timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3,
     });
-    
+
     e3 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
@@ -78,7 +79,7 @@ describe("Event controller", () => {
       message: "Monitor is offline",
       timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2,
     });
-    
+
     e5 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
@@ -86,7 +87,7 @@ describe("Event controller", () => {
       message: "Monitor is offline",
       timestamp: Date.now(),
     });
-    
+
     e6 = await EventManager.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
@@ -94,10 +95,8 @@ describe("Event controller", () => {
       message: "Monitor is online",
       timestamp: Date.now(),
     });
-    
-    
   });
-  
+
   // afterEach(async () => {
   //   await Monitor.deleteMany({});
   //   await Event.deleteMany({});
@@ -152,25 +151,28 @@ describe("Event controller", () => {
   });
   // TODO: get last time monitor was offline
   /**
-   * GET /events/search/?monitor=id&online=false&last=true should get the 
+   * GET /events/search/?monitor=id&online=false&last=true should get the
    * last time a monitor was offline.
    */
   it("should get the last time a monitor was offline", async () => {
-    const res = await request(server).get(`/events-search/?monitor=${m2._id}&online=false&last=true`);
+    const res = await request(server).get(
+      `/events-search/?monitor=${m2._id}&online=false&last=true`
+    );
 
     expect(res.status).toEqual(200);
     expect(res.body[0]._id).toEqual(e5._id.toString());
   });
   // TODO: get last time monitor was online
   /**
-   * GET /events/search/?monitor=id&online=true&last=true should get the 
+   * GET /events/search/?monitor=id&online=true&last=true should get the
    * last time a monitor was online.
    */
   it("should get the last time a monitor was online", async () => {
-    const res = await request(server).get(`/events-search/?monitor=${m2._id}&online=true&last=true`);
+    const res = await request(server).get(
+      `/events-search/?monitor=${m2._id}&online=true&last=true`
+    );
 
     expect(res.status).toEqual(200);
     expect(res.body[0]._id).toEqual(e6._id.toString());
   });
-
 });

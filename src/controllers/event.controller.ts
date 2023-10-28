@@ -2,7 +2,7 @@
  * @fileoverview Events controller
  */
 import { Request, Response } from "express";
-import EventManager from "../models/event.manager";
+import EventManager from "../models/event/event.manager";
 
 /**============*
  * CRUD ROUTES *

@@ -1,8 +1,8 @@
 /**
  * @fileoverview API controller for the monitor objects.
  */
-import Monitor, { MonitorType } from "../models/monitor.model";
-import MonitorManager from "../models/monitor.manager";
+import Monitor, { MonitorType } from "../models/monitor/monitor.model";
+import MonitorManager from "../models/monitor/monitor.manager";
 import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 

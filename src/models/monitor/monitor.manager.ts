@@ -1,25 +1,47 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import Monitor, { MonitorType, monitorSchema } from "../models/monitor.model";
+import Monitor, { MonitorType, monitorSchema } from "./monitor.model";
 
 export default class MonitorManager {
+  private static instance: MonitorManager = new MonitorManager();
+  
+  private constructor() {}
+  
   /**
-   * Create a monitor.
-   * @param projectId The id of the project the monitor belongs to.
-   * @param url The url to monitor.
-   * @param users The users to notify when the monitor goes offline.
-   * @param title The title of the monitor.
-   *
-   * @returns The created monitor.
+   * Parse data to create a monitor.
+   * 
+   * @param data The data to parse.
+   * @returns The parsed data.
    */
-  static async createMonitor(data: any) {
+  private parseData(data: any) {
     let payload = {
       projectId: data.projectId || "",
+      companyId: data.companyId || "",
       url: data.url || "",
       users: data.users || [],
       title: data.title || "",
     };
+
+    return payload;
+  }
+  /**
+   * Create a monitor.
+   * 
+   * @param projectId The id of the project the monitor belongs to.
+   * @param url The url to monitor.
+   * @param users The users to notify when the monitor goes offline.
+   * @param title The title of the monitor.
+   * @returns The created monitor.
+   */
+  static async createMonitor(data: any) {
+    // let payload = {
+    //   projectId: data.projectId || "",
+    //   url: data.url || "",
+    //   users: data.users || [],
+    //   title: data.title || "",
+    // };
+    let payload = this.instance.parseData(data);
 
     let monitor = Monitor.create(payload)
       .then((monitor: any) => {
@@ -38,12 +60,14 @@ export default class MonitorManager {
 
   /**
    * Update a monitor.
+   * 
    * @param id The id of the monitor to update.
    * @param payload The payload to update the monitor with.
-   *
    * @returns The updated monitor.
    */
   static async updateMonitor(id: string, payload: any) {
+    payload = this.instance.parseData(payload);
+    
     let update = Monitor
       .findOneAndUpdate({_id: id}, payload, {new: true})
       .then((monitor: any) => {
@@ -60,8 +84,8 @@ export default class MonitorManager {
 
   /**
    * Get a monitor.
+   * 
    * @param id The id of the monitor to get.
-   *
    * @returns The monitor.
    */
   static async getMonitor(id: string) {
@@ -85,8 +109,8 @@ export default class MonitorManager {
 
   /**
    * Delete a monitor.
+   * 
    * @param id The id of the monitor to delete.
-   *
    * @returns Boolean, whether deletion was successful.
    */
   static async deleteMonitor(id: string) {
@@ -109,8 +133,8 @@ export default class MonitorManager {
   
   /**
    * Search for monitors.
-   * @param query The query to search for.
    * 
+   * @param query The query to search for.
    * @returns The monitors that match the query.
    */
   static async searchMonitors(query: any) {

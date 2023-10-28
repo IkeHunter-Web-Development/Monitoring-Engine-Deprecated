@@ -1,20 +1,13 @@
 import mongoose from "mongoose";
-
-const userSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  
-});
+import { userSchema } from "../user/user.model";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: Add monitor type
   projectId: {
+    type: String,
+    required: true,
+  },
+  companyId: {
     type: String,
     required: true,
   },

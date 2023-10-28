@@ -3,11 +3,12 @@
  */
 import request from "supertest";
 import server from "../../server";
-import Monitor, { monitorSchema } from "../../models/monitor.model";
-import MonitorManager from "../../models/monitor.manager";
+import Monitor, { monitorSchema } from "../../models/monitor/monitor.model";
+import MonitorManager from "../../models/monitor/monitor.manager";
 
 const defaultMonitor = {
   projectId: "123",
+  companyId: "456",
   url: "https://www.google.com",
   users: [],
   title: "Google",
@@ -136,9 +137,9 @@ describe("Monitor controller", () => {
    * if the site is online
    */
   it("should return true if the site is online", async () => {
-    let monitor = await MonitorManager.createMonitor({ 
-      ...defaultMonitor, 
-      online: true 
+    let monitor = await MonitorManager.createMonitor({
+      ...defaultMonitor,
+      online: true,
     });
 
     const res = await request(server).get(`/monitors/${monitor._id}/online`);
