@@ -5,8 +5,8 @@ import request from "supertest";
 import { Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "./auth.middleware";
 import { errInvalidToken, errNoToken, errUnauthorized, invalidToken } from "./auth.utilities";
-import User, { UserType } from "../models/user/user.model";
-import UserManager from "../models/user/user.manager";
+import User, { UserType } from "../../models/user/user.model";
+import UserManager from "../../models/user/user.manager";
 import "dotenv/config";
 
 describe("Authorization middleware", () => {
@@ -21,7 +21,6 @@ describe("Authorization middleware", () => {
     mockResponse = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
-      // status: jest.fn(),
     };
 
     mockUser = await UserManager.createUser("abc123", "user@example.com");
@@ -36,7 +35,6 @@ describe("Authorization middleware", () => {
   });
 
   test("with header, invalid token", async () => {
-    // const expectedResponse = errUnauthorized;
     const expectedResponse = errUnauthorized;
     mockRequest = {
       headers: {

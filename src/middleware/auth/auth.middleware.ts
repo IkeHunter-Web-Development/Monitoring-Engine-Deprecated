@@ -5,7 +5,7 @@
  */
 
 import { NextFunction, Request, Response } from "express";
-import UserManager from "../models/user/user.manager";
+import UserManager from "../../models/user/user.manager";
 import {
   errNoToken,
   errUnauthorized,
@@ -50,7 +50,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
       if (!authRes) throw new Error("Error verifying token");
       if (authRes.status !== 200) throw unauthorizedError;
-      
+
       let payload = {
         ...authRes,
         token: token,

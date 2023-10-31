@@ -1,8 +1,8 @@
 /**
  * @fileoverview Utility functions for authentication middleware.
  */
-import UserManager from "../models/user/user.manager";
-import User from "../models/user/user.model";
+import UserManager from "../../models/user/user.manager";
+import User from "../../models/user/user.model";
 import "dotenv/config";
 
 /** Error message if no token provided */

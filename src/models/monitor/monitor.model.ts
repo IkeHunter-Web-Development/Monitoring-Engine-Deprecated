@@ -38,3 +38,4 @@ const Monitor = mongoose.model("Monitor", monitorSchema);
 
 export default Monitor;
 export type MonitorType = InstanceType<typeof Monitor>;
+
