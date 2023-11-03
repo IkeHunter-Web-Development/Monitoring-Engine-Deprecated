@@ -3,7 +3,7 @@
  */
 import Event, { EventType } from "./event.model";
 import MonitorManager from "../monitor/monitor.manager";
-import { MonitorType } from "../monitor/monitor.model";
+import { MonitorType } from "../monitor/utils/monitor.types";
 
 export default class EventManager {
   /**

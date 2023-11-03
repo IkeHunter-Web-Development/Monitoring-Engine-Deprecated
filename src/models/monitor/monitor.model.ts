@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 import { userSchema } from "../user/user.model";
 
+
+
 export const monitorSchema = new mongoose.Schema({
   // TODO: Add monitor type
+  // TODO: Add Interval
+  // TODO: Add timeout
+  // TODO: Add threshold
+  // TODO: Add endpoints
+  
   projectId: {
     type: String,
     required: true,
@@ -37,5 +44,5 @@ export const monitorSchema = new mongoose.Schema({
 const Monitor = mongoose.model("Monitor", monitorSchema);
 
 export default Monitor;
-export type MonitorType = InstanceType<typeof Monitor>;
+
 

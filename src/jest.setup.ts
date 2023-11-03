@@ -13,11 +13,12 @@ const closeDatabase = async () => {
 };
 
 const clearDatabase = async () => {
-  const collections = mongoose.connection.collections;
-  for (const key in collections) {
-    const collection = collections[key];
-    await collection.deleteMany({});
-  }
+  await mongoose.connection.db.dropDatabase();
+  // const collections = mongoose.connection.collections;
+  // for (const key in collections) {
+  //   const collection = collections[key];
+  //   await collection.deleteMany({});
+  // }
 };
 
 beforeEach(async () => await connect());

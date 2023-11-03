@@ -1,8 +1,8 @@
 /**
  * @fileoverview Tests for the Event model.
  */
-import Monitor from "../monitor/monitor.model";
-import Event from "./event.model";
+import Monitor from "../../monitor/monitor.model";
+import Event from "../event.model";
 
 /**
  * Tests for the Event model.

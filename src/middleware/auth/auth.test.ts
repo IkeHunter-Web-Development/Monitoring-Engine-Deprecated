@@ -5,7 +5,8 @@ import request from "supertest";
 import { Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "./auth.middleware";
 import { errInvalidToken, errNoToken, errUnauthorized, invalidToken } from "./auth.utilities";
-import User, { UserType } from "../../models/user/user.model";
+import User from "../../models/user/user.model";
+import { UserType } from "src/models/user/utils/user.types";
 import UserManager from "../../models/user/user.manager";
 import "dotenv/config";
 
@@ -13,7 +14,7 @@ describe("Authorization middleware", () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let nextFunction: NextFunction = jest.fn();
-  let mockUser: typeof User;
+  let mockUser: UserType;
 
   beforeEach(async () => {
     let userManager = new UserManager();

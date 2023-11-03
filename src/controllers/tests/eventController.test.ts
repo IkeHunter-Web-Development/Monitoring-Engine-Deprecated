@@ -3,7 +3,8 @@
  */
 import request from "supertest";
 import server from "../../server";
-import Monitor, { MonitorType } from "../../models/monitor/monitor.model";
+import Monitor from "../../models/monitor/monitor.model";
+import { MonitorType } from "../../models/monitor/utils/monitor.types";
 import Event, { EventType } from "../../models/event/event.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
 import EventManager from "../../models/event/event.manager";
