@@ -36,12 +36,6 @@ export default class MonitorManager {
    * @returns The created monitor.
    */
   static async createMonitor(data: any) {
-    // let payload = {
-    //   projectId: data.projectId || "",
-    //   url: data.url || "",
-    //   users: data.users || [],
-    //   title: data.title || "",
-    // };
     let payload = this.instance.parseData(data);
 
     let monitor = Monitor.create(payload)
@@ -51,12 +45,9 @@ export default class MonitorManager {
       .catch((err: any) => {
         console.log(err);
         throw err;
-        // return null;
       });
 
     return monitor;
-
-    // return await Monitor.create(payload);
   }
 
   public static async createMonitorFromObject(data: any): MonitorPromise {
@@ -152,12 +143,6 @@ export default class MonitorManager {
    * @returns The monitors that match the query.
    */
   static async searchMonitors(query: any) {
-    // let monitors = await Monitor.find(query);
-    // let filters = {
-    //   projectId: query.projectId || "",
-    //   url: query.url || "",
-    //   title: query.title || "",
-    // };
     let filters = {};
 
     filters = query.projectId ? { ...filters, projectId: query.projectId } : filters;
