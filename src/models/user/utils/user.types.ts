@@ -6,10 +6,13 @@ export type UserType = mongoose.Document & {
   email: string;
   token: string;
   permissions: any[];
-  hasPermission: (namespace: string, action: string, resource: string) => boolean;
+  companyIds: string[];
+  // hasPermission: (namespace: string, action: string, resource: string) => boolean;
 };
 // export type UserInstance= InstanceType<typeof User>;
 // export type UserInstance = mongoose.Document & UserType;
 // export type UserPromise = Promise<typeof User>;
 export type UserPromise = Promise<UserType>;
 export type UsersPromise = Promise<UserType[]>;
+export type UserOrNull = UserType | null;
+export type UserPromiseOrNull = Promise<UserOrNull>;

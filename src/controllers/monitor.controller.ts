@@ -5,6 +5,9 @@ import Monitor from "../models/monitor/monitor.model";
 import MonitorManager from "../models/monitor/monitor.manager";
 import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
+import { UserOrNull } from "src/models/user/utils/user.types";
+import { MonitorOrNull } from "src/models/monitor/utils/monitor.types";
+import { simpleResponse } from "../utils/responses";
 
 export const createMonitor = async (req: Request, res: Response) => {
   /**======================*
@@ -26,6 +29,12 @@ export const createMonitor = async (req: Request, res: Response) => {
       schema: {$ref: "#/definitions/Error500"},
     }
    *========================*/
+  // const companyId = req.body.companyId || "";
+  // const user: UserOrNull = res.locals.user;
+  // if (!user) return simpleResponse(res, 400, "Bad Request");
+
+  // let hasPermission = await MonitorManager.userHasPermission(user._id, companyId);
+  // if (!hasPermission) return simpleResponse(res, 403, "Forbidden");
 
   MonitorManager.createMonitor(req.body)
     .then((monitor: any) => {
@@ -33,10 +42,11 @@ export const createMonitor = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      return simpleResponse(res, 500, err.message);
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
     });
 };
 
@@ -67,20 +77,29 @@ export const updateMonitor = async (req: Request, res: Response) => {
     }
    *=======================*/
   const id = req.params.id || "";
+  // const user: UserOrNull = res.locals.user;
+  // if (!user) return res.status(400).json({ message: "Bad Request" });
+  // let monitor: MonitorOrNull = await MonitorManager.getMonitor(id);
+  // if (!monitor) return res.status(404).json({ message: "Monitor not found" });
+
+  // let hasPermission = await MonitorManager.userHasPermission(user._id, monitor.companyId);
+  // if (!hasPermission) return res.status(403).json({ message: "Forbidden" });
 
   MonitorManager.updateMonitor(id, req.body)
     .then((monitor: any) => {
       if (!monitor) {
-        return res.status(404).json({ message: "Monitor not found" });
+        // return res.status(404).json({ message: "Monitor not found" });
+        return simpleResponse(res, 404, "Monitor not found");
       }
       return res.status(200).json(monitor);
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      return simpleResponse(res, 500, err.message);
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
     });
 };
 
@@ -106,16 +125,18 @@ export const getMonitor = async (req: Request, res: Response) => {
   MonitorManager.getMonitor(id)
     .then((monitor: any) => {
       if (!monitor) {
-        return res.status(404).json({ message: "Monitor not found" });
+        // return res.status(404).json({ message: "Monitor not found" });
+        return simpleResponse(res, 404, "Monitor not found");
       }
       return res.status(200).json(monitor);
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      return simpleResponse(res, 500, err.message);
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
     });
 };
 
@@ -144,22 +165,25 @@ export const deleteMonitor = async (req: Request, res: Response) => {
   MonitorManager.deleteMonitor(id)
     .then((success) => {
       if (!success) {
-        return res.status(404).json({
-          status: 404,
-          message: "Monitor not found.",
-        });
+        // return res.status(404).json({
+        //   status: 404,
+        //   message: "Monitor not found.",
+        // });
+        return simpleResponse(res, 404, "Monitor not found");
       }
-      return res.status(200).json({
-        status: 200,
-        message: "Monitor deleted.",
-      });
+      // return res.status(200).json({
+      //   status: 200,
+      //   message: "Monitor deleted.",
+      // });
+      return simpleResponse(res, 200, "Monitor deleted");
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
+      return simpleResponse(res, 500, err.message);
     });
 };
 
@@ -181,10 +205,11 @@ export const getMonitors = async (req: Request, res: Response) => {
       return res.status(200).json(monitors);
     })
     .catch((err: any) => {
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
+      return simpleResponse(res, 500, err.message);
     });
 };
 
@@ -219,10 +244,11 @@ export const searchMonitors = async (req: Request, res: Response) => {
     })
     .catch((err: any) => {
       console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+      // return res.status(500).json({
+      //   status: 500,
+      //   message: err.message,
+      // });
+      return simpleResponse(res, 500, err.message);
     });
 };
 
@@ -247,7 +273,8 @@ export const getMonitorOnlineStatus = async (req: Request, res: Response) => {
   let monitor = await MonitorManager.getMonitor(id);
 
   if (!monitor) {
-    return res.status(404).json({ message: "Monitor not found" });
+    // return res.status(404).json({ message: "Monitor not found" });
+    return simpleResponse(res, 404, "Monitor not found");
   }
 
   if (!monitor.online) {

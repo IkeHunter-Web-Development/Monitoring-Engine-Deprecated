@@ -8,6 +8,7 @@ import { MonitorType } from "../../models/monitor/utils/monitor.types";
 import Event, { EventType } from "../../models/event/event.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
 import EventManager from "../../models/event/event.manager";
+import { forceAuthHeader } from "../../utils/forceAuth";
 
 const defaultMonitor = {
   projectId: "123",
@@ -110,7 +111,9 @@ describe("Event controller", () => {
    * GET /events/:id should return an event.
    */
   it("should get an event", async () => {
-    const res = await request(server).get(`/events/${e1._id}`);
+    const res = await request(server)
+      .get(`/events/${e1._id}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body._id).toEqual(e1._id.toString());
@@ -119,7 +122,9 @@ describe("Event controller", () => {
    * DELETE /events/:id should delete an event.
    */
   it("should delete an event", async () => {
-    const res = await request(server).delete(`/events/${e1._id}`);
+    const res = await request(server)
+      .delete(`/events/${e1._id}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.message).toEqual("Event deleted");
@@ -133,7 +138,9 @@ describe("Event controller", () => {
    * GET /events/search/?monitor=id should get events for a monitor.
    */
   it("should get events for a monitor", async () => {
-    const res = await request(server).get(`/events-search/?monitor=${m1._id}`);
+    const res = await request(server)
+      .get(`/events-search/?monitor=${m1._id}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(2);
@@ -144,7 +151,9 @@ describe("Event controller", () => {
    * GET /events/search/?monitor=id&online=false should get offline events for a monitor.
    */
   it("should get offline events for a monitor", async () => {
-    const res = await request(server).get(`/events-search/?monitor=${m1._id}&online=false`);
+    const res = await request(server)
+      .get(`/events-search/?monitor=${m1._id}&online=false`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(1);
@@ -156,9 +165,9 @@ describe("Event controller", () => {
    * last time a monitor was offline.
    */
   it("should get the last time a monitor was offline", async () => {
-    const res = await request(server).get(
-      `/events-search/?monitor=${m2._id}&online=false&last=true`
-    );
+    const res = await request(server)
+      .get(`/events-search/?monitor=${m2._id}&online=false&last=true`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body[0]._id).toEqual(e5._id.toString());
@@ -169,9 +178,9 @@ describe("Event controller", () => {
    * last time a monitor was online.
    */
   it("should get the last time a monitor was online", async () => {
-    const res = await request(server).get(
-      `/events-search/?monitor=${m2._id}&online=true&last=true`
-    );
+    const res = await request(server)
+      .get(`/events-search/?monitor=${m2._id}&online=true&last=true`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body[0]._id).toEqual(e6._id.toString());

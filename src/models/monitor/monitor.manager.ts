@@ -1,6 +1,8 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
+import UserManager from "../user/user.manager";
+import { UserOrNull } from "../user/utils/user.types";
 import Monitor from "./monitor.model";
 import { MonitorPromise, MonitorPromiseOrNull, MonitorOrNull } from "./utils/monitor.types";
 
@@ -162,5 +164,16 @@ export default class MonitorManager {
 
     if (!monitors) return [];
     return monitors;
+  }
+  
+  
+  static async userHasPermission(userId: string, monitorId: string) {
+    let monitor: MonitorOrNull = await Monitor.findOne({ _id: monitorId });
+    if (!monitor) return false;
+    
+    let user: UserOrNull = await UserManager.getUserById(userId);
+    if (!user) return false;
+    
+    return user.companyIds.includes(monitor.companyId);
   }
 }

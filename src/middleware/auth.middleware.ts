@@ -5,14 +5,16 @@
  */
 
 import { NextFunction, Request, Response } from "express";
-import UserManager from "../../models/user/user.manager";
+import UserManager from "../models/user/user.manager";
 import {
   errNoToken,
   errUnauthorized,
   AuthServiceResponse,
   verifyUser,
   errInvalidToken,
-} from "./auth.utilities";
+} from "./utilities/auth.utilities";
+import { UserOrNull, UserType } from "src/models/user/utils/user.types";
+import { isForceAuth, forceAuthLabels } from "../utils/forceAuth";
 
 const unauthorizedError = new Error(errUnauthorized.message);
 const noTokenError = new Error(errNoToken.message);
@@ -24,7 +26,10 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
    *  if is present, not in db -> authenticate token with auth service, store in db
    *  if is present, is in db -> next()
    */
-  // if (!req.headers) return res.status(401).json(errNoToken);
+  if (!req.headers) return res.status(401).json(errNoToken);
+
+  if (isForceAuth(req, forceAuthLabels.AUTH)) return next();
+
   try {
     if (!req.headers || !req.headers["authorization"]) {
       throw noTokenError;
@@ -35,11 +40,14 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
     if (!token) throw noTokenError;
 
-    let user = await UserManager.getUserByToken(token).catch((err: any) => {
+    let user: UserOrNull;
+
+    user = await UserManager.getUserByToken(token).catch((err: any) => {
       throw err;
     });
 
     if (!user) {
+      // console.log("User not found, verifying token")
       let authRes: AuthServiceResponse | null = await verifyUser(token)
         .then((data: AuthServiceResponse) => {
           return data;
@@ -56,24 +64,23 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
         token: token,
       };
 
-      await UserManager.createOrUpdateUser(authRes.userId, payload).catch((err: any) => {
+      user = await UserManager.createOrUpdateUser(authRes.userId, payload).catch((err: any) => {
+        console.log("Error creating or updating user: ", err);
         throw err;
       });
-
-      // await UserManager.createUser(authRes.userId, authRes.email, token).catch((err: any) => {
-      //   console.log("Error creating user: ", err);
-      //   throw err;
-      // });
     }
 
-    next();
+    res.locals = { ...res.locals, user: user };
+
+    return next();
   } catch (err: any) {
     if (err.message === unauthorizedError.message) {
-      res.status(401).json(errUnauthorized);
+      return res.status(401).json(errUnauthorized);
     } else if (err.message === noTokenError.message) {
-      res.status(401).json(errNoToken);
+      return res.status(401).json(errNoToken);
     } else {
-      res.status(500).json({ message: err.message });
+      console.log("Error: ", err);
+      return res.status(500).json({ message: err.message });
     }
   }
 };

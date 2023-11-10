@@ -2,7 +2,7 @@
  * @fileoverview Manager for the user model.
  */
 import User from "./user.model";
-import { UserPromise } from "./utils/user.types";
+import { UserPromise, UserPromiseOrNull } from "./utils/user.types";
 
 export default class UserManager {
   private static instance: UserManager = new UserManager();
@@ -96,7 +96,7 @@ export default class UserManager {
    * @returns The user.
    * @throws Error if the user is not found.
    */
-  static async getUserByToken(token: string): UserPromise {
+  static async getUserByToken(token: string): UserPromiseOrNull {
     let user = User.findOne({ token: token })
       .then((user: any) => {
         if (!user) return null;

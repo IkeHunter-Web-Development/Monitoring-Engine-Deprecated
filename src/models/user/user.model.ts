@@ -16,6 +16,10 @@ export const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  companyIds: {
+    type: Array,
+    required: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

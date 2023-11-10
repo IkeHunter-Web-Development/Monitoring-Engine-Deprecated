@@ -3,11 +3,17 @@
  */
 import request from "supertest";
 import { Request, Response, NextFunction } from "express";
-import { isAuthenticated } from "./auth.middleware";
-import { errInvalidToken, errNoToken, errUnauthorized, invalidToken } from "./auth.utilities";
+import { isAuthenticated } from "../auth.middleware";
+import {
+  errInvalidToken,
+  errNoToken,
+  errUnauthorized,
+  invalidToken,
+} from "../utilities/auth.utilities";
 import User from "../../models/user/user.model";
 import { UserType } from "src/models/user/utils/user.types";
 import UserManager from "../../models/user/user.manager";
+import { forceAuthHeader, forceAuthLabels } from "../../utils/forceAuth";
 import "dotenv/config";
 
 describe("Authorization middleware", () => {
@@ -15,10 +21,17 @@ describe("Authorization middleware", () => {
   let mockResponse: Partial<Response>;
   let nextFunction: NextFunction = jest.fn();
   let mockUser: UserType;
+  let defaultHeaders = {
+    "force-auth": forceAuthLabels.PERMS,
+  };
 
   beforeEach(async () => {
     let userManager = new UserManager();
-    mockRequest = {};
+    mockRequest = {
+      headers: {
+        ...defaultHeaders,
+      },
+    };
     mockResponse = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
@@ -39,6 +52,7 @@ describe("Authorization middleware", () => {
     const expectedResponse = errUnauthorized;
     mockRequest = {
       headers: {
+        ...defaultHeaders,
         authorization: "Bearer " + invalidToken,
       },
     };
@@ -52,6 +66,7 @@ describe("Authorization middleware", () => {
   test("with header, valid token, user not in db", async () => {
     mockRequest = {
       headers: {
+        ...defaultHeaders,
         authorization: "Bearer validToken",
       },
     };
@@ -67,6 +82,7 @@ describe("Authorization middleware", () => {
 
     mockRequest = {
       headers: {
+        ...defaultHeaders,
         authorization: "Bearer " + token,
       },
     };

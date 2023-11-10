@@ -5,6 +5,7 @@ import request from "supertest";
 import server from "../../server";
 import Monitor, { monitorSchema } from "../../models/monitor/monitor.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
+import { forceAuthHeader } from "../../utils/forceAuth";
 
 const defaultMonitor = {
   projectId: "123",
@@ -43,7 +44,10 @@ describe("Monitor controller", () => {
     let pre = await MonitorManager.getMonitors();
     expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
 
-    const res = await request(server).post("/monitors").send(defaultMonitor);
+    const res = await request(server)
+      .post("/monitors")
+      .send(defaultMonitor)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(201);
 
@@ -60,7 +64,10 @@ describe("Monitor controller", () => {
   it("should update a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server).put(`/monitors/${monitor._id}`).send({ title: "Yahoo" });
+    const res = await request(server)
+      .put(`/monitors/${monitor._id}`)
+      .send({ title: "Yahoo" })
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
 
@@ -76,7 +83,9 @@ describe("Monitor controller", () => {
   it("should get a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server).get(`/monitors/${monitor._id}`);
+    const res = await request(server)
+      .get(`/monitors/${monitor._id}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body._id).toEqual(monitor._id.toString());
@@ -89,7 +98,9 @@ describe("Monitor controller", () => {
   it("should delete a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server).delete(`/monitors/${monitor._id}`);
+    const res = await request(server)
+      .delete(`/monitors/${monitor._id}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
 
@@ -115,7 +126,9 @@ describe("Monitor controller", () => {
       projectId: "789",
     });
 
-    const res = await request(server).get(`/monitors`);
+    const res = await request(server)
+      .get(`/monitors`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(3);
@@ -142,7 +155,9 @@ describe("Monitor controller", () => {
       online: true,
     });
 
-    const res = await request(server).get(`/monitors/${monitor._id}/online`);
+    const res = await request(server)
+      .get(`/monitors/${monitor._id}/online`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body).toEqual(true);
@@ -163,7 +178,9 @@ describe("Monitor controller", () => {
       users: [u3, u4],
     });
 
-    const res = await request(server).get(`/monitors-search/?projectId=${m1.projectId}`);
+    const res = await request(server)
+      .get(`/monitors-search/?projectId=${m1.projectId}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(1);
@@ -184,7 +201,9 @@ describe("Monitor controller", () => {
       users: [u3, u4],
     });
 
-    const res2 = await request(server).get(`/monitors-search/?userId=${m2.users[0].userId}`);
+    const res2 = await request(server)
+      .get(`/monitors-search/?userId=${m2.users[0].userId}`)
+      .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res2.status).toEqual(200);
     expect(res2.body.length).toEqual(1);
