@@ -40,12 +40,6 @@ export default class MonitorManager {
       if (project) payload.project = project;
     }
 
-    // if (data.agency) {
-    //   let agency = await Agency.findOne({ agencyId: data.agency.agencyId });
-
-    //   if (agency) payload.agency = agency;
-    // }
-
     return payload;
   }
   /**
@@ -74,24 +68,6 @@ export default class MonitorManager {
 
     return monitor;
   }
-
-  // public static async createMonitorFromObject(data: any): MonitorPromise {
-  //   let payload = await this.instance.parseData(data);
-
-  //   if (!payload.project) throw new Error("No project provided");
-  //   if (!payload.agency) throw new Error("No agency provided");
-
-  //   let monitor = Monitor.create(payload)
-  //     .then((monitor: any) => {
-  //       return monitor;
-  //     })
-  //     .catch((err: any) => {
-  //       console.log(err);
-  //       throw err;
-  //     });
-
-  //   return monitor;
-  // }
 
   /**
    * Update a monitor.
@@ -173,10 +149,8 @@ export default class MonitorManager {
   static async searchMonitors(query: any) {
     let filters = {};
 
-    // filters = query.projectId ? { ...filters, projectId: query.projectId } : filters;
     filters = query.url ? { ...filters, url: query.url } : filters;
     filters = query.title ? { ...filters, title: query.title } : filters;
-    // filters = query.userId ? {...filters, users: [{userId: query.userId}]} : filters;
 
     let monitors = await Monitor.find(filters);
 
@@ -187,27 +161,18 @@ export default class MonitorManager {
         });
       });
     }
-    
+
     if (query.projectId) {
       monitors = monitors.filter((monitor: any) => {
         return monitor.project.projectId === query.projectId;
       });
     }
-    
-    // if (query.agencyId) {
-    //   monitors = monitors.filter((monitor: any) => {
-    //     return monitor.agency.agencyId === query.agencyId;
-    //   });
-    // }
 
     if (!monitors) return [];
     return monitors;
   }
 
   static async userHasPermission(user: UserType, monitor: MonitorType) {
-    return (
-      // user.agencies.includes(monitor.agency.agencyId) &&
-      user.projects.includes(monitor.project.projectId)
-    );
+    return user.projects.includes(monitor.project.projectId);
   }
 }

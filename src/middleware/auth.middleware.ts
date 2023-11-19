@@ -47,7 +47,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     });
 
     if (!user) {
-      // console.log("User not found, verifying token")
       let authRes: AuthServiceResponse | null = await verifyUser(token)
         .then((data: AuthServiceResponse) => {
           return data;

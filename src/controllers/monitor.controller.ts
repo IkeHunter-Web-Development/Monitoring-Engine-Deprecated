@@ -67,13 +67,6 @@ export const updateMonitor = async (req: Request, res: Response) => {
     }
    *=======================*/
   const id = req.params.id || "";
-  // const user: UserOrNull = res.locals.user;
-  // if (!user) return res.status(400).json({ message: "Bad Request" });
-  // let monitor: MonitorOrNull = await MonitorManager.getMonitor(id);
-  // if (!monitor) return res.status(404).json({ message: "Monitor not found" });
-
-  // let hasPermission = await MonitorManager.userHasPermission(user._id, monitor.agencyId);
-  // if (!hasPermission) return res.status(403).json({ message: "Forbidden" });
 
   MonitorManager.updateMonitor(id, req.body)
     .then((monitor: any) => {

@@ -147,7 +147,6 @@ describe("Event controller", () => {
   /**=============*
    * SEARCH TESTS *
    *==============*/
-  // TODO: get events for monitor
   /**
    * GET /events/search/?monitor=id should get events for a monitor.
    */
@@ -160,7 +159,6 @@ describe("Event controller", () => {
     expect(res.body.length).toEqual(2);
     expect(res.body[0]._id).toEqual(e1._id.toString());
   });
-  // TODO: get offline events for monitor
   /**
    * GET /events/search/?monitor=id&online=false should get offline events for a monitor.
    */
@@ -173,7 +171,6 @@ describe("Event controller", () => {
     expect(res.body.length).toEqual(1);
     expect(res.body[0]._id).toEqual(e1._id.toString());
   });
-  // TODO: get last time monitor was offline
   /**
    * GET /events/search/?monitor=id&online=false&last=true should get the
    * last time a monitor was offline.
@@ -186,7 +183,6 @@ describe("Event controller", () => {
     expect(res.status).toEqual(200);
     expect(res.body[0]._id).toEqual(e5._id.toString());
   });
-  // TODO: get last time monitor was online
   /**
    * GET /events/search/?monitor=id&online=true&last=true should get the
    * last time a monitor was online.

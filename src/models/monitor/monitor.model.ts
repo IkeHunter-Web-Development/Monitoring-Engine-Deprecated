@@ -9,22 +9,10 @@ export const monitorSchema = new mongoose.Schema({
   // TODO: Add threshold
   // TODO: Add endpoints
 
-  // projectId: {
-  //   type: String,
-  //   required: true,
-  // },
-  // agencyId: {
-  //   type: String,
-  //   required: true,
-  // },
   project: {
     type: ProjectSchema,
     required: true,
   },
-  // agency: {
-  //   type: AgencySchema,
-  //   required: true,
-  // },
   users: [userSchema],
   url: {
     type: String,

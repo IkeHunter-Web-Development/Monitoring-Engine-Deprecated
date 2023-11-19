@@ -9,7 +9,6 @@ import { isForceAuth, forceAuthLabels } from "../utils/forceAuth";
  * Check if the user has permission to access the monitor.
  */
 export const hasPermission = async (req: Request, res: Response, next: NextFunction) => {
-  // console.log(req.headers);
   if (isForceAuth(req, forceAuthLabels.PERMS)) return next();
 
   const user: UserOrNull = res.locals.user;

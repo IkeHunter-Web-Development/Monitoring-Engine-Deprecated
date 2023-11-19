@@ -6,7 +6,6 @@ import { ProjectType } from "src/models/project/project.types";
 
 export type MonitorType = mongoose.Document & {
   project: ProjectType;
-  // agency: AgencyType;
   url: string;
   users: any[];
   statusCode: number;

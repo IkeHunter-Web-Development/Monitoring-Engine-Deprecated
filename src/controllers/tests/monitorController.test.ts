@@ -23,10 +23,7 @@ const defaultProject = {
 };
 
 const defaultMonitor = {
-  // projectId: "123",
-  // agencyId: "456",
   project: defaultProject,
-  // agency: defaultAgency,
   url: "https://www.google.com",
   users: [],
   title: "Google",
@@ -209,10 +206,10 @@ describe("Monitor controller", () => {
     const p2 = {
       agency: defaultAgency,
       projectId: "456",
-        name: "Test Project 2",
+      name: "Test Project 2",
     };
     await Project.create(p2);
-    
+
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
@@ -239,10 +236,10 @@ describe("Monitor controller", () => {
     const p2 = {
       agency: defaultAgency,
       projectId: "456",
-        name: "Test Project 2",
+      name: "Test Project 2",
     };
     await Project.create(p2);
-    
+
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],

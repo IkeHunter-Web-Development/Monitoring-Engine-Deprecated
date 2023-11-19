@@ -7,8 +7,6 @@ import { generateRandomString } from "../../../utils/generator";
 
 export const generateSampleMonitor = async (data: any = {}) => {
   let payload = {
-    projectId: data.projectId || generateRandomString(8),
-    // agencyId: data.agencyId || generateRandomString(8),
     url: data.url || "https://example.com",
     users: data.users || [],
     statusCode: data.statusCode || 200,
