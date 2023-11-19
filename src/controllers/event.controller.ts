@@ -130,3 +130,8 @@ export const searchEvents = async (req: Request, res: Response) => {
       return res.status(500).json(err);
     });
 };
+
+// TODO: Get the latest 30 day report
+export const getReport = (req: Request, res: Response) => {
+  
+}

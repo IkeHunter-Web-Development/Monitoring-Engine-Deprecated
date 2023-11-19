@@ -3,9 +3,9 @@
    */
   
   describe('Monitor stats controller', () => {
-    it('should work...', async () => {
-      expect(true).toEqual(true);
-    });
+    it('should work', () => {
+      expect(true).toBeTruthy();
+    })
   });
   // TODO: get uptime for monitor
   // TODO: get downtime for monitor

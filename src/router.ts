@@ -34,5 +34,6 @@ router.get("/monitors-search/", isAuthenticated, MonitorController.searchMonitor
 router.get("/events/:id", isAuthenticated, EventController.getEvent);
 router.delete("/events/:id", isAuthenticated, EventController.deleteEvent);
 router.get("/events-search/", isAuthenticated, EventController.searchEvents);
+router.post("/events/reports/", isAuthenticated, EventController.getReport);
 
 export default router;
