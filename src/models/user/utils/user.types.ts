@@ -6,7 +6,8 @@ export type UserType = mongoose.Document & {
   email: string;
   token: string;
   permissions: any[];
-  companyIds: string[];
+  agencies: string[];
+  projects: string[];
   // hasPermission: (namespace: string, action: string, resource: string) => boolean;
 };
 // export type UserInstance= InstanceType<typeof User>;

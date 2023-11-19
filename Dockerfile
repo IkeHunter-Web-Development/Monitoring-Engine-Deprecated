@@ -12,7 +12,7 @@ COPY ./jest.config.ts ./jest.config.ts
 
 USER root
 
-RUN npm install -g npm@10.2.1 && \
+RUN npm install npm@^10.2.1 && \
     npm install -g typescript && \
     npm install -g rimraf && \
     npm install 

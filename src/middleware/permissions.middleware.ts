@@ -18,7 +18,7 @@ export const hasPermission = async (req: Request, res: Response, next: NextFunct
   const monitor: MonitorOrNull = await MonitorManager.getMonitor(req.params.id);
   if (!monitor) return simpleResponse(res, 404, "Monitor not found");
 
-  let hasPermission = await MonitorManager.userHasPermission(user._id, monitor.companyId);
+  let hasPermission = await MonitorManager.userHasPermission(user, monitor);
   if (!hasPermission) return simpleResponse(res, 403, "Forbidden");
 
   next();

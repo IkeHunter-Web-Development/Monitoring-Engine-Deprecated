@@ -1,8 +1,10 @@
 /**
  * @fileoverview Tests for the Event model.
  */
+import Agency from "../../agency/agency.model";
 import Monitor from "../../monitor/monitor.model";
 import Event from "../event.model";
+import Project from "../../project/project.model";
 
 /**
  * Tests for the Event model.
@@ -15,15 +17,27 @@ describe("Event", () => {
    * Create a monitor before each test.
    */
   beforeEach(async () => {
-    let payload = {
+    const agency = {
+      agencyId: "456",
+      name: "Test agency",
+    };
+    const project = {
+      agency: agency,
       projectId: "123",
-      companyId: "456",
+      name: "Test Project",
+    };
+    
+    let payload = {
+      project: project,
+      agency: agency,
       url: "https://example.com",
       users: [],
       statusCode: 200,
       title: "Example",
     };
 
+    await Agency.create(agency);
+    await Project.create(project);
     monitor = await Monitor.create(payload);
 
     eventData = {

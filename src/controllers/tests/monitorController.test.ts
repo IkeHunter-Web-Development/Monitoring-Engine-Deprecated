@@ -6,10 +6,27 @@ import server from "../../server";
 import Monitor, { monitorSchema } from "../../models/monitor/monitor.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
 import { forceAuthHeader } from "../../utils/forceAuth";
+import { MonitorType } from "src/models/monitor/utils/monitor.types";
+import { before } from "lodash";
+import Project from "../../models/project/project.model";
+import Agency from "../../models/agency/agency.model";
+import ProjectManager from "../../models/project/project.manager";
+
+const defaultAgency = {
+  agencyId: "456",
+  name: "Test agency",
+};
+const defaultProject = {
+  agency: defaultAgency,
+  projectId: "123",
+  name: "Test Project",
+};
 
 const defaultMonitor = {
-  projectId: "123",
-  companyId: "456",
+  // projectId: "123",
+  // agencyId: "456",
+  project: defaultProject,
+  // agency: defaultAgency,
   url: "https://www.google.com",
   users: [],
   title: "Google",
@@ -30,6 +47,12 @@ const u4 = {
   userId: "012",
   email: "u4@example.com",
 };
+
+beforeEach(async () => {
+  await Agency.create(defaultAgency);
+  // await Project.create(defaultProject);
+  await ProjectManager.createProject(defaultProject);
+});
 
 describe("Monitor controller", () => {
   /**==========
@@ -54,7 +77,7 @@ describe("Monitor controller", () => {
     // let monitors = await Monitor.find({});
     let monitors = await MonitorManager.getMonitors();
     expect(monitors.length).toEqual(1);
-    expect(monitors[0].projectId).toEqual(defaultMonitor.projectId);
+    expect(monitors[0].project.projectId).toEqual(defaultMonitor.project.projectId);
   });
 
   /**
@@ -115,15 +138,30 @@ describe("Monitor controller", () => {
   it("should get all monitors", async () => {
     let monitor = await Monitor.create({
       ...defaultMonitor,
-      projectId: "123",
+      project: {
+        agency: defaultAgency,
+        projectId: "123",
+        name: "Test Project",
+      },
+      // projectId: "123",
     });
     let monitor2 = await Monitor.create({
       ...defaultMonitor,
-      projectId: "456",
+      project: {
+        agency: defaultAgency,
+        projectId: "456",
+        name: "Test Project 2",
+      },
+      // projectId: "456",
     });
     let monitor3 = await Monitor.create({
       ...defaultMonitor,
-      projectId: "789",
+      project: {
+        agency: defaultAgency,
+        projectId: "789",
+        name: "Test Project 3",
+      },
+      // projectId: "789",
     });
 
     const res = await request(server)
@@ -133,13 +171,13 @@ describe("Monitor controller", () => {
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(3);
 
-    let sorted = res.body.sort((a: any, b: any) => {
-      return a.projectId - b.projectId;
+    let sorted: MonitorType[] = res.body.sort((a: any, b: any) => {
+      return a.project.projectId - b.project.projectId;
     });
 
-    expect(sorted[0].projectId).toEqual(monitor.projectId);
-    expect(sorted[1].projectId).toEqual(monitor2.projectId);
-    expect(sorted[2].projectId).toEqual(monitor3.projectId);
+    expect(sorted[0].project.projectId).toEqual(monitor.project.projectId);
+    expect(sorted[1].project.projectId).toEqual(monitor2.project.projectId);
+    expect(sorted[2].project.projectId).toEqual(monitor3.project.projectId);
   });
 
   /**=================
@@ -167,37 +205,52 @@ describe("Monitor controller", () => {
    * GET /monitors/search/?project=id should return monitors
    * that belong to a project.
    */
-  it("should return monitors", async () => {
+  it("should return monitors for project", async () => {
+    const p2 = {
+      agency: defaultAgency,
+      projectId: "456",
+        name: "Test Project 2",
+    };
+    await Project.create(p2);
+    
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
     });
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
-      projectId: "456",
+      project: p2,
       users: [u3, u4],
     });
 
     const res = await request(server)
-      .get(`/monitors-search/?projectId=${m1.projectId}`)
+      .get(`/monitors-search/?projectId=${m1.project.projectId}`)
       .set(forceAuthHeader.name, forceAuthHeader.value);
 
     expect(res.status).toEqual(200);
     expect(res.body.length).toEqual(1);
-    expect(res.body[0].projectId).toEqual(m1.projectId);
+    expect(res.body[0].project.projectId).toEqual(m1.project.projectId);
   });
   /**
    * GET /monitors/search/?user=id should return monitors
    * that a user is subscribed to.
    */
   it("should return monitors that a user is subscribed to", async () => {
+    const p2 = {
+      agency: defaultAgency,
+      projectId: "456",
+        name: "Test Project 2",
+    };
+    await Project.create(p2);
+    
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
     });
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
-      projectId: "456",
+      // projectId: "456",
+      project: p2,
       users: [u3, u4],
     });
 
@@ -207,6 +260,6 @@ describe("Monitor controller", () => {
 
     expect(res2.status).toEqual(200);
     expect(res2.body.length).toEqual(1);
-    expect(res2.body[0].projectId).toEqual(m2.projectId);
+    expect(res2.body[0].project.projectId).toEqual(m2.project.projectId);
   });
 });

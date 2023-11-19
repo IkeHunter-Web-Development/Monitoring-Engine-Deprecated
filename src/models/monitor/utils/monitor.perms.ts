@@ -11,6 +11,6 @@ export enum MonitorResourcePermissions {
   DELETE = "monitor:DeleteMonitor",
 }
 
-export enum MonitorCompanyPermissions {
+export enum MonitoragencyPermissions {
   CREATE = "monitor:CreateMonitor",
 }

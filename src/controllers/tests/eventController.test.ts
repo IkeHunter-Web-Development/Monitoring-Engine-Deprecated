@@ -9,10 +9,22 @@ import Event, { EventType } from "../../models/event/event.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
 import EventManager from "../../models/event/event.manager";
 import { forceAuthHeader } from "../../utils/forceAuth";
+import Agency from "../../models/agency/agency.model";
+import Project from "../../models/project/project.model";
+
+const defaultAgency = {
+  agencyId: "456",
+  name: "Test agency",
+};
+const defaultProject = {
+  agency: defaultAgency,
+  projectId: "123",
+  name: "Test Project",
+};
 
 const defaultMonitor = {
-  projectId: "123",
-  companyId: "456",
+  project: defaultProject,
+  agency: defaultAgency,
   url: "https://www.google.com",
   users: [],
   title: "Google",
@@ -39,6 +51,8 @@ let e6: EventType;
 
 describe("Event controller", () => {
   beforeEach(async () => {
+    await Agency.create(defaultAgency);
+    await Project.create(defaultProject);
     /**
      * Monitor 1: Google
      */

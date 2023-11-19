@@ -1,20 +1,35 @@
 /**
  * @fileoverview Tests for the monitor model.
  */
+import Project from "../../project/project.model";
 import Monitor from "../monitor.model";
+import Agency from "../../agency/agency.model";
 
 /**
  * Tests for the monitor model.
  */
 describe("Monitor", () => {
-  let monitorData: any = {
+  let agency = {
+    agencyId: "456",
+    name: "Test agency",
+  };
+  let project = {
+    agency: agency,
     projectId: "123",
-    companyId: "456",
+    name: "Test Project",
+  };
+  let monitorData: any = {
+    project: project,
     url: "https://example.com",
     users: [],
     statusCode: 200,
     title: "Example",
   };
+  
+  beforeEach(async () => {
+    await Project.create(project);
+    await Agency.create(agency);
+  });
 
   /**
    * Monitor models should be able to be created.
