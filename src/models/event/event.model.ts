@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import Monitor, { monitorSchema } from "../monitor/monitor.model";
 
 const eventSchema = new mongoose.Schema({
-  // monitor: monitorSchema,
   monitorId: {
     type: String,
     required: true,
@@ -21,6 +20,10 @@ const eventSchema = new mongoose.Schema({
   },
   message: {
     type: String,
+    required: false,
+  },
+  responseTime: {
+    type: Number,
     required: false,
   },
 });

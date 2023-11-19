@@ -83,6 +83,7 @@ export default class EventManager {
    *
    * @returns The offline events.
    */
+  // TODO: Is this needed? Should this have range?
   static async getOfflineEventsForMonitor(monitorId: string): Promise<Array<EventType>> {
     let events = await Event.find({ monitorId: monitorId, online: false }).catch((err: any) => {
       console.log(err);
@@ -220,4 +221,80 @@ export default class EventManager {
 
     return EventManager.filterEvents(params, allEvents) || [];
   }
+  
+  /**
+   * Get events in a range.
+   * 
+   * @param monitor The monitor to get events for.
+   * @param start The start of the range.
+   * @param end The end of the range.
+   * @returns The events in the range.
+   */
+  // TODO: CHECK THIS!
+  static async getEventsInRange(monitor: MonitorType, start: Date, end: Date): Promise<Array<EventType>> {
+    let events = await Event.find({
+      monitorId: monitor._id,
+      timestamp: {
+        $gte: start,
+        $lte: end,
+      },
+    }).catch((err: any) => {
+      console.log(err);
+      throw err;
+    });
+
+    return events || [];
+  }
+  
+  // TODO: CHECK THIS!
+  static async getDowntimeFromEvents(events: Array<EventType>): Promise<number> {
+    let downTime = 0;
+    let lastOnlineTime = null;
+    let lastOfflineTime = null;
+
+    for (let event of events) {
+      if (event.online) {
+        if (lastOfflineTime) {
+          downTime += event.timestamp.getTime() - lastOfflineTime.getTime();
+          lastOfflineTime = null;
+        }
+        lastOnlineTime = event.timestamp;
+      } else {
+        if (lastOnlineTime) {
+          lastOfflineTime = event.timestamp;
+        }
+      }
+    }
+
+    return downTime;
+  }
+  
+  // TODO: CHECK THIS!
+  static async filterDowntimeEvents(events: Array<EventType>): Promise<Array<EventType>> {
+    let filteredEvents: Array<EventType> = [];
+
+    for (let event of events) {
+      if (!event.online) {
+        filteredEvents.push(event);
+      }
+    }
+
+    return filteredEvents;
+  }
+  
+  static async getAverageResponseTimeFromEvents(events: Array<EventType>): Promise<number> {
+    let totalResponseTime = 0;
+    let totalEvents = 0;
+
+    for (let event of events) {
+      if (event.responseTime) {
+        totalResponseTime += event.responseTime;
+        totalEvents++;
+      }
+    }
+
+    return totalResponseTime / totalEvents;
+  }
 }
+
+

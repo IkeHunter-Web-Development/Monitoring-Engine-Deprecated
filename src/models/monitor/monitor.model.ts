@@ -2,12 +2,9 @@ import mongoose from "mongoose";
 import { userSchema } from "../user/user.model";
 import { ProjectSchema } from "../project/project.model";
 import { AgencySchema } from "../agency/agency.model";
+import { MonitorType } from "./utils/monitor.types";
 
 export const monitorSchema = new mongoose.Schema({
-  // TODO: Add Interval
-  // TODO: Add timeout
-  // TODO: Add threshold
-  // TODO: Add endpoints
 
   project: {
     type: ProjectSchema,
@@ -42,6 +39,18 @@ export const monitorSchema = new mongoose.Schema({
   endpoints: {
     type: Array,
     default: ["/"],
+  },
+  interval: {
+    type: Number,
+    default: 60,
+  },
+  timeout: {
+    type: Number,
+    default: 30,
+  },
+  retries: {
+    type: Number,
+    default: 3,
   },
 });
 

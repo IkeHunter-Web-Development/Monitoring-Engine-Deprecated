@@ -2,6 +2,7 @@
  * @fileoverview Manager for the monitor model.
  */
 import Agency from "../agency/agency.model";
+import EventManager from "../event/event.manager";
 import Project from "../project/project.model";
 import UserManager from "../user/user.manager";
 import { UserOrNull, UserType } from "../user/utils/user.types";
@@ -12,6 +13,8 @@ import {
   MonitorPromiseOrNull,
   MonitorOrNull,
   MonitorType,
+  MonitorDetails,
+  MonitorDetailsPromise,
 } from "./utils/monitor.types";
 
 export default class MonitorManager {
@@ -171,8 +174,46 @@ export default class MonitorManager {
     if (!monitors) return [];
     return monitors;
   }
-
+  /**
+   * Check if a user has permission to access a monitor.
+   *
+   *
+   * @param user The user to check.
+   * @param monitor The monitor to check.
+   * @returns Boolean, whether the user has permission.
+   */
   static async userHasPermission(user: UserType, monitor: MonitorType) {
     return user.projects.includes(monitor.project.projectId);
+  }
+
+  /**
+   * Generate monitor metrics.
+   *
+   * @param monitor The monitor to generate metrics for.
+   * @returns MonitorDetails, The generated metrics.
+   */
+  static async generateMetrics(monitor: MonitorType, dayRange: number = 30): MonitorDetailsPromise {
+    let details = {
+      totalDowntimeMinutes: 0,
+      totalUptimeMinutes: 0,
+      totalEvents: 0,
+      totalDowntimeEvents: 0,
+      averageResponseTime: 0,
+    };
+
+    const now = new Date();
+    const totalMinutes = dayRange * 24 * 60;
+    const start = new Date(now.getTime() - totalMinutes * 60 * 1000);
+
+    const events = await EventManager.getEventsInRange(monitor._id, start, now);
+
+    details.totalDowntimeMinutes = await EventManager.getDowntimeFromEvents(events);
+    details.totalUptimeMinutes = totalMinutes - details.totalDowntimeMinutes;
+    details.totalEvents = events.length;
+    let downtimeEvents = await EventManager.filterDowntimeEvents(events);
+    details.totalDowntimeEvents = downtimeEvents.length;
+    details.averageResponseTime = await EventManager.getAverageResponseTimeFromEvents(events);
+
+    return { ...monitor, ...details };
   }
 }
