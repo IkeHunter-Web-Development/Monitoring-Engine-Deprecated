@@ -27,8 +27,8 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
    *  if is present, is in db -> next()
    */
   
-  if (process.env.NODE_ENV === "development") return next();
-  if (isForceAuth(req, forceAuthLabels.AUTH)) return next();
+  // if (process.env.NODE_ENV === "development") return next();
+  // if (isForceAuth(req, forceAuthLabels.AUTH)) return next();
   if (!req.headers) return res.status(401).json(errNoToken);
 
   try {

@@ -33,7 +33,7 @@ export default class MonitorManager {
   private async parseData(data: any) {
     let payload = {
       project: null as any,
-      // agency: null as any,
+      agency: null as any,
       url: data.url || "",
       users: data.users || [],
       title: data.title || "",
@@ -105,10 +105,8 @@ export default class MonitorManager {
    */
   static async getMonitor(id: string): MonitorPromiseOrNull {
     // let monitor: MonitorOrNull = await Monitor.findOne({ _id: id });
-    console.log('id', id)
+    // console.log('id', id)
     let monitor: MonitorOrNull = await Monitor.findById(id);
-    let allMonitors = await Monitor.find({});
-    console.log(allMonitors);
 
     if (!monitor) return null;
     return monitor;

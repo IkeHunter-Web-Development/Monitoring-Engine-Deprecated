@@ -9,17 +9,17 @@ export default class ProjectManager {
   
   private async parseData(data: any) {
     let payload = {
-      // agency: null as any,
-      agencyId: data.agencyId || "",
+      agency: null as any,
+      // agencyId: data.agencyId || "",
       projectId: data.projectId || "",
       name: data.name || "",
     };
     
-    // if (data.agency) {
-    //   let agency = await Agency.findOne({ agencyId: data.agencyId });
+    if (data.agency) {
+      let agency = await Agency.findOne({ agencyId: data.agency.agencyId });
       
-    //   if (agency) payload.agencyId = agency;
-    // }
+      if (agency) payload.agency = agency;
+    }
     
     return payload;
   }

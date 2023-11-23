@@ -11,6 +11,8 @@ import { before } from "lodash";
 import Project from "../../models/project/project.model";
 import Agency from "../../models/agency/agency.model";
 import ProjectManager from "../../models/project/project.manager";
+import { createMonitor } from "../monitor.controller";
+import { Request, Response } from "express";
 
 const defaultAgency = {
   agencyId: "456",
@@ -45,13 +47,27 @@ const u4 = {
   email: "u4@example.com",
 };
 
-beforeEach(async () => {
-  await Agency.create(defaultAgency);
-  // await Project.create(defaultProject);
-  await ProjectManager.createProject(defaultProject);
-});
-
 describe("Monitor controller", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let defaultHeaders = {};
+
+  beforeEach(async () => {
+    await Agency.create(defaultAgency);
+    // await Project.create(defaultProject);
+    await ProjectManager.createProject(defaultProject);
+
+    // TODO: Implement Jest for api testing
+    mockRequest = {
+      headers: {
+        ...defaultHeaders,
+      },
+    };
+    mockResponse = {
+      json: jest.fn(),
+      status: jest.fn().mockReturnThis()
+    }
+  });
   /**==========
    * CRUD TESTS
    ============*/
@@ -64,11 +80,14 @@ describe("Monitor controller", () => {
     let pre = await MonitorManager.getMonitors();
     expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
 
+    // await createMonitor(mockRequest as Request, mockResponse as Response);
+
     const res = await request(server)
       .post("/monitors")
       .send(defaultMonitor)
       .set(forceAuthHeader.name, forceAuthHeader.value);
 
+    // expect(mockResponse.status).toEqual(201);
     expect(res.status).toEqual(201);
 
     // let monitors = await Monitor.find({});
