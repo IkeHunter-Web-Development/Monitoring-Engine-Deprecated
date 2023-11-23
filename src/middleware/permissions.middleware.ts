@@ -10,6 +10,7 @@ import { isForceAuth, forceAuthLabels } from "../utils/forceAuth";
  */
 export const hasPermission = async (req: Request, res: Response, next: NextFunction) => {
   if (isForceAuth(req, forceAuthLabels.PERMS)) return next();
+  if (process.env.NODE_ENV === "development") return next();
 
   const user: UserOrNull = res.locals.user;
   if (!user) return simpleResponse(res, 400, "Bad Request");

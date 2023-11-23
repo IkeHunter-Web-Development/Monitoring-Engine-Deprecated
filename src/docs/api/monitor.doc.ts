@@ -1,5 +1,5 @@
 export const monitorBody = {
-  projectId: 0,
+  project: "0", // TODO: create project schema
   url: "http://www.example.com",
   users: [{ userId: "123", email: "user@example.com" }],
   statusCode: 200,
@@ -8,7 +8,7 @@ export const monitorBody = {
 };
 
 export const monitorResponse = {
-  projectId: 0,
+  projectId: "0",
   url: "http://www.example.com",
   users: [],
   statusCode: 200,

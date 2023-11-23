@@ -74,7 +74,7 @@ describe("Monitor controller", () => {
     // let monitors = await Monitor.find({});
     let monitors = await MonitorManager.getMonitors();
     expect(monitors.length).toEqual(1);
-    expect(monitors[0].project.projectId).toEqual(defaultMonitor.project.projectId);
+    expect(monitors[0].project?.projectId).toEqual(defaultMonitor.project.projectId);
   });
 
   /**
@@ -172,9 +172,9 @@ describe("Monitor controller", () => {
       return a.project.projectId - b.project.projectId;
     });
 
-    expect(sorted[0].project.projectId).toEqual(monitor.project.projectId);
-    expect(sorted[1].project.projectId).toEqual(monitor2.project.projectId);
-    expect(sorted[2].project.projectId).toEqual(monitor3.project.projectId);
+    expect(sorted[0].project.projectId).toEqual(monitor.project?.projectId);
+    expect(sorted[1].project.projectId).toEqual(monitor2.project?.projectId);
+    expect(sorted[2].project.projectId).toEqual(monitor3.project?.projectId);
   });
 
   /**=================

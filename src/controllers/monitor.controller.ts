@@ -236,4 +236,48 @@ export const getMonitorOnlineStatus = async (req: Request, res: Response) => {
   }
 };
 
+export const alertMonitorDown = async (req: Request, res: Response) => {
+  /**=================================*
+    @swagger Alert monitor down
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for alerting service that a monitor is down.'
+    #swagger.parameters['body'] = {
+      in: "body",
+      name: "body",
+      description: "Alert payload",
+      required: true,
+      schema: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          statusCode: { type: "number" },
+          error: { type: "string" },
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: "Alert received",
+    }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+    }
+    #swagger.responses[404] = {
+      schema: {$ref: "#/definitions/Error404"},
+    }
+   *==================================*/
+  const { id, statusCode, error } = req.body;
 
+  let monitor = await MonitorManager.getMonitor(id);
+
+  if (!monitor) {
+    return simpleResponse(res, 404, "Monitor not found");
+  }
+  
+  let success = MonitorManager.handleMonitorDown(monitor, statusCode, error);
+  
+  if (!success) {
+    return simpleResponse(res, 500, "Error handling monitor down");
+  }
+  
+  return res.status(200).send("Alert received");
+};

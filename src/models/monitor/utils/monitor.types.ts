@@ -14,10 +14,7 @@ interface MonitorObject {
     default: true;
   };
   title: string;
-  online: {
-    type: Boolean;
-    default: true;
-  };
+  online: boolean;
   type: {
     type: String;
     enum: ["http"];

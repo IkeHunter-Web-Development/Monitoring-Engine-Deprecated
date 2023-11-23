@@ -5,8 +5,9 @@ import mongoose from "mongoose";
 import Agency, { AgencySchema } from "../agency/agency.model";
 
 export const ProjectSchema = new mongoose.Schema({
-  agency: {
-    type: AgencySchema,
+  agencyId: {
+    // type: AgencySchema,
+    type: String, // TODO: connect to real id
     required: true,
   },
   projectId: {

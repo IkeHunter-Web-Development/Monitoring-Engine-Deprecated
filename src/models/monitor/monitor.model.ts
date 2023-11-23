@@ -8,7 +8,7 @@ export const monitorSchema = new mongoose.Schema({
 
   project: {
     type: ProjectSchema,
-    required: true,
+    required: false,
   },
   users: [userSchema],
   url: {

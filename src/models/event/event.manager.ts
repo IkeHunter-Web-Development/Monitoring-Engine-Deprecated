@@ -35,6 +35,29 @@ export default class EventManager {
 
     return event;
   }
+  
+  /**
+   * Register a down event.
+   * 
+   * @param monitorId The id of the monitor the event belongs to.
+   * @param statusCode The status code of the event.
+   * @param message The message of the event.
+   * 
+   * @returns The created event.
+   */
+  static async registerDownEvent(monitorId: string, statusCode: number, message: string) {
+    let event = await EventManager.createEvent({
+      monitorId: monitorId,
+      statusCode: statusCode,
+      online: false,
+      message: message,
+    }).catch((err: any) => {
+      console.log(err);
+      throw err;
+    });
+
+    return event;
+  }
 
   /**
    * Gets an event.

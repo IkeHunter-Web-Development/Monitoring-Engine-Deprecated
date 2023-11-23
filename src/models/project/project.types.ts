@@ -1,7 +1,7 @@
 import { AgencyType } from "../agency/agency.types";
 
 export interface ProjectType {
-  agency: AgencyType;
+  agencyId: AgencyType;
   projectId: string;
   name: string;
 }

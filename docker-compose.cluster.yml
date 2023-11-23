@@ -5,14 +5,15 @@ services:
     build:
       context: .
     ports:
-      - "8001:8000"
+      - "8001:8001"
     restart: always
     volumes:
       - ./src:/src
       - ./logs:/logs
     environment:
       - HOST=0.0.0.0
-      - PORT=8000
+      - PORT=8001
+      - NODE_ENV=development
       - LOGGING_LEVEL=verbose
       - EMAIL_USER=tests@ikehunter.dev
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}

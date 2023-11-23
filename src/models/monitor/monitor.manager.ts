@@ -1,6 +1,7 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
+import Emailer from "../../services/emails/emailer";
 import Agency from "../agency/agency.model";
 import EventManager from "../event/event.manager";
 import Project from "../project/project.model";
@@ -8,6 +9,7 @@ import UserManager from "../user/user.manager";
 import { UserOrNull, UserType } from "../user/utils/user.types";
 import Monitor from "./monitor.model";
 import { CreateMonitorError, CreateMonitorErrorTypes as errors } from "./utils/monitor.errors";
+
 import {
   MonitorPromise,
   MonitorPromiseOrNull,
@@ -57,7 +59,8 @@ export default class MonitorManager {
   static async createMonitor(data: any) {
     let payload = await this.instance.parseData(data);
 
-    if (!payload.project) throw new Error("No project provided");
+    // TODO: Verify project exists
+    // if (!payload.project) throw new Error("No project provided");
     // if (!payload.agency) throw new Error("No agency provided");
 
     let monitor = Monitor.create(payload)
@@ -101,7 +104,11 @@ export default class MonitorManager {
    * @returns The monitor.
    */
   static async getMonitor(id: string): MonitorPromiseOrNull {
-    let monitor: MonitorOrNull = await Monitor.findOne({ _id: id });
+    // let monitor: MonitorOrNull = await Monitor.findOne({ _id: id });
+    console.log('id', id)
+    let monitor: MonitorOrNull = await Monitor.findById(id);
+    let allMonitors = await Monitor.find({});
+    console.log(allMonitors);
 
     if (!monitor) return null;
     return monitor;
@@ -215,5 +222,33 @@ export default class MonitorManager {
     details.averageResponseTime = await EventManager.getAverageResponseTimeFromEvents(events);
 
     return { ...monitor, ...details };
+  }
+
+  /**
+   * Handle a monitor going down.
+   *
+   * @param monitor The monitor that went down.
+   * @param statusCode The status code of the monitor.
+   * @param error The error message of the monitor.
+   * @returns Boolean, whether the monitor was handled.
+   */
+  static async handleMonitorDown(monitor: MonitorType, statusCode: number, error: string) {
+    monitor.online = false;
+
+    // let event = await EventManager.createEvent({ monitor, statusCode, error });
+    let event = await EventManager.registerDownEvent(monitor._id, statusCode, error);
+    
+    if (!event) return false;
+    
+    monitor.users.forEach(async (user: any) => {
+      let userObj = await UserManager.getUserById(user.userId);
+      if (userObj) {
+        let message = `Monitor ${monitor.title} is down. Status code: ${statusCode}`;
+        Emailer.sendEmail(userObj.email, "Monitor Down", message);
+      }
+    });
+    
+    
+    
   }
 }
