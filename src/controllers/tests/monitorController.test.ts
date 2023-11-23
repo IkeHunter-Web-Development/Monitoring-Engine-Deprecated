@@ -1,18 +1,14 @@
 /**
  * @fileoverview Tests for monitor api routes.
  */
-import request from "supertest";
-import server from "../../server";
-import Monitor, { monitorSchema } from "../../models/monitor/monitor.model";
+import Monitor from "../../models/monitor/monitor.model";
 import MonitorManager from "../../models/monitor/monitor.manager";
-import { forceAuthHeader } from "../../utils/forceAuth";
 import { MonitorType } from "src/models/monitor/utils/monitor.types";
-import { before } from "lodash";
 import Project from "../../models/project/project.model";
-import Agency from "../../models/agency/agency.model";
-import ProjectManager from "../../models/project/project.manager";
-import { createMonitor } from "../monitor.controller";
 import { Request, Response } from "express";
+import httpMocks from "node-mocks-http";
+import * as controller from "../monitor.controller";
+import Agency from "../../models/agency/agency.model";
 
 const defaultAgency = {
   agencyId: "456",
@@ -47,26 +43,19 @@ const u4 = {
   email: "u4@example.com",
 };
 
+const getJson = (res: Response) => {
+  return (res as any)._getJSONData();
+};
+
 describe("Monitor controller", () => {
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
-  let defaultHeaders = {};
+  let req: Request;
+  let res: Response;
 
   beforeEach(async () => {
     await Agency.create(defaultAgency);
-    // await Project.create(defaultProject);
-    await ProjectManager.createProject(defaultProject);
-
-    // TODO: Implement Jest for api testing
-    mockRequest = {
-      headers: {
-        ...defaultHeaders,
-      },
-    };
-    mockResponse = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis()
-    }
+    await Project.create(defaultProject);
+    
+    res = httpMocks.createResponse();
   });
   /**==========
    * CRUD TESTS
@@ -80,17 +69,14 @@ describe("Monitor controller", () => {
     let pre = await MonitorManager.getMonitors();
     expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
 
-    // await createMonitor(mockRequest as Request, mockResponse as Response);
+    req = httpMocks.createRequest({
+      method: "POST",
+      body: defaultMonitor,
+    });
 
-    const res = await request(server)
-      .post("/monitors")
-      .send(defaultMonitor)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    await controller.createMonitor(req, res);
+    expect(res.statusCode).toEqual(201);
 
-    // expect(mockResponse.status).toEqual(201);
-    expect(res.status).toEqual(201);
-
-    // let monitors = await Monitor.find({});
     let monitors = await MonitorManager.getMonitors();
     expect(monitors.length).toEqual(1);
     expect(monitors[0].project?.projectId).toEqual(defaultMonitor.project.projectId);
@@ -103,12 +89,14 @@ describe("Monitor controller", () => {
   it("should update a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server)
-      .put(`/monitors/${monitor._id}`)
-      .send({ title: "Yahoo" })
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "PUT",
+      body: { title: "Yahoo" },
+      params: { id: monitor._id },
+    });
 
-    expect(res.status).toEqual(200);
+    await controller.updateMonitor(req, res as Response);
+    expect(res.statusCode).toEqual(200);
 
     let query = await Monitor.findOne({ _id: monitor._id });
     expect(query).not.toBeNull();
@@ -122,12 +110,15 @@ describe("Monitor controller", () => {
   it("should get a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server)
-      .get(`/monitors/${monitor._id}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      params: { id: monitor._id },
+    });
+    await controller.getMonitor(req, res);
+    expect(res.statusCode).toEqual(200);
 
-    expect(res.status).toEqual(200);
-    expect(res.body._id).toEqual(monitor._id.toString());
+    // const body = (res as any)._getJSONData();
+    const body = getJson(res);
+    expect(body._id).toEqual(monitor._id.toString());
   });
 
   /**
@@ -137,11 +128,13 @@ describe("Monitor controller", () => {
   it("should delete a monitor", async () => {
     let monitor = await Monitor.create(defaultMonitor);
 
-    const res = await request(server)
-      .delete(`/monitors/${monitor._id}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    const req = httpMocks.createRequest({
+      method: "DELETE",
+      params: { id: monitor._id },
+    });
+    await controller.deleteMonitor(req, res);
 
-    expect(res.status).toEqual(200);
+    expect(res.statusCode).toEqual(200);
 
     let query = await Monitor.findOne({ _id: monitor._id });
     expect(query).toBeNull();
@@ -159,7 +152,6 @@ describe("Monitor controller", () => {
         projectId: "123",
         name: "Test Project",
       },
-      // projectId: "123",
     });
     let monitor2 = await Monitor.create({
       ...defaultMonitor,
@@ -168,7 +160,6 @@ describe("Monitor controller", () => {
         projectId: "456",
         name: "Test Project 2",
       },
-      // projectId: "456",
     });
     let monitor3 = await Monitor.create({
       ...defaultMonitor,
@@ -177,17 +168,18 @@ describe("Monitor controller", () => {
         projectId: "789",
         name: "Test Project 3",
       },
-      // projectId: "789",
     });
 
-    const res = await request(server)
-      .get(`/monitors`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    const req = httpMocks.createRequest({
+      method: "GET",
+    });
+    await controller.getMonitors(req, res);
+    const body = getJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body.length).toEqual(3);
+    expect(res.statusCode).toEqual(200);
+    expect(body.length).toEqual(3);
 
-    let sorted: MonitorType[] = res.body.sort((a: any, b: any) => {
+    let sorted: MonitorType[] = body.sort((a: any, b: any) => {
       return a.project.projectId - b.project.projectId;
     });
 
@@ -209,12 +201,15 @@ describe("Monitor controller", () => {
       online: true,
     });
 
-    const res = await request(server)
-      .get(`/monitors/${monitor._id}/online`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    const req = httpMocks.createRequest({
+      method: "GET",
+      params: monitor._id,
+    });
+    await controller.getMonitorOnlineStatus(req, res);
+    const body = (res as any)._getData();
 
-    expect(res.status).toEqual(200);
-    expect(res.body).toEqual(true);
+    expect(res.statusCode).toEqual(200);
+    expect(body).toEqual("true");
   });
 
   /**
@@ -239,13 +234,16 @@ describe("Monitor controller", () => {
       users: [u3, u4],
     });
 
-    const res = await request(server)
-      .get(`/monitors-search/?projectId=${m1.project.projectId}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: { projectId: m1.project.projectId },
+    });
+    await controller.searchMonitors(req, res);
+    const body = getJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body.length).toEqual(1);
-    expect(res.body[0].project.projectId).toEqual(m1.project.projectId);
+    expect(res.statusCode).toEqual(200);
+    expect(body.length).toEqual(1);
+    expect(body[0].project.projectId).toEqual(m1.project.projectId);
   });
   /**
    * GET /monitors/search/?user=id should return monitors
@@ -269,13 +267,16 @@ describe("Monitor controller", () => {
       project: p2,
       users: [u3, u4],
     });
+    
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: { userId: m2.users[0].userId },
+    });
+    await controller.searchMonitors(req, res);
+    const body = getJson(res);
 
-    const res2 = await request(server)
-      .get(`/monitors-search/?userId=${m2.users[0].userId}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
-
-    expect(res2.status).toEqual(200);
-    expect(res2.body.length).toEqual(1);
-    expect(res2.body[0].project.projectId).toEqual(m2.project.projectId);
+    expect(res.statusCode).toEqual(200);
+    expect(body.length).toEqual(1);
+    expect(body[0].project.projectId).toEqual(m2.project.projectId);
   });
 });

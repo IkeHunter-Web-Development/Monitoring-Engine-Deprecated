@@ -30,7 +30,7 @@ export const createMonitor = async (req: Request, res: Response) => {
     }
    *========================*/
 
-  MonitorManager.createMonitor(req.body)
+  return MonitorManager.createMonitor(req.body)
     .then((monitor: any) => {
       return res.status(201).json(monitor);
     })
@@ -38,6 +38,7 @@ export const createMonitor = async (req: Request, res: Response) => {
       console.log(err);
       return simpleResponse(res, 500, err.message);
     });
+  
 };
 
 export const updateMonitor = async (req: Request, res: Response) => {
@@ -68,7 +69,7 @@ export const updateMonitor = async (req: Request, res: Response) => {
    *=======================*/
   const id = req.params.id || "";
 
-  MonitorManager.updateMonitor(id, req.body)
+  return MonitorManager.updateMonitor(id, req.body)
     .then((monitor: any) => {
       if (!monitor) {
         return simpleResponse(res, 404, "Monitor not found");
@@ -100,7 +101,7 @@ export const getMonitor = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  MonitorManager.getMonitor(id)
+  return MonitorManager.getMonitor(id)
     .then((monitor: any) => {
       if (!monitor) {
         return simpleResponse(res, 404, "Monitor not found");
@@ -135,7 +136,7 @@ export const deleteMonitor = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  MonitorManager.deleteMonitor(id)
+  return MonitorManager.deleteMonitor(id)
     .then((success) => {
       if (!success) {
         return simpleResponse(res, 404, "Monitor not found");
@@ -161,7 +162,7 @@ export const getMonitors = async (req: Request, res: Response) => {
       schema: {$ref: "#/definitions/Error500"},
     }
    *===========================*/
-  MonitorManager.getMonitors()
+  return MonitorManager.getMonitors()
     .then((monitors: any) => {
       return res.status(200).json(monitors);
     })
@@ -190,7 +191,7 @@ export const searchMonitors = async (req: Request, res: Response) => {
    *=================================*/
   const params = req.query || {};
 
-  MonitorManager.searchMonitors(params)
+  return MonitorManager.searchMonitors(params)
     .then((monitors: any) => {
       if (!monitors)
         return res.status(404).json({

@@ -48,6 +48,7 @@
     "console-clear": "^1.1.1",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^9.0.0",
+    "node-mocks-http": "^1.13.0",
     "nodemon": "^3.0.1",
     "require-reload": "^0.2.2",
     "supertest": "^6.3.3",
