@@ -3,6 +3,9 @@
  */
 import { Request, Response } from "express";
 import EventManager from "../models/event/event.manager";
+import Event, { EventType } from "../models/event/event.model";
+import { MonitorType } from "../models/monitor/utils/monitor.types";
+import MonitorManager from "../models/monitor/monitor.manager";
 
 /**============*
  * CRUD ROUTES *
@@ -26,23 +29,15 @@ export const getEvent = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  return EventManager.getEvent(id)
-    .then((event: any) => {
-      if (!event) {
-        return res.status(404).json({
-          status: 404,
-          message: "Event not found",
-        });
-      }
-      return res.status(200).json(event);
-    })
-    .catch((err: any) => {
-      console.log(err);
-      return res.status(500).json({
-        status: 500,
-        message: err.message,
-      });
+  let event = await Event.findById(id);
+
+  if (!event)
+    return res.status(404).json({
+      status: 404,
+      message: "Event not found",
     });
+
+  return res.json(event);
 };
 
 export const deleteEvent = async (req: Request, res: Response) => {
@@ -67,23 +62,26 @@ export const deleteEvent = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  return EventManager.deleteEvent(id)
-    .then((sucess: boolean) => {
-      if (!sucess) {
-        return res.status(404).json({
-          status: 404,
-          message: "Event not found",
-        });
-      }
-      return res.status(200).json({
-        status: 200,
-        message: "Event deleted",
+  try {
+    let event = await Event.deleteOne({ _id: id });
+
+    if (!event)
+      return res.status(404).json({
+        status: 404,
+        message: "Event not found",
       });
-    })
-    .catch((err: any) => {
-      console.log(err);
-      return res.status(500).json(err);
+
+    return res.json({
+      status: 200,
+      message: "Event deleted",
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 500,
+      message: error,
+    });
+  }
 };
 
 /**==============*
@@ -116,22 +114,32 @@ export const searchEvents = async (req: Request, res: Response) => {
    *===========================*/
   const params = req.query || {};
 
-  return EventManager.searchEvents(params)
-    .then((events: any) => {
-      if (!events)
-        return res.status(404).json({
-          status: 404,
-          message: "No events found",
-        });
-      return res.status(200).json(events);
-    })
-    .catch((err: any) => {
-      console.log(err);
-      return res.status(500).json(err);
+  let events: Array<EventType> = [];
+
+  try {
+    events = await Event.find({ monitorId: params.monitor });
+
+    if (params.online != null) {
+      events = events.filter((event: EventType) => {
+        return event.online === Boolean(params.online);
+      });
+    }
+
+    if (params.last) {
+      events = events.sort((a: EventType, b: EventType) => {
+        return b.timestamp.getTime() - a.timestamp.getTime();
+      });
+
+      events = [events[0]];
+    }
+    return res.json(events || []);
+  } catch (error) {
+    return res.json({
+      status: 500,
+      message: error,
     });
+  }
 };
 
 // TODO: Get the latest 30 day report
-export const getReport = (req: Request, res: Response) => {
-  
-}
+export const getReport = (req: Request, res: Response) => {};
