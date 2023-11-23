@@ -1,3 +1,6 @@
+import { Response } from "express";
+
+
 const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 export function generateRandomString(length: number) {
@@ -9,5 +12,9 @@ export function generateRandomString(length: number) {
 
     return result;
 }
+
+export const getResJson = (res: Response) => {
+  return (res as any)._getJSONData();
+};
 
 export default {};

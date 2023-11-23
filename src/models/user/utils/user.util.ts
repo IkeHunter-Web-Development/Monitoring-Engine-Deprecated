@@ -1,6 +1,6 @@
 import { UserType, UserPromise, UsersPromise } from "./user.types";
 import UserManager from "../user.manager";
-import { generateRandomString } from "../../../utils/generator";
+import { generateRandomString } from "../../../utils/utils";
 
 export const generateSampleUser = (data: any = {}): UserPromise => {
   let payload = {

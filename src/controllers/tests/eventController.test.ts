@@ -11,6 +11,10 @@ import EventManager from "../../models/event/event.manager";
 import { forceAuthHeader } from "../../utils/forceAuth";
 import Agency from "../../models/agency/agency.model";
 import Project from "../../models/project/project.model";
+import httpMocks from "node-mocks-http";
+import { Request, Response } from "express";
+import * as controller from "../event.controller";
+import { getResJson } from "../../utils/utils";
 
 const defaultAgency = {
   agencyId: "456",
@@ -24,14 +28,13 @@ const defaultProject = {
 
 const defaultMonitor = {
   project: defaultProject,
-  agency: defaultAgency,
   url: "https://www.google.com",
   users: [],
   title: "Google",
 };
 
 const defaultEvent = {
-  // monitorId: "123",
+  monitorId: "123",
   timestamp: Date.now(),
   message: "Monitor is offline",
   statusCode: 500,
@@ -50,7 +53,12 @@ let e5: EventType;
 let e6: EventType;
 
 describe("Event controller", () => {
+  let req: Request;
+  let res: Response;
+
   beforeEach(async () => {
+    res = httpMocks.createResponse();
+
     await Agency.create(defaultAgency);
     await Project.create(defaultProject);
     /**
@@ -125,23 +133,29 @@ describe("Event controller", () => {
    * GET /events/:id should return an event.
    */
   it("should get an event", async () => {
-    const res = await request(server)
-      .get(`/events/${e1._id}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      params: {id: e1._id}
+    });
+    await controller.getEvent(req, res);
+    const body = getResJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body._id).toEqual(e1._id.toString());
+    expect(res.statusCode).toEqual(200);
+    expect(body._id).toEqual(e1._id.toString());
   });
   /**
    * DELETE /events/:id should delete an event.
    */
   it("should delete an event", async () => {
-    const res = await request(server)
-      .delete(`/events/${e1._id}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "DELETE",
+      params: { id: e1._id },
+    });
+    await controller.deleteEvent(req, res);
+    const body = getResJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body.message).toEqual("Event deleted");
+    expect(res.statusCode).toEqual(200);
+    expect(body.message).toEqual("Event deleted");
   });
 
   /**=============*
@@ -151,48 +165,71 @@ describe("Event controller", () => {
    * GET /events/search/?monitor=id should get events for a monitor.
    */
   it("should get events for a monitor", async () => {
-    const res = await request(server)
-      .get(`/events-search/?monitor=${m1._id}`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: { monitor: m1._id },
+    });
+    await controller.searchEvents(req, res);
+    const body = getResJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body.length).toEqual(2);
-    expect(res.body[0]._id).toEqual(e1._id.toString());
+    expect(res.statusCode).toEqual(200);
+    expect(body.length).toEqual(2);
+    expect(body[0]._id).toEqual(e1._id.toString());
   });
   /**
    * GET /events/search/?monitor=id&online=false should get offline events for a monitor.
    */
   it("should get offline events for a monitor", async () => {
-    const res = await request(server)
-      .get(`/events-search/?monitor=${m1._id}&online=false`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: {
+        monitor: m1._id,
+        online: false,
+      },
+    });
+    await controller.searchEvents(req, res);
+    const body = getResJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body.length).toEqual(1);
-    expect(res.body[0]._id).toEqual(e1._id.toString());
+    expect(res.statusCode).toEqual(200);
+    expect(body.length).toEqual(1);
+    expect(body[0]._id).toEqual(e1._id.toString());
   });
   /**
    * GET /events/search/?monitor=id&online=false&last=true should get the
    * last time a monitor was offline.
    */
   it("should get the last time a monitor was offline", async () => {
-    const res = await request(server)
-      .get(`/events-search/?monitor=${m2._id}&online=false&last=true`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: {
+        monitor: m2._id,
+        online: false,
+        last: true,
+      },
+    });
+    await controller.searchEvents(req, res);
+    const body = getResJson(res);
 
-    expect(res.status).toEqual(200);
-    expect(res.body[0]._id).toEqual(e5._id.toString());
+    expect(res.statusCode).toEqual(200);
+    expect(body[0]._id).toEqual(e5._id.toString());
   });
   /**
    * GET /events/search/?monitor=id&online=true&last=true should get the
    * last time a monitor was online.
    */
   it("should get the last time a monitor was online", async () => {
-    const res = await request(server)
-      .get(`/events-search/?monitor=${m2._id}&online=true&last=true`)
-      .set(forceAuthHeader.name, forceAuthHeader.value);
+    req = httpMocks.createRequest({
+      method: "GET",
+      query: {
+        monitor: m2._id,
+        online: true,
+        last: true,
+      },
+    });
+    await controller.searchEvents(req, res);
+    const body = getResJson(res)
 
-    expect(res.status).toEqual(200);
-    expect(res.body[0]._id).toEqual(e6._id.toString());
+    expect(res.statusCode).toEqual(200);
+    expect(body[0]._id).toEqual(e6._id.toString());
   });
 });

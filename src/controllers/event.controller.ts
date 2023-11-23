@@ -26,7 +26,7 @@ export const getEvent = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  EventManager.getEvent(id)
+  return EventManager.getEvent(id)
     .then((event: any) => {
       if (!event) {
         return res.status(404).json({
@@ -67,7 +67,7 @@ export const deleteEvent = async (req: Request, res: Response) => {
    *===========================*/
   const id = req.params.id || "";
 
-  EventManager.deleteEvent(id)
+  return EventManager.deleteEvent(id)
     .then((sucess: boolean) => {
       if (!sucess) {
         return res.status(404).json({
@@ -116,7 +116,7 @@ export const searchEvents = async (req: Request, res: Response) => {
    *===========================*/
   const params = req.query || {};
 
-  EventManager.searchEvents(params)
+  return EventManager.searchEvents(params)
     .then((events: any) => {
       if (!events)
         return res.status(404).json({

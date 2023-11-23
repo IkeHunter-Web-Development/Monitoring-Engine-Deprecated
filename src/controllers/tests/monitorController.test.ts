@@ -9,6 +9,7 @@ import { Request, Response } from "express";
 import httpMocks from "node-mocks-http";
 import * as controller from "../monitor.controller";
 import Agency from "../../models/agency/agency.model";
+import { getResJson } from "../../utils/utils";
 
 const defaultAgency = {
   agencyId: "456",
@@ -43,9 +44,9 @@ const u4 = {
   email: "u4@example.com",
 };
 
-const getJson = (res: Response) => {
-  return (res as any)._getJSONData();
-};
+// const getResJson = (res: Response) => {
+//   return (res as any)._getJSONData();
+// };
 
 describe("Monitor controller", () => {
   let req: Request;
@@ -117,7 +118,7 @@ describe("Monitor controller", () => {
     expect(res.statusCode).toEqual(200);
 
     // const body = (res as any)._getJSONData();
-    const body = getJson(res);
+    const body = getResJson(res);
     expect(body._id).toEqual(monitor._id.toString());
   });
 
@@ -174,7 +175,7 @@ describe("Monitor controller", () => {
       method: "GET",
     });
     await controller.getMonitors(req, res);
-    const body = getJson(res);
+    const body = getResJson(res);
 
     expect(res.statusCode).toEqual(200);
     expect(body.length).toEqual(3);
@@ -239,7 +240,7 @@ describe("Monitor controller", () => {
       query: { projectId: m1.project.projectId },
     });
     await controller.searchMonitors(req, res);
-    const body = getJson(res);
+    const body = getResJson(res);
 
     expect(res.statusCode).toEqual(200);
     expect(body.length).toEqual(1);
@@ -273,7 +274,7 @@ describe("Monitor controller", () => {
       query: { userId: m2.users[0].userId },
     });
     await controller.searchMonitors(req, res);
-    const body = getJson(res);
+    const body = getResJson(res);
 
     expect(res.statusCode).toEqual(200);
     expect(body.length).toEqual(1);

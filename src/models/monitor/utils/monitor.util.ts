@@ -3,7 +3,7 @@ import MonitorManager from "../monitor.manager";
 import { MonitorType } from "./monitor.types";
 import { generateSampleUser } from "../../user/utils/user.util";
 // import { generateRandomString } from "src/utils/generator";
-import { generateRandomString } from "../../../utils/generator";
+import { generateRandomString } from "../../../utils/utils";
 
 export const generateSampleMonitor = async (data: any = {}) => {
   let payload = {
