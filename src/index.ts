@@ -1,9 +1,9 @@
-import WebsitePing from "./logic/cron";
+import WebsitePing from "./services/cron";
 import mongoose from "mongoose";
 import "dotenv/config";
 import server from "./server";
 import swaggerUi from "swagger-ui-express";
-import { initializeSwagger } from "./docs/swagger";
+import { initializeSwagger } from "./core/docs/swagger";
 
 const HOST = process.env.HOST || "localhost";
 const PORT = +(process.env.PORT || 3000);
@@ -23,9 +23,9 @@ mongoose
   });
 
 initializeSwagger().then(() => {
-  const swaggerDocument = require('./docs/swagger_output.json');
+  const swaggerDocument = require("./docs/swagger_output.json");
   server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
-})
+});
 
 server.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}`);
