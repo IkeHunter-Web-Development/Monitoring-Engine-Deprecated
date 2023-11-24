@@ -4,16 +4,9 @@
 import request from "supertest";
 import { Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "../auth.middleware";
-import {
-  errInvalidToken,
-  errNoToken,
-  errUnauthorized,
-  invalidToken,
-} from "../utilities/auth.utilities";
+import { errNoToken } from "../utilities/auth.utilities";
 import User from "../../models/user/user.model";
 import { UserType } from "src/core/models/user/utils/user.types";
-// import UserManager from "../../models/user/user.manager";
-// import { forceAuthHeader, forceAuthLabels } from "../../utils/forceAuth";
 import "dotenv/config";
 
 describe("Authorization middleware", () => {
@@ -49,7 +42,7 @@ describe("Authorization middleware", () => {
     expect(mockResponse.json).toHaveBeenCalledWith(expectedResponse);
   });
 
-  // TODO: 
+  // TODO:
   // test("with header, invalid token", async () => {
   //   const expectedResponse = errUnauthorized;
   //   mockRequest = {

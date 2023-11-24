@@ -3,19 +3,15 @@
  * check auth service to see if they are logged in with SSO,
  * and if that's not the case, redirect them to the auth service.
  */
-
 import { NextFunction, Request, Response } from "express";
-// import UserManager from "../models/user/user.manager";
 import {
   errNoToken,
   errUnauthorized,
   AuthServiceResponse,
   verifyUser,
-  errInvalidToken,
 } from "./utilities/auth.utilities";
 import { UserOrNull, UserType } from "src/core/models/user/utils/user.types";
 import User from "../models/user/user.model";
-// import { isForceAuth, forceAuthLabels } from "../utils/forceAuth";
 
 const unauthorizedError = new Error(errUnauthorized.message);
 const noTokenError = new Error(errNoToken.message);
@@ -27,9 +23,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
    *  if is present, not in db -> authenticate token with auth service, store in db
    *  if is present, is in db -> next()
    */
-
-  // if (process.env.NODE_ENV === "development") return next();
-  // if (isForceAuth(req, forceAuthLabels.AUTH)) return next();
   if (!req.headers) return res.status(401).json(errNoToken);
 
   try {
@@ -44,9 +37,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
     let user: UserOrNull;
 
-    // user = await UserManager.getUserByToken(token).catch((err: any) => {
-    //   throw err;
-    // });
     user = await User.find({ toke: token }).then((user: any) => {
       if (!user) throw noTokenError;
       return user;

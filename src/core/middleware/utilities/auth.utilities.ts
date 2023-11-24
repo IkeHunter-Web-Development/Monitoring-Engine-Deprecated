@@ -1,8 +1,6 @@
 /**
  * @fileoverview Utility functions for authentication middleware.
  */
-// import UserManager from "../../models/user/user.manager";
-import User from "../../models/user/user.model";
 import "dotenv/config";
 
 /** Error message if no token provided */
@@ -57,17 +55,6 @@ export const verifyUser = async (token: string): Promise<AuthServiceResponse> =>
       data.status = 401;
       return data;
     }
-
-    // const randomUser = await UserManager.getRandomUser();
-    // const randomUser = await
-
-    // if (!randomUser) throw new Error("Error mocking user request.");
-
-    // data.userId = randomUser.userId;
-    // data.email = randomUser.email;
-    // data.status = 200;
-
-    // return data;
   }
   return data;
 };

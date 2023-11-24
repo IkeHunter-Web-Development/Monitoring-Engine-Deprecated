@@ -1,8 +1,4 @@
-// import { generateRandomString } from "@src/utils/generator";
 import MonitorManager from "./monitor";
-import { MonitorType } from "./models/types";
-import { generateSampleUser } from "../core/models/user/utils/user.util";
-// import { generateRandomString } from "src/utils/generator";
 import { generateRandomString } from "../utils/utils";
 
 export const generateSampleMonitor = async (data: any = {}) => {

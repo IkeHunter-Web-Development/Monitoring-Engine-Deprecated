@@ -4,25 +4,12 @@
 import Monitor from "../models/model";
 import MonitorManager from "../monitor";
 import { MonitorType } from "src/monitor/models/types";
-// import Project from "../../models/project/project.model";
 import { Request, Response } from "express";
 import httpMocks from "node-mocks-http";
 import * as controller from "./controller";
-// import Agency from "../../models/agency/agency.model";
 import { getResJson } from "../../utils/utils";
 
-// const defaultAgency = {
-//   agencyId: "456",
-//   name: "Test agency",
-// };
-// const defaultProject = {
-//   agency: defaultAgency,
-//   projectId: "123",
-//   name: "Test Project",
-// };
-
 const defaultMonitor = {
-  // project: defaultProject,
   projectId: "123abc",
   url: "https://www.google.com",
   users: [],
@@ -45,18 +32,11 @@ const u4 = {
   email: "u4@example.com",
 };
 
-// const getResJson = (res: Response) => {
-//   return (res as any)._getJSONData();
-// };
-
 describe("Monitor controller", () => {
   let req: Request;
   let res: Response;
 
   beforeEach(async () => {
-    // await Agency.create(defaultAgency);
-    // await Project.create(defaultProject);
-
     res = httpMocks.createResponse();
   });
   /**==========
@@ -149,30 +129,15 @@ describe("Monitor controller", () => {
   it("should get all monitors", async () => {
     let monitor = await Monitor.create({
       ...defaultMonitor,
-      projectId: "123"
-      // project: {
-      //   agency: defaultAgency,
-      //   projectId: "123",
-      //   name: "Test Project",
-      // },
+      projectId: "123",
     });
     let monitor2 = await Monitor.create({
       ...defaultMonitor,
-      projectId: "456"
-      // project: {
-      //   agency: defaultAgency,
-      //   projectId: "456",
-      //   name: "Test Project 2",
-      // },
+      projectId: "456",
     });
     let monitor3 = await Monitor.create({
       ...defaultMonitor,
-      projectId: "789"
-      // project: {
-      //   agency: defaultAgency,
-      //   projectId: "789",
-      //   name: "Test Project 3",
-      // },
+      projectId: "789",
     });
 
     const req = httpMocks.createRequest({
@@ -222,20 +187,12 @@ describe("Monitor controller", () => {
    * that belong to a project.
    */
   it("should return monitors for project", async () => {
-    // const p2 = {
-    //   agency: defaultAgency,
-    //   projectId: "456",
-    //   name: "Test Project 2",
-    // };
-    // await Project.create(p2);
-
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
     });
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
-      // project: p2,
       projectId: "456",
       users: [u3, u4],
     });
@@ -256,13 +213,6 @@ describe("Monitor controller", () => {
    * that a user is subscribed to.
    */
   it("should return monitors that a user is subscribed to", async () => {
-    // const p2 = {
-    //   agency: defaultAgency,
-    //   projectId: "456",
-    //   name: "Test Project 2",
-    // };
-    // await Project.create(p2);
-
     let m1 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
@@ -270,7 +220,6 @@ describe("Monitor controller", () => {
     let m2 = await MonitorManager.createMonitor({
       ...defaultMonitor,
       projectId: "456",
-      // project: p2,
       users: [u3, u4],
     });
 

@@ -1,20 +1,14 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-// import Emailer from "../../services/emails/emailer";
-// import Agency from "../agency/agency.model";
 import EventManager from "../event/event";
-// import Project from "../project/project.model";
-// import UserManager from "../core/models/user/user.manager";
-import { UserOrNull, UserType } from "../core/models/user/utils/user.types";
+import { UserType } from "../core/models/user/utils/user.types";
 import Monitor from "./models/model";
 
 import {
-  MonitorPromise,
   MonitorPromiseOrNull,
   MonitorOrNull,
   MonitorType,
-  MonitorDetails,
   MonitorDetailsPromise,
 } from "./models/types";
 import User from "src/core/models/user/user.model";
@@ -37,13 +31,6 @@ export default class MonitorManager {
       users: data.users || [],
       title: data.title || "",
     };
-
-    // if (data.project) {
-    //   // let project = await Project.findOne({ projectId: data.project.projectId });
-    //   const project = Project
-
-    //   if (project) payload.project = project;
-    // }
 
     return payload;
   }
@@ -104,8 +91,6 @@ export default class MonitorManager {
    * @returns The monitor.
    */
   static async getMonitor(id: string): MonitorPromiseOrNull {
-    // let monitor: MonitorOrNull = await Monitor.findOne({ _id: id });
-    // console.log('id', id)
     let monitor: MonitorOrNull = await Monitor.findById(id);
 
     if (!monitor) return null;
@@ -142,7 +127,6 @@ export default class MonitorManager {
       .catch((err: any) => {
         console.log(err);
         throw err;
-        // return false;
       });
 
     return status;
@@ -232,19 +216,15 @@ export default class MonitorManager {
    */
   static async handleMonitorDown(monitor: MonitorType, statusCode: number, error: string) {
     monitor.online = false;
-
-    // let event = await EventManager.createEvent({ monitor, statusCode, error });
     let event = await EventManager.registerDownEvent(monitor._id, statusCode, error);
 
     if (!event) return false;
 
     monitor.users.forEach(async (user: any) => {
-      // let userObj = await UserManager.getUserById(user.userId);
       const userObj = User.findById(user.userId);
       if (userObj !== undefined) {
         let message = `Monitor ${monitor.title} is down. Status code: ${statusCode}`;
-        // Emailer.sendEmail(userObj.email, "Monitor Down", message);
-        console.log('sending email: ', message);
+        console.log("sending email: ", message);
       }
     });
   }

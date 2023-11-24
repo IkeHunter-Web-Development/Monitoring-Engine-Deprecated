@@ -9,28 +9,13 @@ import Monitor from "./model";
  * Tests for the monitor model.
  */
 describe("Monitor", () => {
-  // let agency = {
-  //   agencyId: "456",
-  //   name: "Test agency",
-  // };
-  // let project = {
-  //   agency: agency,
-  //   projectId: "123",
-  //   name: "Test Project",
-  // };
   let monitorData: any = {
-    // project: project,
     projectId: "123",
     url: "https://example.com",
     users: [],
     statusCode: 200,
     title: "Example",
   };
-
-  beforeEach(async () => {
-    // await Project.create(project);
-    // await Agency.create(agency);
-  });
 
   /**
    * Monitor models should be able to be created.
@@ -39,7 +24,6 @@ describe("Monitor", () => {
     const payload = { ...monitorData };
 
     const monitor = await Monitor.create(payload);
-
     expect(monitor).toBeDefined();
   });
 

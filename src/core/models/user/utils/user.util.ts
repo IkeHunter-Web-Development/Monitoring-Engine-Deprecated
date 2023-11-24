@@ -9,10 +9,8 @@ export const generateSampleUser = async (data: any = {}): UserPromise => {
     email: data.email || "user@example.com",
     token: data.token || "skdlf7asd98f7sk2h3k2jh2klhlhk",
     projectIds: [],
-    // permissions: data.permissions,
   };
 
-  // return UserManager.createUserFromObject(payload);
   const user: UserType = await User.create(payload)
     .then((user) => {
       if (!user) {
@@ -37,9 +35,6 @@ export const generateSampleUsers = async (count: number): UsersPromise => {
       permissions: [],
     };
 
-    // await UserManager.createUserFromObject(payload).then((user: any) => {
-    //   users.push(user);
-    // });
     await User.create(payload).then((user: UserType) => {
       users.push(user);
     });

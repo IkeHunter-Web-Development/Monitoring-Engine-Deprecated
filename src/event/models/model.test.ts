@@ -17,19 +17,7 @@ describe("Event", () => {
    * Create a monitor before each test.
    */
   beforeEach(async () => {
-    // const agency = {
-    //   agencyId: "456",
-    //   name: "Test agency",
-    // };
-    // const project = {
-    //   agency: agency,
-    //   projectId: "123",
-    //   name: "Test Project",
-    // };
-
     let payload = {
-      // project: project,
-      // agency: agency,
       projectId: "123",
       url: "https://example.com",
       users: [],
@@ -37,8 +25,6 @@ describe("Event", () => {
       title: "Example",
     };
 
-    // await Agency.create(agency);
-    // await Project.create(project);
     monitor = await Monitor.create(payload);
 
     eventData = {
@@ -54,11 +40,9 @@ describe("Event", () => {
    */
   it("should add an event", async () => {
     const event = { ...eventData };
-
     await new Event(event).save();
 
     const events = await Event.find({});
-
     expect(events.length).toEqual(1);
   });
 
@@ -80,7 +64,6 @@ describe("Event", () => {
     await Event.updateOne(updatedEvent);
 
     const events = await Event.find({});
-
     expect(events[0].online).toEqual(false);
   });
 
@@ -91,7 +74,6 @@ describe("Event", () => {
     const event = { ...eventData };
 
     await new Event(event).save();
-
     const events = await Event.find({});
 
     expect(events.length).toEqual(1);
@@ -102,13 +84,11 @@ describe("Event", () => {
    */
   it("should delete an event", async () => {
     const event = { ...eventData };
-
     let obj = await new Event(event).save();
 
     await Event.deleteOne({ _id: obj._id });
 
     const events = await Event.find({});
-
     expect(events.length).toEqual(0);
   });
 });

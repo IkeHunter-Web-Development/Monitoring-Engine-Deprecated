@@ -2,8 +2,6 @@
  * @fileoverview User model.
  */
 import mongoose from "mongoose";
-// import { AgencySchema } from "../agency/agency.model";
-// import { ProjectSchema } from "../project/project.model";
 
 export const userSchema = new mongoose.Schema({
   userId: {
@@ -20,15 +18,8 @@ export const userSchema = new mongoose.Schema({
   },
   projectIds: {
     type: Array,
-    required: false
-  }
-  // agencyIds: {
-  //   type: Array,
-  //   required: false,
-  // },
-  // agencies: [AgencySchema],
-  // projects: [ProjectSchema],
-  
+    required: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

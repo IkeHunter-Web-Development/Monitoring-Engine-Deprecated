@@ -5,10 +5,6 @@ import { userSchema } from "../../core/models/user/user.model";
 import { MonitorType } from "./types";
 
 export const monitorSchema = new mongoose.Schema({
-  // project: {
-  //   type: ProjectSchema,
-  //   required: false,
-  // },
   projectId: {
     type: String,
     required: true,

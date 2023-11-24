@@ -1,11 +1,6 @@
-// import { AgencySchema } from "./../../agency/agency.model";
 import mongoose from "mongoose";
-// import Monitor from "../monitor.model";
-// import { AgencyType } from "src/models/agency/agency.types";
-// import { ProjectType } from "src/models/project/project.types";
 
 interface MonitorObject {
-  // project: ProjectType;
   projectId: string;
   url: string;
   users: any[];

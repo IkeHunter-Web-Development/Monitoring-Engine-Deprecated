@@ -3,15 +3,11 @@ import MonitorManager from "../../monitor/monitor";
 import { MonitorOrNull } from "../../monitor/models/types";
 import { UserOrNull } from "../models/user/utils/user.types";
 import { simpleResponse } from "../../utils/responses";
-// import { isForceAuth, forceAuthLabels } from "../utils/forceAuth";
 
 /**
  * Check if the user has permission to access the monitor.
  */
 export const hasPermission = async (req: Request, res: Response, next: NextFunction) => {
-  // if (isForceAuth(req, forceAuthLabels.PERMS)) return next();
-  // if (process.env.NODE_ENV === "development") return next();
-
   const user: UserOrNull = res.locals.user;
   if (!user) return simpleResponse(res, 400, "Bad Request");
 
