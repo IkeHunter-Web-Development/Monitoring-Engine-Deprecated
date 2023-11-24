@@ -6,13 +6,11 @@ import "dotenv/config";
 
 let host = process.env.HOST !== "0.0.0.0" ? process.env.HOST : "localhost";
 
-const outputFile = "./docs/swagger_output.json";
+const outputFile = "src/core/docs/swagger_output.json";
+
 
 const endpointsFiles = [
-  "./router.ts",
-  "./controllers/event.controller.ts",
-  "./controllers/monitor.controller.ts",
-  "./controllers/main.controller.ts",
+  "src/router.ts",
 ];
 
 const doc = {

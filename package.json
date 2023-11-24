@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Monitors list of websites to detect downtime using cron jobs.",
   "main": "build/index",
-  "types": "dist/index",
+  "types": "build/index",
   "scripts": {
     "test": "npm run build && jest --testTimeout=5000 --detectOpenHandles --forceExit",
     "test:watch": "npm run build && jest --watch --testTimeout=5000 --detectOpenHandles --forceExit --verbose",

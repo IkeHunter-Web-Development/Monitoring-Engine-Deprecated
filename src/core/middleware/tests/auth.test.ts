@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "../auth.middleware";
 import { errNoToken } from "../utilities/auth.utilities";
 import User from "../../models/user/user.model";
-import { UserType } from "src/core/models/user/utils/user.types";
+import { UserType } from "../../models/user/utils/user.types";
 import "dotenv/config";
 
 describe("Authorization middleware", () => {

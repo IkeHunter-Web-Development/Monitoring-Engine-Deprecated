@@ -15,15 +15,15 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB successfully");
 
-    let websitePing = new WebsitePing();
-    websitePing.setupJobs();
+    // let websitePing = new WebsitePing();
+    // websitePing.setupJobs();
   })
   .catch((err: any) => {
     console.error.bind("Error connecting to MongoDB: ", err);
   });
 
 initializeSwagger().then(() => {
-  const swaggerDocument = require("./docs/swagger_output.json");
+  const swaggerDocument = require("./core/docs/swagger_output.json");
   server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
 });
 

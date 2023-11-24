@@ -11,7 +11,7 @@ import {
   MonitorType,
   MonitorDetailsPromise,
 } from "./models/types";
-import User from "src/core/models/user/user.model";
+import User from "../core/models/user/user.model";
 
 export default class MonitorManager {
   private static instance: MonitorManager = new MonitorManager();
