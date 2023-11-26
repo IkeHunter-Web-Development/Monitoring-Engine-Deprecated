@@ -3,7 +3,7 @@
  */
 import EventManager from "../event/event";
 import { UserType } from "../core/models/user/utils/user.types";
-import Monitor from "./models/model";
+import Monitor from "./models/monitor.model";
 
 import {
   MonitorPromiseOrNull,

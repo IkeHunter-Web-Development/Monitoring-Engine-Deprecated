@@ -2,7 +2,7 @@
  * @fileoverview Tests for the Event model.
  */
 // import Agency from "../../agency/agency.model";
-import Monitor from "../../monitor/models/model";
+import Monitor from "../../monitor/models/monitor.model";
 import Event from "./model";
 // import Project from "../../project/project.model";
 

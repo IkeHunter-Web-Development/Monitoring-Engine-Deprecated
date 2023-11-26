@@ -1,7 +1,21 @@
 import { MonitorType } from "src/monitor/models/types";
+// import axios from "axios";
+import {request} from './config';
 
 export default class NetworkManager {
-  static async sendRequest(url: string, data: any) {}
+  private gatewayUrl: string;
+  private static instance = new NetworkManager()
+  
+  constructor() {
+    this.gatewayUrl = "http://localhost:8080"
+  }
+  
+  static async sendRequest(url: string, data?: any) {
+    return request({
+      url: this.instance.gatewayUrl,
+      method: 'GET'
+    })
+  }
   // TODO: authenticate with auth engine
   static async authenticate(token: string) {}
   // TODO: get project name, agency

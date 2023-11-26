@@ -5,6 +5,8 @@ import { userSchema } from "../../core/models/user/user.model";
 import { MonitorType } from "./types";
 
 export const monitorSchema = new mongoose.Schema({
+  // TODO: targetStatusCode, currentStatusCode, status
+  // TODO: Recovery mode? send request every x seconds
   projectId: {
     type: String,
     required: true,

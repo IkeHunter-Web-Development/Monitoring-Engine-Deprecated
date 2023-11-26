@@ -25,7 +25,7 @@ const config: JestConfigWithTsJest = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    // "src/**/*.ts",
+    "./**/*.ts",
     "src/controllers/**",
     "src/models/**",
     "src/middleware/**"

@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
-import { monitorSchema } from "../../../monitor/models/model";
+import { monitorSchema } from "./monitor.model";
 
 export const Report = new mongoose.Schema({
-  rangeType: {
-    type: String,
-    required: true,
-    enum: ["day", "week", "month", "year"],
-  },
+  // rangeType: {
+  //   type: String,
+  //   required: true,
+  //   enum: ["day", "week", "month", "year"],
+  // },
   // dayRange: {
   //   type: Number,
   //   required: true,
   //   default: 1,
   // },
-  rangeStart: {
+  startDate: {
     type: Date,
     required: true,
   },
-  rangeEnd: {
+  endDate: {
     type: Date,
     required: true,
   },
@@ -27,6 +27,10 @@ export const Report = new mongoose.Schema({
   totalUptimeMinutes: {
     type: Number,
     required: true,
+  },
+  daysWithDowntime: {
+    type: Array<Date>,
+    required: true
   },
   totalEvents: {
     type: Number,
@@ -44,16 +48,18 @@ export const Report = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  totalRequests: {
-    type: Number,
-    required: true,
-  },
-  totalSuccessfulRequests: {
-    type: Number,
-    required: true,
-  },
-  totalFailedRequests: {
-    type: Number,
-    required: true,
-  },
+  // totalRequests: {
+  //   type: Number,
+  //   required: true,
+  // },
+  // totalSuccessfulRequests: {
+  //   // TODO: is this needed?
+  //   type: Number,
+  //   required: true,
+  // },
+  // totalFailedRequests: {
+  //   // TODO: is this needed?
+  //   type: Number,
+  //   required: true,
+  // },
 });

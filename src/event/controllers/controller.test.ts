@@ -3,9 +3,9 @@
  */
 import request from "supertest";
 import server from "../../server";
-import Monitor from "../../monitor/models/model";
+import Monitor from "../../monitor/models/monitor.model";
 import { MonitorType } from "../../monitor/models/types";
-import Event, { EventType } from "../models/model";
+import Event from "../models/model";
 import MonitorManager from "../../monitor/monitor";
 import EventManager from "../event";
 // import { forceAuthHeader } from "../../utils/forceAuth";
@@ -15,6 +15,7 @@ import httpMocks from "node-mocks-http";
 import { Request, Response } from "express";
 import * as controller from "./controller";
 import { getResJson } from "../../utils/utils";
+import { EventType } from "../models/types";
 
 // const defaultAgency = {
 //   agencyId: "456",

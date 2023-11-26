@@ -1,9 +1,14 @@
-import mongoose from "mongoose";
-import Monitor, { monitorSchema } from "../../monitor/models/model";
+import mongoose, { Schema, Types } from "mongoose";
+import Monitor, { monitorSchema } from "../../monitor/models/monitor.model";
+import { ObjectId } from "mongodb";
 
 const eventSchema = new mongoose.Schema({
+  // monitorId: {
+  //   type: String,
+  //   required: true,
+  // },
   monitorId: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   statusCode: {
@@ -31,4 +36,4 @@ const eventSchema = new mongoose.Schema({
 const Event = mongoose.model("Event", eventSchema);
 
 export default Event;
-export type EventType = InstanceType<typeof Event>;
+

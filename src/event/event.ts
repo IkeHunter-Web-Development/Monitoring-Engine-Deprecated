@@ -1,11 +1,30 @@
 /**
  * @fileoverview Event manager class.
  */
-import Event, { EventType } from "./models/model";
+import Event from "./models/model";
 import MonitorManager from "../monitor/monitor";
 import { MonitorType } from "../monitor/models/types";
+import { EventArrayPromise, EventPromise, EventPromiseOrNull, EventType } from "./models/types";
 
 export default class EventManager {
+  
+  static async parseData(data: any) {
+    let monitor = await MonitorManager.getMonitor(data.monitorId);
+    
+    if (!monitor) throw new Error("Monitor id invalid. Monitor doesn't exist.");
+    
+    let payload = {
+      monitorId: monitor._id,
+      statusCode: data.statusCode,
+      online: data.online,
+      timestamp: data.timestamp ? data.timestamp : Date.now(),
+      message: data.message,
+      responseTime: data.responsetime
+    };
+    
+    return payload;
+  }
+  
   /**
    * Creates a new event.
    *
@@ -16,22 +35,19 @@ export default class EventManager {
    *
    * @returns The created event.
    */
-  static async createEvent(data: any) {
-    let monitor = await MonitorManager.getMonitor(data.monitorId);
-    if (!monitor) throw new Error("Monitor not found");
+  static async createEvent(data: any): EventPromise {
+    const payload = await this.parseData(data);
 
-    let payload = {
-      monitorId: monitor._id,
-      statusCode: data.statusCode,
-      online: data.online,
-      timestamp: data.timestamp ? data.timestamp : Date.now(),
-      message: data.message,
-    };
+    let event: EventType = await Event.create(payload)
+      .then((event) => {
+        if (!event) throw new Error("Error creating event! No event returned.");
 
-    let event = Event.create(payload).catch((err: any) => {
-      console.log(err);
-      throw err;
-    });
+        return event;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        throw err;
+      });
 
     return event;
   }
@@ -66,7 +82,7 @@ export default class EventManager {
    *
    * @returns The event.
    */
-  static async getEvent(id: string): Promise<EventType | null> {
+  static async getEvent(id: string): EventPromiseOrNull {
     let event = await Event.findOne({ _id: id })
       .then((event) => {
         return event || null;
@@ -86,7 +102,7 @@ export default class EventManager {
    *
    * @returns The events.
    */
-  static async getEventsForMonitor(monitor: MonitorType): Promise<Array<EventType>> {
+  static async getEventsForMonitor(monitor: MonitorType): EventArrayPromise {
     let events = await Event.find({ monitorId: monitor._id })
       .then((event) => {
         return event;
@@ -107,7 +123,7 @@ export default class EventManager {
    * @returns The offline events.
    */
   // TODO: Is this needed? Should this have range?
-  static async getOfflineEventsForMonitor(monitorId: string): Promise<Array<EventType>> {
+  static async getOfflineEventsForMonitor(monitorId: string): EventArrayPromise {
     let events = await Event.find({ monitorId: monitorId, online: false }).catch((err: any) => {
       console.log(err);
       throw err;
@@ -123,7 +139,7 @@ export default class EventManager {
    *
    * @returns The last offline time.
    */
-  static async getLastOfflineTimeForMonitor(monitorId: string): Promise<EventType | null> {
+  static async getLastOfflineTimeForMonitor(monitorId: string): EventPromiseOrNull {
     let event = await Event.findOne({ monitorId: monitorId, online: false })
       .sort({ timestamp: -1 })
       .catch((err: any) => {
@@ -141,7 +157,7 @@ export default class EventManager {
    *
    * @returns The last online time.
    */
-  static async getLastOnlineTimeForMonitor(monitorId: string): Promise<EventType | null> {
+  static async getLastOnlineTimeForMonitor(monitorId: string): EventPromiseOrNull {
     let event = await Event.findOne({ monitorId: monitorId, online: true })
       .sort({ timestamp: -1 })
       .catch((err: any) => {
@@ -186,7 +202,7 @@ export default class EventManager {
    *
    * @returns The filtered events.
    */
-  static async filterEvents(params: any, events: Array<EventType>): Promise<Array<EventType>> {
+  static async filterEvents(params: any, events: Array<EventType>): EventArrayPromise {
     let filteredEvents: Array<EventType> = events;
 
     if (params.online != null) {
@@ -214,7 +230,7 @@ export default class EventManager {
    *
    * @returns The events.
    */
-  static async searchEvents(params: any): Promise<Array<EventType>> {
+  static async searchEvents(params: any): EventArrayPromise {
     let criteria: any = {};
     let events: Array<EventType> = [];
     let monitor: MonitorType;

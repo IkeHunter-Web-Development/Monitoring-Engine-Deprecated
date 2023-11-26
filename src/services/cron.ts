@@ -4,7 +4,7 @@
 import cron from "node-cron";
 import Mailer from "./emails";
 import Logger from "./logger";
-import Monitor from "../monitor/models/model";
+import Monitor from "../monitor/models/monitor.model";
 
 let LogManager: Logger = new Logger();
 const logger = LogManager.logger;

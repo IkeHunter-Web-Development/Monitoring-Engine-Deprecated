@@ -1,7 +1,7 @@
 /**
  * @fileoverview Tests for monitor api routes.
  */
-import Monitor from "../models/model";
+import Monitor from "../models/monitor.model";
 import MonitorManager from "../monitor";
 import { MonitorType } from "../models/types";
 import { Request, Response } from "express";
