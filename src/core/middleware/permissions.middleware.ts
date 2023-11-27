@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import MonitorManager from "../../monitor/monitor";
-import { MonitorOrNull } from "../../monitor/models/types";
+import { MonitorOrNull } from "../../monitor/models/monitor.types";
 import { UserOrNull } from "../models/user/utils/user.types";
 import { simpleResponse } from "../../utils/responses";
 

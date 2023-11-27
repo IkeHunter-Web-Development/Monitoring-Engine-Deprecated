@@ -4,7 +4,7 @@
 import { Request, Response } from "express";
 import EventManager from "../event";
 import Event from "../models/model";
-import { MonitorType } from "../../monitor/models/types";
+import { MonitorType } from "../../monitor/models/monitor.types";
 import MonitorManager from "../../monitor/monitor";
 import { EventType } from "../models/types";
 

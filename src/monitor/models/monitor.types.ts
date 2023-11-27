@@ -31,17 +31,4 @@ export interface MonitorDetails extends MonitorObject {
 
 export type MonitorDetailsPromise = Promise<MonitorDetails>;
 
-interface ReportObject {
-  startDate: Date;
-  endDate: Date;
-  totalDays: number;
-  totalDowntimeMinutes: number;
-  totalUptimeMinutes: number;
-  daysWithDowntime: Array<Date>;
-  totalEvents: number;
-  totalDowntimeEvents: number;
-  totalUptimeEvents: number;
-  averageResponseTime: number;
-}
 
-export type ReportType = mongoose.Document & ReportObject;

@@ -3,7 +3,7 @@
  */
 import Monitor from "../models/monitor.model";
 import MonitorManager from "../monitor";
-import { MonitorType } from "../models/types";
+import { MonitorType } from "../models/monitor.types";
 import { Request, Response } from "express";
 import httpMocks from "node-mocks-http";
 import * as controller from "./controller";

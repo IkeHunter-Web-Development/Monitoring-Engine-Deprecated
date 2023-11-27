@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { userSchema } from "../../core/models/user/user.model";
 // import { ProjectSchema } from "../project/project.model";
 // import { AgencySchema } from "../agency/agency.model";
-import { MonitorType } from "./types";
+import { MonitorType } from "./monitor.types";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: targetStatusCode, currentStatusCode, status

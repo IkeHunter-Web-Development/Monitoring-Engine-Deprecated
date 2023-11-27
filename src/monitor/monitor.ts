@@ -10,7 +10,7 @@ import {
   MonitorOrNull,
   MonitorType,
   MonitorDetailsPromise,
-} from "./models/types";
+} from "./models/monitor.types";
 import User from "../core/models/user/user.model";
 
 export default class MonitorManager {

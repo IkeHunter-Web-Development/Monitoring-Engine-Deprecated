@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { monitorSchema } from "./monitor.model";
 
-export const Report = new mongoose.Schema({
+export const ReportSchema = new mongoose.Schema({
   // rangeType: {
   //   type: String,
   //   required: true,
@@ -20,27 +20,31 @@ export const Report = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  totalDowntimeMinutes: {
+  totalDays: {
     type: Number,
-    required: true,
+    required: true
   },
   totalUptimeMinutes: {
     type: Number,
     required: true,
   },
+  totalDowntimeMinutes: {
+    type: Number,
+    required: true,
+  },
   daysWithDowntime: {
-    type: Array<Date>,
+    type: [Date],
     required: true
   },
   totalEvents: {
     type: Number,
     required: true,
   },
-  totalDowntimeEvents: {
+  totalUptimeEvents: {
     type: Number,
     required: true,
   },
-  totalUptimeEvents: {
+  totalDowntimeEvents: {
     type: Number,
     required: true,
   },
@@ -63,3 +67,7 @@ export const Report = new mongoose.Schema({
   //   required: true,
   // },
 });
+
+const Report = mongoose.model("Report", ReportSchema);
+
+export default Report;

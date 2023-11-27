@@ -3,28 +3,27 @@
  */
 import Event from "./models/model";
 import MonitorManager from "../monitor/monitor";
-import { MonitorType } from "../monitor/models/types";
+import { MonitorType } from "../monitor/models/monitor.types";
 import { EventArrayPromise, EventPromise, EventPromiseOrNull, EventType } from "./models/types";
 
 export default class EventManager {
-  
   static async parseData(data: any) {
     let monitor = await MonitorManager.getMonitor(data.monitorId);
-    
+
     if (!monitor) throw new Error("Monitor id invalid. Monitor doesn't exist.");
-    
+
     let payload = {
       monitorId: monitor._id,
       statusCode: data.statusCode,
       online: data.online,
       timestamp: data.timestamp ? data.timestamp : Date.now(),
       message: data.message,
-      responseTime: data.responsetime
+      responseTime: data.responseTime,
     };
-    
+
     return payload;
   }
-  
+
   /**
    * Creates a new event.
    *
@@ -285,6 +284,8 @@ export default class EventManager {
       console.log(err);
       throw err;
     });
+    
+    events = events.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 
     return events || [];
   }

@@ -4,7 +4,7 @@
 import request from "supertest";
 import server from "../../server";
 import Monitor from "../../monitor/models/monitor.model";
-import { MonitorType } from "../../monitor/models/types";
+import { MonitorType } from "../../monitor/models/monitor.types";
 import Event from "../models/model";
 import MonitorManager from "../../monitor/monitor";
 import EventManager from "../event";

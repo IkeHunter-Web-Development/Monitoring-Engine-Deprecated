@@ -6,7 +6,7 @@ import MonitorManager from "../monitor";
 import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 import { UserOrNull } from "src/core/models/user/utils/user.types";
-import { MonitorOrNull } from "src/monitor/models/types";
+import { MonitorOrNull } from "src/monitor/models/monitor.types";
 import { simpleResponse } from "../../utils/responses";
 
 export const createMonitor = async (req: Request, res: Response) => {

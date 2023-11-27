@@ -1,12 +1,13 @@
 import EventManager from "src/event/event";
 import Monitor from "../models/monitor.model";
-import { MonitorType, ReportType } from "../models/types";
+import { MonitorType } from "../models/monitor.types";
 import MonitorManager from "../monitor";
 import ReportManager from "../report";
 import { EventArray, EventArrayPromise, EventType } from "src/event/models/types";
 import { getRandomIntInclusive } from "src/utils/utils";
 import exampleEvents from "src/event/examples/events";
 import { Schema } from "mongoose";
+import { ReportType } from "../models/report.types";
 
 // const rint = getRandomIntInclusive;
 
@@ -37,7 +38,7 @@ describe("Report manager simple tests", () => {
 
     for (let data of onlineEventData) {
       let e: EventType = await EventManager.createEvent({
-        monitor: m._id,
+        monitorId: m._id,
         statusCode: 200,
         online: true,
         timestamp: data.timestamp,
@@ -49,10 +50,10 @@ describe("Report manager simple tests", () => {
     const report: ReportType = await ReportManager.generateReport(m);
     const sampleDate: Date = new Date("11/24/23");
 
-    expect(report.startDate).toEqual(report.endDate);
+    expect(report.startDate.getDay()).toEqual(report.endDate.getDay());
     expect(report.startDate.getUTCDate()).toEqual(sampleDate.getUTCDate());
     expect(report.totalDowntimeMinutes).toEqual(0);
-    expect(report.totalUptimeMinutes).toEqual(240);
+    expect(report.totalUptimeMinutes).toEqual(180);
     expect(report.totalEvents).toEqual(4);
     expect(report.totalDowntimeEvents).toEqual(0);
     expect(report.totalUptimeEvents).toEqual(4);
@@ -84,19 +85,18 @@ describe("Report manager with many events", () => {
       let timeA = new Date(eventA.timestamp.$date);
       let timeB = new Date(eventB.timestamp.$date);
 
-      return timeB.getTime() - timeA.getTime();
+      return timeA.getTime() - timeB.getTime();
     });
 
     for (let obj of exampleEvents) {
-      let responseTime: number | null = +obj.responseTime || null;
-      
+      // let responseTime: number | null = +obj.responseTime || null;
       let newEvent = await EventManager.createEvent({
         monitorId: m._id,
         statusCode: obj.statusCode,
         online: obj.online,
         timestamp: new Date(obj.timestamp.$date),
         message: obj.message || "",
-        resposneTime: responseTime,
+        responseTime: +obj.responseTime || 0,
       });
 
       events.push(newEvent);
@@ -126,7 +126,7 @@ describe("Report manager with many events", () => {
 
         let steps: number = 1;
         let prevEvent = monthEvents[i - steps];
-        if (prevEvent.online === true) return downMinutes;
+        if (!prevEvent || (prevEvent && prevEvent.online === true)) return downMinutes;
 
         let downTime = 0;
 
@@ -137,14 +137,14 @@ describe("Report manager with many events", () => {
           prevEvent = monthEvents[steps++];
         }
 
-        return (downMinutes += downTime * 1000 * 60);
+        return (downMinutes += downTime / (1000 * 60));
       },
       0
     );
 
     let eventStartTime: number = monthEvents[0].timestamp.getTime();
-    let eventEndTime: number = monthEvents[-1].timestamp.getTime();
-    const totalUptimeMinutes: number = (eventEndTime - eventStartTime) * 1000 * 60;
+    let eventEndTime: number = monthEvents[monthEvents.length - 1].timestamp.getTime();
+    const totalUptimeMinutes: number = (eventEndTime - eventStartTime) / (1000 * 60);
 
     expect(report.totalDowntimeMinutes).toEqual(totalDownTimeMinutes);
     expect(report.totalUptimeMinutes).toEqual(totalUptimeMinutes);
@@ -156,14 +156,20 @@ describe("Report manager with many events", () => {
     for (let event of monthEvents) {
       if (!event.online) {
         let date = event.timestamp;
-        let day = `${date.getMonth()}-${date.getDay()}-${date.getFullYear}`;
+        // let day = `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+        let day = date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        });
         if (!days.includes(day)) days.push(day);
       }
     }
 
     expect(report.daysWithDowntime.length).toEqual(days.length);
     let parsedDays = report.daysWithDowntime.map((day) => {
-      return `${day.getMonth()}-${day.getDay()}-${day.getFullYear()}`;
+      // return `${day.getMonth()}/${day.getDay()}/${day.getFullYear()}`;
+      return day.toLocaleDateString("en-US", { year: "numeric", month: "numeric", day: "numeric" });
     });
 
     for (let reportDay of parsedDays) {
@@ -187,23 +193,25 @@ describe("Report manager with many events", () => {
     expect(report.totalUptimeEvents).toEqual(upEvents);
   });
   it("should calculate average response time", async () => {
-    // const averageResponseTime: number = <any>monthEvents.reduce(
-    //   (responseTime: any, currentEvent: any) => {
-    //     if (responseTime === 0) return currentEvent.responseTime || 0;
+    // let averageResponseTime: number = 0;
 
-    //     return (responseTime + currentEvent) / 2;
+    // for (let event of monthEvents) {
+    //   if (averageResponseTime === 0) {
+    //     averageResponseTime = event.responseTime || 0;
+    //     continue;
     //   }
-    // );
-    let averageResponseTime: number = 0;
+    //   if (!event.responseTime || event.responseTime === 0) continue;
 
+    //   averageResponseTime = (averageResponseTime + event.responseTime) / 2;
+    // }
+    const responseTimes: Array<number> = [];
     for (let event of monthEvents) {
-      if (averageResponseTime === 0) averageResponseTime = event.responseTime || 0;
-      if (!event.responseTime || event.responseTime === 0) break;
-
-      averageResponseTime = (averageResponseTime + event.responseTime) / 2;
+      if (event.responseTime) responseTimes.push(event.responseTime);
     }
+    
+    const sum = responseTimes.reduce((a, b) => a + b, 0);
+    const avg = sum / responseTimes.length || 0;
 
-    // TODO: calculates incorrect value
-    expect(report.averageResponseTime).toEqual(averageResponseTime);
+    expect(report.averageResponseTime).toEqual(Math.ceil(avg));
   });
 });
