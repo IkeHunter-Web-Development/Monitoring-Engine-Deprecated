@@ -2,7 +2,7 @@
  * @fileoverview API controller for the monitor objects.
  */
 import { Request, Response } from "express";
-import { simpleResponse } from "../../utils/responses";
+import { simpleResponse } from "../utils/responses";
 import { MonitorService } from "src/services";
 
 export class MonitorController {

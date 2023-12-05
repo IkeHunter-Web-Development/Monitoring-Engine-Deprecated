@@ -2,7 +2,7 @@
  * @fileoverview Tests for the monitor model.
  */
 
-import { Monitor } from "./model";
+import { Monitor } from "../monitorModel";
 
 /**
  * Tests for the monitor model.

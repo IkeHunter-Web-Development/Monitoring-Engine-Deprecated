@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { userSchema } from "../user/model";
+import { userSchema } from "./userModel";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: targetStatusCode, currentStatusCode, status
@@ -54,5 +54,3 @@ export const monitorSchema = new mongoose.Schema({
 
 export const Monitor = mongoose.model("Monitor", monitorSchema);
 export type Monitor = InstanceType<typeof Monitor>;
-
-

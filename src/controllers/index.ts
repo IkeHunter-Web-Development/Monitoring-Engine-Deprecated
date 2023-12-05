@@ -1,3 +1,3 @@
-export * from "./monitor/monitorController";
-export * from "./event/eventsController";
-export * from "./base/baseController";
+export * from "./monitorController";
+export * from "./eventsController";
+export * from "./baseController";

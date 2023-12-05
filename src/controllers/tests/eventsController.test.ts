@@ -6,7 +6,7 @@ import httpMocks from "node-mocks-http";
 import { getResJson } from "src/utils";
 import { Monitor, Event } from "src/models";
 import { EventService, MonitorService } from "src/services";
-import { EventController as controller } from "./eventsController";
+import { EventController as controller } from "../eventsController";
 
 // const defaultAgency = {
 //   agencyId: "456",

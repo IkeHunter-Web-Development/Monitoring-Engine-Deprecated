@@ -1,7 +1,7 @@
-export * from "./events/model";
+export * from "./eventModel";
 
-export * from "./monitor/model";
+export * from "./monitorModel";
 
-export * from "./report/model";
+export * from "./reportModel";
 
-export * from "./user/model";
+export * from "./userModel";
