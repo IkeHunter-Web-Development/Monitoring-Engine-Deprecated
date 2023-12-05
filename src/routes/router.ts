@@ -1,17 +1,13 @@
 import { Router } from "express";
-import * as MainController from "./core/controllers/main.controller";
-import * as MonitorController from "../controllers/monitor";
-import * as EventController from "../controllers/events";
-// import * as ProjectController from "./core/controllers/project.controller";
-import { isAuthenticated } from "../middleware/auth.middleware";
-import { hasPermission } from "../middleware/permissions.middleware";
+import { isAuthenticated, hasPermission } from "src/middleware";
+import { BaseController, MonitorController, EventController } from "src/controllers";
 
 const router = Router();
 
 /**
  * Main Routes
  */
-router.get("/", MainController.healthCheck);
+router.get("/", BaseController.healthCheck);
 
 /**
  * Monitor Routes
@@ -36,6 +32,6 @@ router.post("/monitors/alert/", MonitorController.alertMonitorDown);
 router.get("/events/:id", isAuthenticated, EventController.getEvent);
 router.delete("/events/:id", isAuthenticated, EventController.deleteEvent);
 router.get("/events-search/", isAuthenticated, EventController.searchEvents);
-router.post("/events/reports/", isAuthenticated, EventController.getReport);
+// router.post("/events/reports/", isAuthenticated, EventController.getReport);
 
 export default router;

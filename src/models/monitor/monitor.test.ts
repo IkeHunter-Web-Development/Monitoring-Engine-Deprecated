@@ -1,9 +1,8 @@
 /**
  * @fileoverview Tests for the monitor model.
  */
-// import Project from "../../project/project.model";
-import Monitor from "./model";
-// import Agency from "../../agency/agency.model";
+
+import { Monitor } from "./model";
 
 /**
  * Tests for the monitor model.

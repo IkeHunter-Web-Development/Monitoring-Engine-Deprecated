@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { monitorSchema } from "../monitor/model";
 
 export const ReportSchema = new mongoose.Schema({
   // rangeType: {
@@ -68,6 +67,7 @@ export const ReportSchema = new mongoose.Schema({
   // },
 });
 
-const Report = mongoose.model("Report", ReportSchema);
+export const Report = mongoose.model("Report", ReportSchema);
+export type Report = InstanceType<typeof Report>;
 
-export default Report;
+

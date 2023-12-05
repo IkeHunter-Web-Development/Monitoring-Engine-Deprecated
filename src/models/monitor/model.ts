@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import { userSchema } from "../user/model";
-// import { ProjectSchema } from "../project/project.model";
-// import { AgencySchema } from "../agency/agency.model";
-import { MonitorType } from "./monitor.types";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: targetStatusCode, currentStatusCode, status
@@ -55,6 +52,7 @@ export const monitorSchema = new mongoose.Schema({
   },
 });
 
-const Monitor = mongoose.model("Monitor", monitorSchema);
+export const Monitor = mongoose.model("Monitor", monitorSchema);
+export type Monitor = InstanceType<typeof Monitor>;
 
-export default Monitor;
+

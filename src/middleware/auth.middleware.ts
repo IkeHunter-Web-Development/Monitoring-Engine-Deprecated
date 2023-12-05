@@ -10,8 +10,9 @@ import {
   AuthServiceResponse,
   verifyUser,
 } from "./utilities/auth.utilities";
-import { UserOrNull } from "src/models/user/types";
-import User from "../models/user/model";
+import { User } from "src/models";
+// import { UserOrNull } from "src/models/user/types";
+// import User from "../models/user/model";
 
 const unauthorizedError = new Error(errUnauthorized.message);
 const noTokenError = new Error(errNoToken.message);
@@ -35,7 +36,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
     if (!token) throw noTokenError;
 
-    let user: UserOrNull;
+    let user: User | null;
 
     user = await User.find({ toke: token }).then((user: any) => {
       if (!user) throw noTokenError;
@@ -48,16 +49,11 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
           return data;
         })
         .catch((err: any) => {
-          throw new Error("Error verifying user");
+          throw new Error("Error verifying user: " + err.message);
         });
 
       if (!authRes) throw new Error("Error verifying token");
       if (authRes.status !== 200) throw unauthorizedError;
-
-      let payload = {
-        ...authRes,
-        token: token,
-      };
 
       // TODO: How to handle authorized, but unregistered users
       // user = await UserManager.createOrUpdateUser(authRes.userId, payload).catch((err: any) => {

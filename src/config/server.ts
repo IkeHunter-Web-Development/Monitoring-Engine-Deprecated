@@ -2,7 +2,7 @@ import express from "express";
 import router from "../routes/router";
 import multer from "multer";
 
-const server = express();
+export const server = express();
 
 const urlencodedParser = express.urlencoded({ extended: false });
 const jsonParser = express.json();
@@ -12,5 +12,3 @@ server.use(jsonParser);
 server.use(multer().any());
 
 server.use(router);
-
-export default server;

@@ -1,4 +1,4 @@
-import MonitorManager from "src/services/monitor";
+import { MonitorService } from "src/services";
 import { generateRandomString } from "./utils";
 
 export const generateSampleMonitor = async (data: any = {}) => {
@@ -10,5 +10,5 @@ export const generateSampleMonitor = async (data: any = {}) => {
     active: data.active || true,
   };
 
-  return await MonitorManager.createMonitor(payload);
+  return await MonitorService.createMonitor(payload);
 };

@@ -1,12 +1,6 @@
-import mongoose, { Schema, Types } from "mongoose";
-import Monitor, { monitorSchema } from "../monitor/model";
-import { ObjectId } from "mongodb";
+import mongoose, { Schema } from "mongoose";
 
 const eventSchema = new mongoose.Schema({
-  // monitorId: {
-  //   type: String,
-  //   required: true,
-  // },
   monitorId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -33,6 +27,7 @@ const eventSchema = new mongoose.Schema({
   },
 });
 
-const Event = mongoose.model("Event", eventSchema);
+export const Event = mongoose.model("Event", eventSchema);
+export type Event = InstanceType<typeof Event>;
 
-export default Event;
+

@@ -2,7 +2,7 @@
  * @fileoverview Test general routes for the API.
  */
 import request from "supertest";
-import server from "../../config/server";
+import { server } from "src/config";
 
 describe("Main controller", () => {
   it("should return a health check", async () => {

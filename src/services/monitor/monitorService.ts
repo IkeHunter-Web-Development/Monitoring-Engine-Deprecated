@@ -1,21 +1,10 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import EventManager from "./event";
-import { UserType } from "../models/user/types";
-import Monitor from "../models/monitor/model";
+import { Monitor, User } from "src/models";
+import { EventService } from "src/services";
 
-import {
-  MonitorPromiseOrNull,
-  MonitorOrNull,
-  MonitorType,
-  MonitorDetailsPromise,
-} from "../models/monitor/monitor.types";
-import User from "../models/user/model";
-
-export default class MonitorManager {
-  private static instance: MonitorManager = new MonitorManager();
-
+export class MonitorService {
   private constructor() {}
 
   /**
@@ -90,8 +79,8 @@ export default class MonitorManager {
    * @param id The id of the monitor to get.
    * @returns The monitor.
    */
-  static async getMonitor(id: string): MonitorPromiseOrNull {
-    let monitor: MonitorOrNull = await Monitor.findById(id);
+  static async getMonitor(id: string): Promise<Monitor | null> {
+    let monitor: Monitor | null = await Monitor.findById(id);
 
     if (!monitor) return null;
     return monitor;
@@ -171,40 +160,40 @@ export default class MonitorManager {
    * @param monitor The monitor to check.
    * @returns Boolean, whether the user has permission.
    */
-  static async userHasPermission(user: UserType, monitor: MonitorType) {
+  static async userHasPermission(user: User, monitor: Monitor) {
     return user.projectIds?.includes(monitor.projectId);
   }
 
-  /**
-   * Generate monitor metrics.
-   *
-   * @param monitor The monitor to generate metrics for.
-   * @returns MonitorDetails, The generated metrics.
-   */
-  static async generateMetrics(monitor: MonitorType, dayRange: number = 30): MonitorDetailsPromise {
-    let details = {
-      totalDowntimeMinutes: 0,
-      totalUptimeMinutes: 0,
-      totalEvents: 0,
-      totalDowntimeEvents: 0,
-      averageResponseTime: 0,
-    };
+  // /**
+  //  * Generate monitor metrics.
+  //  *
+  //  * @param monitor The monitor to generate metrics for.
+  //  * @returns MonitorDetails, The generated metrics.
+  //  */
+  // static async generateMetrics(monitor: Monitor, dayRange: number = 30): MonitorDetailsPromise {
+  //   let details = {
+  //     totalDowntimeMinutes: 0,
+  //     totalUptimeMinutes: 0,
+  //     totalEvents: 0,
+  //     totalDowntimeEvents: 0,
+  //     averageResponseTime: 0,
+  //   };
 
-    const now = new Date();
-    const totalMinutes = dayRange * 24 * 60;
-    const start = new Date(now.getTime() - totalMinutes * 60 * 1000);
+  //   const now = new Date();
+  //   const totalMinutes = dayRange * 24 * 60;
+  //   const start = new Date(now.getTime() - totalMinutes * 60 * 1000);
 
-    const events = await EventManager.getEventsInRange(monitor._id, start, now);
+  //   const events = await EventService.getEventsInRange(monitor._id, start, now);
 
-    details.totalDowntimeMinutes = await EventManager.getDowntimeFromEvents(events);
-    details.totalUptimeMinutes = totalMinutes - details.totalDowntimeMinutes;
-    details.totalEvents = events.length;
-    let downtimeEvents = await EventManager.filterDowntimeEvents(events);
-    details.totalDowntimeEvents = downtimeEvents.length;
-    details.averageResponseTime = await EventManager.getAverageResponseTimeFromEvents(events);
+  //   details.totalDowntimeMinutes = await EventService.getDowntimeFromEvents(events);
+  //   details.totalUptimeMinutes = totalMinutes - details.totalDowntimeMinutes;
+  //   details.totalEvents = events.length;
+  //   let downtimeEvents = await EventService.filterDowntimeEvents(events);
+  //   details.totalDowntimeEvents = downtimeEvents.length;
+  //   details.averageResponseTime = await EventService.getAverageResponseTimeFromEvents(events);
 
-    return { ...monitor, ...details };
-  }
+  //   return { ...monitor, ...details };
+  // }
 
   /**
    * Handle a monitor going down.
@@ -214,9 +203,9 @@ export default class MonitorManager {
    * @param error The error message of the monitor.
    * @returns Boolean, whether the monitor was handled.
    */
-  static async handleMonitorDown(monitor: MonitorType, statusCode: number, error: string) {
+  static async handleMonitorDown(monitor: Monitor, statusCode: number, error: string) {
     monitor.online = false;
-    let event = await EventManager.registerDownEvent(monitor._id, statusCode, error);
+    let event = await EventService.registerDownEvent(monitor._id.toString(), statusCode, error);
 
     if (!event) return false;
 

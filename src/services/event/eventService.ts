@@ -1,19 +1,12 @@
 /**
  * @fileoverview Event manager class.
  */
-import Event from "../models/events/model";
-import MonitorManager from "./monitor";
-import { MonitorType } from "../models/monitor/monitor.types";
-import {
-  EventArrayPromise,
-  EventPromise,
-  EventPromiseOrNull,
-  EventType,
-} from "../models/events/types";
+import { MonitorService } from "src/services";
+import { Event, Monitor } from "src/models";
 
-export default class EventManager {
+export class EventService {
   static async parseData(data: any) {
-    let monitor = await MonitorManager.getMonitor(data.monitorId);
+    let monitor = await MonitorService.getMonitor(data.monitorId);
 
     if (!monitor) throw new Error("Monitor id invalid. Monitor doesn't exist.");
 
@@ -39,10 +32,10 @@ export default class EventManager {
    *
    * @returns The created event.
    */
-  static async createEvent(data: any): EventPromise {
+  static async createEvent(data: any): Promise<Event> {
     const payload = await this.parseData(data);
 
-    let event: EventType = await Event.create(payload)
+    let event: Event = await Event.create(payload)
       .then((event) => {
         if (!event) throw new Error("Error creating event! No event returned.");
 
@@ -66,7 +59,7 @@ export default class EventManager {
    * @returns The created event.
    */
   static async registerDownEvent(monitorId: string, statusCode: number, message: string) {
-    let event = await EventManager.createEvent({
+    let event = await EventService.createEvent({
       monitorId: monitorId,
       statusCode: statusCode,
       online: false,
@@ -86,7 +79,7 @@ export default class EventManager {
    *
    * @returns The event.
    */
-  static async getEvent(id: string): EventPromiseOrNull {
+  static async getEvent(id: string): Promise<Event | null> {
     let event = await Event.findOne({ _id: id })
       .then((event) => {
         return event || null;
@@ -106,7 +99,7 @@ export default class EventManager {
    *
    * @returns The events.
    */
-  static async getEventsForMonitor(monitor: MonitorType): EventArrayPromise {
+  static async getEventsForMonitor(monitor: Monitor): Promise<Event[]> {
     let events = await Event.find({ monitorId: monitor._id })
       .then((event) => {
         return event;
@@ -127,7 +120,7 @@ export default class EventManager {
    * @returns The offline events.
    */
   // TODO: Is this needed? Should this have range?
-  static async getOfflineEventsForMonitor(monitorId: string): EventArrayPromise {
+  static async getOfflineEventsForMonitor(monitorId: string): Promise<Event[]> {
     let events = await Event.find({ monitorId: monitorId, online: false }).catch((err: any) => {
       console.log(err);
       throw err;
@@ -143,7 +136,7 @@ export default class EventManager {
    *
    * @returns The last offline time.
    */
-  static async getLastOfflineTimeForMonitor(monitorId: string): EventPromiseOrNull {
+  static async getLastOfflineTimeForMonitor(monitorId: string): Promise<Event | null> {
     let event = await Event.findOne({ monitorId: monitorId, online: false })
       .sort({ timestamp: -1 })
       .catch((err: any) => {
@@ -161,7 +154,7 @@ export default class EventManager {
    *
    * @returns The last online time.
    */
-  static async getLastOnlineTimeForMonitor(monitorId: string): EventPromiseOrNull {
+  static async getLastOnlineTimeForMonitor(monitorId: string): Promise<Event | null> {
     let event = await Event.findOne({ monitorId: monitorId, online: true })
       .sort({ timestamp: -1 })
       .catch((err: any) => {
@@ -206,17 +199,17 @@ export default class EventManager {
    *
    * @returns The filtered events.
    */
-  static async filterEvents(params: any, events: Array<EventType>): EventArrayPromise {
-    let filteredEvents: Array<EventType> = events;
+  static async filterEvents(params: any, events: Array<Event>): Promise<Event[]> {
+    let filteredEvents: Array<Event> = events;
 
     if (params.online != null) {
-      filteredEvents = filteredEvents.filter((event: EventType) => {
+      filteredEvents = filteredEvents.filter((event: Event) => {
         return String(event.online) === params.online;
       });
     }
 
     if (params.last) {
-      filteredEvents = filteredEvents.sort((a: EventType, b: EventType) => {
+      filteredEvents = filteredEvents.sort((a: Event, b: Event) => {
         return b.timestamp.getTime() - a.timestamp.getTime();
       });
 
@@ -234,14 +227,14 @@ export default class EventManager {
    *
    * @returns The events.
    */
-  static async searchEvents(params: any): EventArrayPromise {
+  static async searchEvents(params: any): Promise<Event[]> {
     let criteria: any = {};
-    let events: Array<EventType> = [];
-    let monitor: MonitorType;
+    // let events: Event[] = [];
+    let monitor: Monitor;
 
     if (params.monitor) {
-      monitor = await MonitorManager.getMonitor(params.monitor)
-        .then((monitor) => {
+      monitor = await MonitorService.getMonitor(params.monitor)
+        .then((monitor: Monitor | null) => {
           if (!monitor) throw new Error("Monitor not found");
           return monitor;
         })
@@ -260,9 +253,9 @@ export default class EventManager {
       criteria.timestamp = -1;
     }
 
-    let allEvents: Array<EventType> = await EventManager.getEventsForMonitor(monitor);
+    let allEvents: Array<Event> = await EventService.getEventsForMonitor(monitor);
 
-    return EventManager.filterEvents(params, allEvents) || [];
+    return EventService.filterEvents(params, allEvents) || [];
   }
 
   /**
@@ -274,11 +267,7 @@ export default class EventManager {
    * @returns The events in the range.
    */
   // TODO: CHECK THIS!
-  static async getEventsInRange(
-    monitor: MonitorType,
-    start: Date,
-    end: Date
-  ): Promise<Array<EventType>> {
+  static async getEventsInRange(monitor: Monitor, start: Date, end: Date): Promise<Event[]> {
     let events = await Event.find({
       monitorId: monitor._id,
       timestamp: {
@@ -296,7 +285,7 @@ export default class EventManager {
   }
 
   // TODO: CHECK THIS!
-  static async getDowntimeFromEvents(events: Array<EventType>): Promise<number> {
+  static async getDowntimeFromEvents(events: Event[]): Promise<number> {
     let downTime = 0;
     let lastOnlineTime = null;
     let lastOfflineTime = null;
@@ -319,8 +308,8 @@ export default class EventManager {
   }
 
   // TODO: CHECK THIS!
-  static async filterDowntimeEvents(events: Array<EventType>): Promise<Array<EventType>> {
-    let filteredEvents: Array<EventType> = [];
+  static async filterDowntimeEvents(events: Event[]): Promise<Event[]> {
+    let filteredEvents: Event[] = [];
 
     for (let event of events) {
       if (!event.online) {
@@ -331,7 +320,7 @@ export default class EventManager {
     return filteredEvents;
   }
 
-  static async getAverageResponseTimeFromEvents(events: Array<EventType>): Promise<number> {
+  static async getAverageResponseTimeFromEvents(events: Event[]): Promise<number> {
     let totalResponseTime = 0;
     let totalEvents = 0;
 

@@ -1,4 +1,4 @@
-export default [
+export const eventExamples = [
   {
     statusCode: 200,
     online: true,

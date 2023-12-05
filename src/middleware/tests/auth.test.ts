@@ -1,19 +1,17 @@
 /**
  * @fileoverview Tests for authentication middleware.
  */
-import request from "supertest";
+
 import { Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "../auth.middleware";
 import { errNoToken } from "../utilities/auth.utilities";
-import User from "../../models/user/user.model";
-import { UserType } from "../../models/user/utils/user.types";
-import "dotenv/config";
+import { User } from "src/models";
 
 describe("Authorization middleware", () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let nextFunction: NextFunction = jest.fn();
-  let mockUser: UserType;
+  // let mockUser: User;
   let defaultHeaders = {
     // "force-auth": forceAuthLabels.PERMS,
   };
@@ -30,8 +28,8 @@ describe("Authorization middleware", () => {
       status: jest.fn().mockReturnThis(),
     };
 
-    // mockUser = await UserManager.createUser("abc123", "user@example.com");
-    mockUser = await User.create({ userId: "abc123", email: "user@example.com" });
+    
+    // mockUser = await User.create({ userId: "abc123", email: "user@example.com" });
   });
 
   test("without headers", async () => {

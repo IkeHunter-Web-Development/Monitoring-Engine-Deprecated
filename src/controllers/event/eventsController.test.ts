@@ -1,21 +1,12 @@
 /**
  * @fileoverview Tests for event api routes.
  */
-import request from "supertest";
-import server from "../../config/server";
-import Monitor from "../../models/monitor/model";
-import { MonitorType } from "../../models/monitor/monitor.types";
-import Event from "../../models/events/model";
-import MonitorManager from "../../services/monitor";
-import EventManager from "../../services/event";
-// import { forceAuthHeader } from "../../utils/forceAuth";
-// import Agency from "../../models/agency/agency.model";
-// import Project from "../../models/project/project.model";
-import httpMocks from "node-mocks-http";
 import { Request, Response } from "express";
-import * as controller from "./controller";
-import { getResJson } from "../../utils/utils";
-import { EventType } from "../../models/events/types";
+import httpMocks from "node-mocks-http";
+import { getResJson } from "src/utils";
+import { Monitor, Event } from "src/models";
+import { EventService, MonitorService } from "src/services";
+import { EventController as controller } from "./eventsController";
 
 // const defaultAgency = {
 //   agencyId: "456",
@@ -43,16 +34,16 @@ const defaultEvent = {
   online: false,
 };
 
-let m1: MonitorType;
-let m2: MonitorType;
-let m3: MonitorType;
+let m1: Monitor;
+let m2: Monitor;
+// let m3: Monitor;
 
-let e1: EventType;
-let e2: EventType;
-let e3: EventType;
-let e4: EventType;
-let e5: EventType;
-let e6: EventType;
+let e1: Event;
+// let e2: Event;
+// let e3: Event;
+// let e4: Event;
+let e5: Event;
+let e6: Event;
 
 describe("Event controller", () => {
   let req: Request;
@@ -66,14 +57,14 @@ describe("Event controller", () => {
     /**
      * Monitor 1: Google
      */
-    m1 = await MonitorManager.createMonitor(defaultMonitor);
-    e1 = await EventManager.createEvent({
+    m1 = await MonitorService.createMonitor(defaultMonitor);
+    e1 = await EventService.createEvent({
       ...defaultEvent,
       monitorId: m1._id,
       online: false,
     });
 
-    e4 = await EventManager.createEvent({
+    await EventService.createEvent({
       ...defaultEvent,
       monitorId: m1._id,
       online: true,
@@ -83,14 +74,14 @@ describe("Event controller", () => {
     /**
      * Monitor 2: Yahoo
      */
-    m2 = await MonitorManager.createMonitor({
+    m2 = await MonitorService.createMonitor({
       ...defaultMonitor,
       projectId: "456",
       url: "https://www.yahoo.com",
       title: "Yahoo",
     });
 
-    e2 = await EventManager.createEvent({
+    await EventService.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
       online: true,
@@ -98,7 +89,7 @@ describe("Event controller", () => {
       timestamp: Date.now() - 1000 * 60 * 60 * 24 * 3,
     });
 
-    e3 = await EventManager.createEvent({
+    await EventService.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
       online: false,
@@ -106,7 +97,7 @@ describe("Event controller", () => {
       timestamp: Date.now() - 1000 * 60 * 60 * 24 * 2,
     });
 
-    e5 = await EventManager.createEvent({
+    e5 = await EventService.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
       online: false,
@@ -114,7 +105,7 @@ describe("Event controller", () => {
       timestamp: Date.now(),
     });
 
-    e6 = await EventManager.createEvent({
+    e6 = await EventService.createEvent({
       ...defaultEvent,
       monitorId: m2._id,
       online: true,

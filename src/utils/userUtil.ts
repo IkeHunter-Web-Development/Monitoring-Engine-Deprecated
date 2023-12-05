@@ -1,9 +1,8 @@
-import { UserType, UserPromise, UsersPromise } from "./types";
-// import UserManager from "../user.manager";
-import { generateRandomString } from "../../utils/utils";
-import User from "../user.model";
+import { User } from "src/models";
+import { generateRandomString } from "src/utils";
 
-export const generateSampleUser = async (data: any = {}): UserPromise => {
+
+export const generateSampleUser = async (data: any = {}): Promise<User> => {
   let payload = {
     userId: data.userId || "aasdf8sdf83828",
     email: data.email || "user@example.com",
@@ -11,7 +10,7 @@ export const generateSampleUser = async (data: any = {}): UserPromise => {
     projectIds: [],
   };
 
-  const user: UserType = await User.create(payload)
+  const user: User = await User.create(payload)
     .then((user) => {
       if (!user) {
         throw new Error("Create user returned null");
@@ -24,8 +23,8 @@ export const generateSampleUser = async (data: any = {}): UserPromise => {
   return user;
 };
 
-export const generateSampleUsers = async (count: number): UsersPromise => {
-  let users: [UserType] = [] as any;
+export const generateSampleUsers = async (count: number): Promise<User[]> => {
+  let users: [User] = [] as any;
 
   for (let i = 0; i < count; i++) {
     let payload = {
@@ -35,12 +34,12 @@ export const generateSampleUsers = async (count: number): UsersPromise => {
       permissions: [],
     };
 
-    await User.create(payload).then((user: UserType) => {
+    await User.create(payload).then((user: User) => {
       users.push(user);
     });
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     resolve(users);
   });
 };

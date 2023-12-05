@@ -11,14 +11,14 @@ export default class Mailer {
   
   constructor() {
     this.sgMail = sgMail;
-    this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    this.sgMail.setApiKey(SENDGRID_API_KEY);
     this.logger = logger;
   }
 
   sendEmail(recipient: String, subject: String, text: String) {
     const msg = {
       to: recipient,
-      from: process.env.EMAIL_USER,
+      from: EMAIL_USER,
       subject: subject,
       text: text,
     };

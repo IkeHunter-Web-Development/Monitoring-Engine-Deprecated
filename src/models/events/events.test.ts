@@ -1,8 +1,7 @@
 /**
  * @fileoverview Tests for the Event model.
  */
-import Monitor from "src/models/monitor/model";
-import Event from "./model";
+import { Monitor, Event } from "src/models";
 
 /**
  * Tests for the Event model.
@@ -61,7 +60,7 @@ describe("Event", () => {
 
     await Event.updateOne(updatedEvent);
 
-    const events = await Event.find({});
+    const events: Array<Event> = await Event.find({});
     expect(events[0].online).toEqual(false);
   });
 

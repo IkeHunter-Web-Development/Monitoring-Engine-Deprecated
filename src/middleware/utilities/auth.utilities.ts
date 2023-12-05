@@ -32,9 +32,9 @@ export const verifyUser = async (token: string): Promise<AuthServiceResponse> =>
     email: "",
   };
 
-  if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "network") {
+  if (NODE_ENV === "production" || NODE_ENV === "network") {
     console.log("Verifying user with auth service, token: ", token);
-    let authRes: any = await fetch(process.env.AUTH_SERVICE_URL + "/api/auth/verify", {
+    let authRes: any = await fetch(AUTH_SERVICE_URL + "/verify", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

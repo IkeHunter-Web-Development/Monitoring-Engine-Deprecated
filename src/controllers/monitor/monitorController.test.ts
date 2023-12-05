@@ -1,13 +1,12 @@
 /**
  * @fileoverview Tests for monitor api routes.
  */
-import Monitor from "../../models/monitor/model";
-import MonitorManager from "../../services/monitor";
-import { MonitorType } from "../../models/monitor/monitor.types";
 import { Request, Response } from "express";
 import httpMocks from "node-mocks-http";
-import * as controller from "./controller";
-import { getResJson } from "../../utils/utils";
+import { getResJson } from "src/utils";
+import { Monitor } from "src/models";
+import { MonitorService } from "src/services";
+import { MonitorController as controller } from "src/controllers";
 
 const defaultMonitor = {
   projectId: "123abc",
@@ -48,7 +47,7 @@ describe("Monitor controller", () => {
    * and return a 201 status code.
    */
   it("should create a monitor", async () => {
-    let pre = await MonitorManager.getMonitors();
+    let pre = await MonitorService.getMonitors();
     expect(pre.length).toEqual(0); // Ensure there are no monitors before the test.
 
     req = httpMocks.createRequest({
@@ -59,7 +58,7 @@ describe("Monitor controller", () => {
     await controller.createMonitor(req, res);
     expect(res.statusCode).toEqual(201);
 
-    let monitors = await MonitorManager.getMonitors();
+    let monitors = await MonitorService.getMonitors();
     expect(monitors.length).toEqual(1);
     expect(monitors[0].projectId).toEqual(defaultMonitor.projectId);
   });
@@ -149,7 +148,7 @@ describe("Monitor controller", () => {
     expect(res.statusCode).toEqual(200);
     expect(body.length).toEqual(3);
 
-    let sorted: MonitorType[] = body.sort((a: any, b: any) => {
+    let sorted: Monitor[] = body.sort((a: any, b: any) => {
       return a.projectId - b.projectId;
     });
 
@@ -166,7 +165,7 @@ describe("Monitor controller", () => {
    * if the site is online
    */
   it("should return true if the site is online", async () => {
-    let monitor = await MonitorManager.createMonitor({
+    let monitor = await MonitorService.createMonitor({
       ...defaultMonitor,
       online: true,
     });
@@ -187,11 +186,11 @@ describe("Monitor controller", () => {
    * that belong to a project.
    */
   it("should return monitors for project", async () => {
-    let m1 = await MonitorManager.createMonitor({
+    let m1 = await MonitorService.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
     });
-    let m2 = await MonitorManager.createMonitor({
+    await MonitorService.createMonitor({
       ...defaultMonitor,
       projectId: "456",
       users: [u3, u4],
@@ -213,11 +212,11 @@ describe("Monitor controller", () => {
    * that a user is subscribed to.
    */
   it("should return monitors that a user is subscribed to", async () => {
-    let m1 = await MonitorManager.createMonitor({
+    await MonitorService.createMonitor({
       ...defaultMonitor,
       users: [u1, u2],
     });
-    let m2 = await MonitorManager.createMonitor({
+    let m2 = await MonitorService.createMonitor({
       ...defaultMonitor,
       projectId: "456",
       users: [u3, u4],

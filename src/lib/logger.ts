@@ -17,7 +17,7 @@ export default class Logger {
   }
 
   logFormat() {
-    if (process.env.NODE_ENV === "production") {
+    if (NODE_ENV === "production") {
       return combine(
         timestamp({
           format: "YYYY-MM-DD hh:mm:ss.SSS",
@@ -32,7 +32,7 @@ export default class Logger {
         timestamp({
           format: "YYYY-MM-DD hh:mm:ss.SSS",
         }),
-        printf((info) => {
+        printf((info: any) => {
           return `${info.timestamp} ${info.level}: ${info.message}`;
         })
       );
@@ -47,7 +47,7 @@ export default class Logger {
         timestamp({
           format: "YYYY-MM-DD hh:mm:ss.SSS",
         }),
-        printf((info) => {
+        printf((info: any) => {
           return `${info.timestamp} ${info.level}: ${info.message}`;
         })
       ),
@@ -62,7 +62,7 @@ export default class Logger {
           level: "error",
         }),
         new winston.transports.Console({
-          level: process.env.LOGGING_LEVEL,
+          level: LOGGING_LEVEL,
           format: this.format,
         }),
       ],
