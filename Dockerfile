@@ -8,7 +8,6 @@ WORKDIR /app
 COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json
 COPY ./tsconfig.json ./tsconfig.json
-COPY ./jest.config.ts ./jest.config.ts
 
 USER root
 
@@ -23,6 +22,7 @@ FROM setup AS build
 
 EXPOSE 8000
 
+COPY ./jest.config.ts ./jest.config.ts
 COPY ./src ./src
 
 RUN npm run build

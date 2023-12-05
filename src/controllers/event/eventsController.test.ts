@@ -176,7 +176,7 @@ describe("Event controller", () => {
     req = httpMocks.createRequest({
       method: "GET",
       query: {
-        monitor: m1._id,
+        monitor: m1._id.toString(),
         online: false,
       },
     });

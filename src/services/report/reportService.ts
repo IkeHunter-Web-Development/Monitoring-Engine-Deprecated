@@ -1,8 +1,3 @@
-// import * as types from "src/monitor/models/report.types";
-// import Event from "src/event/models/model";
-// import EventManager from "src/event/event";
-// import { Monitor } from "./models/monitor.types";
-// import Report from "./models/report.model";
 import { Report, Event, Monitor } from "src/models";
 import { EventService } from "src/services";
 

@@ -25,7 +25,7 @@ export class EventController {
       schema: {$ref: "#/definitions/Error404"}
     }
    *===========================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     let event = await Event.findById(id);
 
@@ -58,7 +58,7 @@ export class EventController {
         schema: {$ref: "#/definitions/Error404"}
       }
      *===========================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     try {
       let event = await Event.deleteOne({ _id: id });
@@ -111,20 +111,19 @@ export class EventController {
     }
    *===========================*/
     const params = req.query || {};
+    const { monitor, online, last } = params;
 
     let events: Array<Event> = [];
 
     try {
-      events = await Event.find({ monitorId: params["monitor"] });
+      events = await Event.find({ monitorId: monitor });
 
-      let online = params["online"] || null;
       if (online != null) {
         events = events.filter((event: Event) => {
           return event.online === Boolean(online);
         });
       }
 
-      let last = params["last"] || null;
       if (last) {
         events = events.sort((a: Event, b: Event) => {
           return b.timestamp.getTime() - a.timestamp.getTime();

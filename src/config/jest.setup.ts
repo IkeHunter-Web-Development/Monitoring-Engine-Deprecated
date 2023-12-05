@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 
+const uri = process.env['MONGO_URI'] || "mongodb://root:changeme@mongo-monitor:27017";
+
 const connect = async () => {
-  await mongoose.connect(MONGO_URI || "");
+  await mongoose.connect(uri);
 };
 
 const closeDatabase = async () => {

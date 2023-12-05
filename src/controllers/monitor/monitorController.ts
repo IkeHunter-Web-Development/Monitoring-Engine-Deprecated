@@ -63,7 +63,7 @@ export class MonitorController {
         schema: {$ref: "#/definitions/Error404"},
       }
      *=======================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     return MonitorService.updateMonitor(id, req.body)
       .then((monitor: any) => {
@@ -95,7 +95,7 @@ export class MonitorController {
         schema: {$ref: "#/definitions/Error404"},
       }
      *===========================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     return MonitorService.getMonitor(id)
       .then((monitor: any) => {
@@ -130,7 +130,7 @@ export class MonitorController {
         schema: {$ref: "#/definitions/Error404"},
       }
      *===========================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     return MonitorService.deleteMonitor(id)
       .then((success) => {
@@ -218,7 +218,7 @@ export class MonitorController {
         schema: {$ref: "#/definitions/Error404"},
       }
      *==================================*/
-    const id = req.params["id"] || "";
+    const { id } = req.params || "";
 
     let monitor = await MonitorService.getMonitor(id);
 

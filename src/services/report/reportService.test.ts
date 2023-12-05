@@ -10,7 +10,7 @@ const defaultMonitor = {
   active: true,
   title: "Example Live",
   online: true,
-  type: "HTTP",
+  type: "http",
   interval: 60,
   timeout: 1000,
   retries: 3,
