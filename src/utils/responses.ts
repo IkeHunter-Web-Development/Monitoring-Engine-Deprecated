@@ -6,3 +6,5 @@ export const simpleResponse = (res: Response, statusCode: number, message: strin
     message: message,
   });
 };
+
+
