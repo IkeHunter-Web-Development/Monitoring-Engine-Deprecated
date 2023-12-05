@@ -16,6 +16,7 @@ export default class NetworkManager {
       method: "GET",
     });
   }
+  static async isAuthenticated(token: string) {}
   // TODO: authenticate with auth engine
   static async authenticate(token: string) {}
   // TODO: get project name, agency
