@@ -1,9 +1,9 @@
-import WebsitePing from "./services/cron";
+import WebsitePing from "./lib/cron";
 import mongoose from "mongoose";
 import "dotenv/config";
 import server from "./server";
 import swaggerUi from "swagger-ui-express";
-import { initializeSwagger } from "./core/docs/swagger";
+import { initializeSwagger } from "./config/docs/swagger";
 
 const HOST = process.env.HOST || "localhost";
 const PORT = +(process.env.PORT || 3000);
