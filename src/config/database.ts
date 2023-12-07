@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { MONGO_URI } from "config/constants";
 
 export const setupDatabase = () =>
   mongoose

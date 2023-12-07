@@ -1,13 +1,12 @@
-// import WebsitePing from "./lib/cron";
 import swaggerUi from "swagger-ui-express";
-import { server, setupDatabase } from "src/config";
+import { HOST, PORT, server, setupDatabase } from "src/config";
 import { initializeSwagger } from "./docs/swagger";
 
 setupDatabase();
 
 initializeSwagger().then(() => {
   const swaggerDocument = require("src/docs/swagger_output.json");
-  server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
+  server.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
 });
 
 server.listen(PORT, HOST, () => {

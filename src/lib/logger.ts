@@ -1,4 +1,5 @@
 import fs from "fs";
+import { LOGGING_LEVEL, NODE_ENV } from "src/config";
 import winston from "winston";
 
 const { combine, timestamp, printf, colorize } = winston.format;

@@ -10,7 +10,7 @@
     "test:verbose": "npm run build && jest --testTimeout=5000 --detectOpenHandles --forceExit --verbose",
     "start": "npm run build && node ./build/index.js",
     "tsc": "tsc",
-    "dev": "ts-node-dev --respawn --pretty --transpile-only --ignore-watch swagger_output.json src/index.ts",
+    "dev": "ts-node-dev --respawn --pretty --transpile-only --ignore-watch swagger_output.json -r tsconfig-paths/register src/index.ts",
     "build": "rimraf ./build && tsc"
   },
   "author": "Isaac Hunter",

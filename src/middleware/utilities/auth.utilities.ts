@@ -2,6 +2,7 @@
  * @fileoverview Utility functions for authentication middleware.
  */
 import "dotenv/config";
+import { AUTH_SERVICE_URL, NODE_ENV } from "src/config";
 
 /** Error message if no token provided */
 export const errNoToken = { message: "No token, authorization denied" };

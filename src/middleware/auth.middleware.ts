@@ -1,3 +1,5 @@
+// import { isAuthenticated } from 'src/middleware';
+// import { isAuthenticated } from 'src/middleware';
 /**
  * @fileoverview Check if a user is logged in, if not,
  * check auth service to see if they are logged in with SSO,
@@ -76,3 +78,4 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     }
   }
 };
+

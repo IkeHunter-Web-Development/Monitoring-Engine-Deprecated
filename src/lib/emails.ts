@@ -4,6 +4,7 @@
 import sgMail from "@sendgrid/mail";
 import logger from "./logger";
 import 'dotenv/config';
+import { EMAIL_USER, SENDGRID_API_KEY } from "src/config";
 
 export default class Mailer {
   sgMail: any;
