@@ -2,7 +2,7 @@
  * @fileoverview Utility functions for authentication middleware.
  */
 import "dotenv/config";
-import { AUTH_SERVICE_URL, NODE_ENV } from "src/config";
+import {  NODE_ENV } from "src/config";
 
 /** Error message if no token provided */
 export const errNoToken = { message: "No token, authorization denied" };
@@ -35,22 +35,22 @@ export const verifyUser = async (token: string): Promise<AuthServiceResponse> =>
 
   if (NODE_ENV === "production" || NODE_ENV === "network") {
     console.log("Verifying user with auth service, token: ", token);
-    let authRes: any = await fetch(AUTH_SERVICE_URL + "/verify", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    data.status = authRes.status;
-    if (authRes.status !== 200) return data;
+    // let authRes: any = await fetch(AUTH_SERVICE_URL + "/verify", {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
+    // data.status = authRes.status;
+    // if (authRes.status !== 200) return data;
 
-    try {
-      (data.userId = authRes.userId), (data.email = authRes.email);
-    } catch (error) {
-      console.log(error);
-      data.userId = "";
-      data.email = "";
-      return data;
-    }
+    // try {
+    //   (data.userId = authRes.userId), (data.email = authRes.email);
+    // } catch (error) {
+    //   console.log(error);
+    //   data.userId = "";
+    //   data.email = "";
+    //   return data;
+    // }
   } else {
     if (token === invalidToken) {
       data.status = 401;

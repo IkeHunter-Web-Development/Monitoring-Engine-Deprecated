@@ -1,15 +1,24 @@
+import { AxiosHeaders, AxiosRequestConfig, Method, RawAxiosRequestHeaders } from "axios";
+
 declare type NetworkResponse = {
   status: number;
   error?: string;
 };
 
 declare type NetworkAuthResponse = NetworkResponse & {
-  authenticated: boolean;
   userId?: string;
 };
 
 declare type NetworkProjectInfo = NetworkResponse & {
-  projectName?: string;
-  company?: string;
+  projectTitle: string;
+  companyName?: string;
 };
 
+declare type NetworkRequest = {
+  endpoint: string;
+  method: Method | string;
+  params?: any;
+  data?: any;
+  headers?: (RawAxiosRequestHeaders & MethodsHeaders) | AxiosHeaders;
+  options?: AxiosRequestConfig;
+}

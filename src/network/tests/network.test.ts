@@ -1,6 +1,14 @@
-import { Network, request } from "src/network";
+import {
+  Network,
+  projectInfoNotFoundResponse,
+  projectInfoSuccessResponse,
+  request,
+  verifyUserInvalidResponse,
+  verifyUserSuccessResponse,
+} from "src/network";
 import { Monitor } from "src/models";
 import { generateMonitor } from "src/utils/testing";
+import { NetworkAuthResponse } from "../types/network";
 
 // interface NetworkAuthResponse {
 //   authenticated: boolean;
@@ -11,74 +19,56 @@ import { generateMonitor } from "src/utils/testing";
 jest.mock("../config.ts");
 const mockRequest = request as any;
 
-describe("Network manager tests", () => {
 
+describe("Network manager tests", () => {
   test("making api request", async () => {
     mockRequest.mockResolvedValue({ message: "success" });
-    Network.sendRequest("").then((res) => {
+    Network.sendRequest({ endpoint: "/api/test", method: "GET" }).then((res) => {
       expect(res).toStrictEqual({ message: "success" });
     });
   });
 
   test("authenticating with auth service, valid token", async () => {
-    const userId = "123abc";
-    const expected: NetworkAuthResponse = {
-      status: 200,
-      authenticated: true,
-      userId: userId,
-    };
-    mockRequest.mockResolvedValue(expected);
+    mockRequest.mockResolvedValue(verifyUserSuccessResponse);
 
     const token = "auth-service-token";
     const res: NetworkAuthResponse = await Network.authenticate(token);
 
-    expect(res.userId).toEqual(userId);
+    expect(res.userId).toEqual(verifyUserSuccessResponse.data.id);
   });
 
   test("authenticating with auth service, invalid token", async () => {
-    const expected: NetworkAuthResponse = {
-      status: 401,
-      authenticated: false,
-    };
-    mockRequest.mockResolvedValue(expected);
+    mockRequest.mockResolvedValue(verifyUserInvalidResponse);
 
     const token = "invalid-token";
-    const res = await Network.authenticate(token);
+    const res: NetworkAuthResponse = await Network.authenticate(token);
 
-    expect(res.authenticated).toBeFalsy();
+    expect(res.status).toEqual(verifyUserInvalidResponse.status)
     expect(res.userId).toBeUndefined();
   });
 
   test("getting project info, valid project", async () => {
-    const expected: NetworkProjectInfo = {
-      status: 200,
-      projectName: "Example Project",
-      company: "Example Company",
-    };
-    mockRequest.mockResolvedValue(expected);
+    mockRequest.mockResolvedValue(projectInfoSuccessResponse);
     const monitor: Monitor = await generateMonitor();
 
     const token = "valid-token";
     const res = await Network.getProjectInfo(token, monitor);
 
-    expect(res.projectName).toEqual("Example Project");
-    expect(res.company).toEqual("Example Company");
+    expect(res.projectTitle).toEqual(projectInfoSuccessResponse.data.title);
+    expect(res.companyName).toEqual(projectInfoSuccessResponse.data.company);
   });
 
   test("getting project info, invalid project", async () => {
-    const expected: NetworkProjectInfo = {
-      status: 404,
-    };
-    mockRequest.mockResolvedValue(expected);
-    
+    mockRequest.mockResolvedValue(projectInfoNotFoundResponse);
+
     const monitor: Monitor = await generateMonitor();
-    
+
     const token = "valid-token";
     const res = await Network.getProjectInfo(token, monitor);
-    
-    expect(res.projectName).toBeUndefined();
-    expect(res.company).toBeUndefined();
-    expect(res.status).toEqual(404);
+
+    expect(res.projectTitle).toBeUndefined();
+    expect(res.companyName).toBeUndefined();
+    expect(res.status).toEqual(projectInfoNotFoundResponse.status);
   });
 
   test("scheduling monitor", async () => {
