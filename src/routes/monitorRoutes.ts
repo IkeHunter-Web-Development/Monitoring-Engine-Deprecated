@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { MonitorController } from "src/controllers";
 import { hasPermission, isAuthenticated } from "src/middleware";
-// import {hasPermission} from "src/middleware/permissions.middleware";
-
 
 const router = Router();
 

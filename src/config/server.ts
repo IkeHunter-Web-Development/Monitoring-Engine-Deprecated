@@ -1,6 +1,7 @@
 import express from "express";
-import router from "../routes/router";
 import multer from "multer";
+import { router } from "src/routes";
+import cors from "cors";
 
 const server = express();
 
@@ -10,6 +11,12 @@ const jsonParser = express.json();
 server.use(urlencodedParser);
 server.use(jsonParser);
 server.use(multer().any());
+// FIXME: CONVERT TO CONDITIONAL VALUE FOR DEV/PROD
+server.use(
+  cors({
+    origin: "*",
+  })
+);
 
 server.use(router);
 

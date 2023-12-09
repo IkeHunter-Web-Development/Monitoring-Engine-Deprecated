@@ -1,5 +1,3 @@
-// import { isAuthenticated } from 'src/middleware';
-// import { isAuthenticated } from 'src/middleware';
 /**
  * @fileoverview Check if a user is logged in, if not,
  * check auth service to see if they are logged in with SSO,
@@ -13,8 +11,7 @@ import {
   verifyUser,
 } from "./utilities/auth.utilities";
 import { User } from "src/models";
-// import { UserOrNull } from "src/models/user/types";
-// import User from "../models/user/model";
+import { NODE_ENV } from "src/config";
 
 const unauthorizedError = new Error(errUnauthorized.message);
 const noTokenError = new Error(errNoToken.message);
@@ -26,6 +23,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
    *  if is present, not in db -> authenticate token with auth service, store in db
    *  if is present, is in db -> next()
    */
+  if (NODE_ENV === "development") return next();
   if (!req.headers) return res.status(401).json(errNoToken);
 
   try {
