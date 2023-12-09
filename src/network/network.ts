@@ -1,7 +1,7 @@
 import { Monitor } from "src/models";
 // import { request } from "./config";
 
-export class NetworkManager {
+export class Network {
   // private gatewayUrl: string;
   // private static instance = new NetworkManager();
 
@@ -16,23 +16,29 @@ export class NetworkManager {
     // });
     return url + data;
   }
-  static async isAuthenticated(token: string) {
-    return token;
-  }
+
   // TODO: authenticate with auth engine
-  static async authenticate(token: string) {
-    return token;
+  static async authenticate(token: string): Promise<NetworkAuthResponse> {
+    return {
+      status: 200,
+      authenticated: true,
+      userId: token,
+    };
   }
   // TODO: get project name, agency
-  static async getProjectInfo(monitor: Monitor) {
-    return monitor;
+  static async getProjectInfo(token: string, monitor: Monitor): Promise<NetworkProjectInfo> {
+    return {
+      status: 200,
+      projectName: monitor.title,
+      company: token,
+    };
   }
   // TODO: add monitor to scheduler
-  static async scheduleMonitor(monitor: Monitor) {
-    return monitor;
+  static async scheduleMonitor(monitor: Monitor): Promise<boolean> {
+    return monitor && true;
   }
   // TODO: remove monitor from scheduler
-  static async unscheduleMonitor(monitor: Monitor) {
-    return monitor;
+  static async unscheduleMonitor(monitor: Monitor): Promise<boolean> {
+    return monitor && true;
   }
 }
