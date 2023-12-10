@@ -1,2 +1,2 @@
 export * from "./permissions.middleware";
-export * from "./auth.middleware";
+export * from "./depricated/auth.middleware";

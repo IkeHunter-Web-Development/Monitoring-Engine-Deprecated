@@ -4,7 +4,7 @@ import { hasPermission, isAuthenticated } from "src/middleware";
 
 const router = Router();
 
-router.get("/", isAuthenticated, MonitorController.getMonitors);
+router.get("/", isAuthenticated, MonitorController.getMonitors)
 router.get("/:id", isAuthenticated, hasPermission, MonitorController.getMonitor);
 router.post("/", isAuthenticated, MonitorController.createMonitor);
 router.put("/:id", isAuthenticated, hasPermission, MonitorController.updateMonitor);

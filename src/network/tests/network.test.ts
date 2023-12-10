@@ -10,11 +10,6 @@ import { Monitor } from "src/models";
 import { generateMonitor } from "src/utils/testing";
 import { NetworkAuthResponse } from "../types/network";
 
-// interface NetworkAuthResponse {
-//   authenticated: boolean;
-//   // user?: UserType
-//   userId?: string;
-// }
 
 jest.mock("../config.ts");
 const mockRequest = request as any;

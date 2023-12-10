@@ -71,7 +71,7 @@
         }
       }
     },
-    "/api/monitors/": {
+    "/api/monitor/": {
       "get": {
         "description": "",
         "responses": {
@@ -89,7 +89,7 @@
         }
       }
     },
-    "/api/monitors/{id}": {
+    "/api/monitor/{id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -139,7 +139,7 @@
         }
       }
     },
-    "/api/monitors/{id}/online": {
+    "/api/monitor/{id}/online": {
       "get": {
         "description": "",
         "parameters": [
@@ -157,7 +157,7 @@
         }
       }
     },
-    "/api/monitors/alert": {
+    "/api/monitor/alert": {
       "post": {
         "description": "",
         "responses": {
@@ -167,7 +167,7 @@
         }
       }
     },
-    "/api/monitors/search": {
+    "/api/monitor/search": {
       "get": {
         "description": "",
         "responses": {
@@ -177,7 +177,7 @@
         }
       }
     },
-    "/api/events/{id}": {
+    "/api/event/{id}": {
       "get": {
         "tags": [
           "Events"
@@ -262,7 +262,7 @@
         }
       }
     },
-    "/api/events/search": {
+    "/api/event/search": {
       "get": {
         "tags": [
           "Events"
