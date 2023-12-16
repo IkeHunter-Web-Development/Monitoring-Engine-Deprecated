@@ -1,8 +1,9 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import { Monitor, User } from "src/models";
-import { EventService } from "src/services";
+import { Event, Monitor, Report, User } from "src/models";
+import { Network } from "src/network";
+import { EventService, MonitorDetail, ReportService } from "src/services";
 
 export class MonitorService {
   private constructor() {}
@@ -96,6 +97,67 @@ export class MonitorService {
 
     if (!monitors) return [];
     return monitors;
+  }
+
+  /**
+   * Get all monitors with their respective metrics,
+   * events, reports.
+   */
+  static async getDetailedMonitors(networkToken: string) {
+    // console.log("begine monitors detailed");
+    let monitors = await Monitor.find({});
+    if (!monitors) return [];
+    // console.log("get monitors reached");
+
+    const detailedMonitors: MonitorDetail[] = await Promise.all(monitors.map(async (monitor: Monitor) => {
+        const events: Event[] = await EventService.getEventsForMonitor(monitor);
+        const report: Report = await ReportService.generateReport(monitor);
+        const responses = [
+          {
+            responseTime: 0,
+            timestamp: new Date(),
+          },
+        ];
+        const networkRes = await Network.getProjectInfo(networkToken, monitor);
+        const project: string = networkRes.projectTitle;
+        const company: string = networkRes.companyName || "No company.";
+        try {
+          const detail: MonitorDetail = {
+            id: monitor._id.toString() || "",
+            project: project,
+            company: company,
+            url: monitor.url,
+            recipients: monitor.recipients,
+            status: monitor.status || '',
+            targetStatusCode: monitor.targetStatusCode,
+            currentStatusCode: monitor.statusCode,
+            active: monitor.active,
+            title: monitor.title,
+            type: monitor.type,
+            dateAdded: monitor.createdAt,
+            responseTime: -1,
+            timeout: monitor.timeout,
+            retries: monitor.retries,
+            coverImage: monitor.coverImage,
+            events: events,
+            report: report,
+            responses: responses,
+          };
+  
+          // console.log("detail: ", detail);
+  
+          return detail;
+        } catch (error: any) {
+          console.log("Error creating monitor details: ", error.message);
+          throw error;
+        }
+      }))
+      
+      
+    
+
+    
+    return detailedMonitors
   }
 
   /**
@@ -209,7 +271,7 @@ export class MonitorService {
 
     if (!event) return false;
 
-    monitor.users.forEach(async (user: any) => {
+    monitor.recipients.forEach(async (user: any) => {
       const userObj = User.findById(user.userId);
       if (userObj !== undefined) {
         let message = `Monitor ${monitor.title} is down. Status code: ${statusCode}`;

@@ -62,8 +62,8 @@ export class ReportService {
       0
     );
 
-    let eventStartTime: number = events[0].timestamp.getTime();
-    let eventEndTime: number = events[events.length - 1].timestamp.getTime();
+    let eventStartTime: number = events[0]?.timestamp.getTime();
+    let eventEndTime: number = events[events.length - 1]?.timestamp.getTime();
     const totalUptimeMinutes: number = (eventEndTime - eventStartTime) / (1000 * 60);
 
     return { uptime: totalUptimeMinutes, downtime: totalDowntimeMinutes };
@@ -115,9 +115,9 @@ export class ReportService {
     /** Get events using initial time block */
     const events = await EventService.getEventsInRange(monitor, initialStartDate, initialEndDate);
 
-    const reportStartDate: Date = events[0].timestamp;
-    const reportEndDate: Date = events[events.length - 1].timestamp;
-    const reportTotalDays: number = getDayDifference(reportStartDate, reportEndDate);
+    const reportStartDate: Date = events[0]?.timestamp;
+    const reportEndDate: Date = events[events.length - 1]?.timestamp;
+    const reportTotalDays: number = reportStartDate && reportEndDate ? getDayDifference(reportStartDate, reportEndDate) : 0;
 
     const minutesReport: MinutesReport = await this.getMinutesReport(events);
     const daysWithDowntime: Array<Date> = await this.getDaysWithDowntime(events);
@@ -128,16 +128,16 @@ export class ReportService {
     const averageResponseTime: number = this.getAverageResponseTime(events);
 
     const report: Report = await Report.create({
-      startDate: reportStartDate,
-      endDate: reportEndDate,
+      startDate: reportStartDate || new Date(),
+      endDate: reportEndDate || new Date(),
       totalDays: reportTotalDays,
-      totalUptimeMinutes: minutesReport.uptime,
-      totalDowntimeMinutes: minutesReport.downtime,
+      totalUptimeMinutes: minutesReport.uptime || -1,
+      totalDowntimeMinutes: minutesReport.downtime || -1,
       daysWithDowntime: daysWithDowntime as Date[],
       totalEvents: events.length,
-      totalUptimeEvents: eventsWithUptime,
-      totalDowntimeEvents: eventsWithDowntime,
-      averageResponseTime: averageResponseTime,
+      totalUptimeEvents: eventsWithUptime -1,
+      totalDowntimeEvents: eventsWithDowntime || -1,
+      averageResponseTime: averageResponseTime || -1,
     });
 
     return report;

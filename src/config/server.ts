@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import { router } from "src/routes";
 import cors from "cors";
+import responseTime from "response-time";
 
 const server = express();
 
@@ -18,6 +19,7 @@ server.use(
   })
 );
 
+server.use(responseTime());
 server.use(router);
 
 export { server };

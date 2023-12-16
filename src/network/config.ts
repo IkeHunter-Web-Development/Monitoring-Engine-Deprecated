@@ -6,5 +6,5 @@ const instance = axios.create({
 
 export const request = async (options: AxiosRequestConfig): Promise<any> => {
   const res = await instance.request(options);
-  return res.data;
+  return res;
 };

@@ -14,7 +14,7 @@ export class Network {
   }
 
   static async sendRequest(options: NetworkRequest): Promise<AxiosResponse | any> {
-    const res = request({
+    const res = await request({
       ...options.options,
       url: this.instance.gatewayUrl + options.endpoint,
       method: options.method,
@@ -22,7 +22,11 @@ export class Network {
       data: options.data,
       headers: options.headers,
       
-    });
+    }).catch((err) => {
+      console.log('err: ', err)
+      return err;
+    })
+    // console.log('res: ', res)
     return res;
   }
 
@@ -52,6 +56,8 @@ export class Network {
       }
     }
     const res: AxiosResponse | any = await this.sendRequest(config);
+    
+    // console.log('project res: ', res)
     
     return {
       status: res.status,

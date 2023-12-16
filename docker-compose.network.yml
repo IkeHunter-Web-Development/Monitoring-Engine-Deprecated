@@ -5,15 +5,15 @@ services:
     build:
       context: .
     ports:
-      - "8001:8001"
+      - "8000:8000"
     restart: always
     volumes:
       - ./src:/app/src
       - ./logs:/app/logs
     environment:
       - HOST=0.0.0.0
-      - PORT=8001
-      - NODE_ENV=development
+      - PORT=8000
+      # - NODE_ENV=network
       - LOGGING_LEVEL=verbose
       - EMAIL_USER=tests@ikehunter.dev
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
@@ -21,6 +21,9 @@ services:
       - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
       - CENTRAL_GET_ENDPOINT=/engine/get/
       - MONGO_URI=mongodb://root:changeme@mongo-monitor
+      - AUTH_SERVICE_URL=http://localhost:8000/auth/
+      
+      - GATEWAY_URL=http://proxy:8080
       
       - MONGO_PORT=27017
       - MONGO_DB=monitor

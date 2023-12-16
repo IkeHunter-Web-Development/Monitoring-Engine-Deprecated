@@ -278,4 +278,15 @@ export class MonitorController {
 
     return res.status(200).send("Alert received");
   }
+  
+  static async getDetailedMonitors(_: Request, res: Response) {
+    // TODO: Add docs
+    const token = res.locals.token || '';
+    const monitors = await MonitorService.getDetailedMonitors(token).catch((err) => {
+      return res.status(500).json(err.message)
+    })
+    
+    return res.status(200).json(monitors);
+  }
 }
+

@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { EventController } from "src/controllers/eventsController";
 import { isAuthenticated } from "src/middleware";
-// import isAuthenticatedClass from "src/middleware/auth.middleware";
-
 
 const router = Router();
 

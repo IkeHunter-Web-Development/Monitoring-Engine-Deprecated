@@ -5,7 +5,7 @@ import { eventRoutes } from "./eventRoutes"; // absolute import for swagger
 
 const router = Router();
 router.get("/", BaseController.healthCheck);
-router.use("/api/monitor", monitorRoutes);
-router.use("/api/event", eventRoutes);
+router.use("/api/monitors", monitorRoutes);
+router.use("/api/events", eventRoutes);
 
 export { router };

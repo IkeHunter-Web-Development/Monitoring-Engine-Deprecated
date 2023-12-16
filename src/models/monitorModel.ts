@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { userSchema } from "./userModel";
+import { User, userSchema } from "./userModel";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: targetStatusCode, currentStatusCode, status
@@ -8,12 +8,20 @@ export const monitorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  users: [userSchema],
   url: {
     type: String,
     required: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
+  recipients: [userSchema],
   statusCode: {
+    type: Number,
+    default: 200,
+  },
+  targetStatusCode: {
     type: Number,
     default: 200,
   },
@@ -21,10 +29,13 @@ export const monitorSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  title: {
+  status: {
     type: String,
-    required: true,
+    enum: ["online", "offline", "pending", "unstable", "warning", "alert", "stable"],
+    defualt: "pending",
+    // required: true
   },
+
   online: {
     type: Boolean,
     default: true,
@@ -50,6 +61,12 @@ export const monitorSchema = new mongoose.Schema({
     type: Number,
     default: 3,
   },
+  coverImage: {
+    type: String,
+    default: "",
+  },
+}, {
+  timestamps: true
 });
 
 export const Monitor = mongoose.model("Monitor", monitorSchema);
