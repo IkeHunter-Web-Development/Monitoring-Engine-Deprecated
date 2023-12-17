@@ -79,389 +79,91 @@
         }
       }
     },
-    "/api/monitors/details": {
+    "/api/monitor/details": {
       "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for getting details for all monitors.",
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/MonitorResponseDetailed"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            }
+          "default": {
+            "description": ""
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
+        }
       }
     },
-    "/api/monitors/alert": {
+    "/api/monitor/alert": {
       "post": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for alerting service that a monitor is down.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Alert payload",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "example": "object"
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        }
-                      }
-                    },
-                    "statusCode": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "number"
-                        }
-                      }
-                    },
-                    "error": {
-                      "type": "object",
-                      "properties": {
-                        "type": {
-                          "type": "string",
-                          "example": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Alert received"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/monitors/search": {
+    "/api/monitor/search": {
       "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for searching monitors.",
-        "parameters": [
-          {
-            "name": "project",
-            "description": "Project ID",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "user",
-            "description": "User ID",
-            "in": "query",
-            "type": "string"
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/MonitorResponse"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            }
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/monitors/": {
+    "/api/monitor/monitors/": {
       "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for getting all monitors.",
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/MonitorResponse"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
+        }
       },
       "post": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for creating a monitor.",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Monitor object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MonitorBody"
-            }
-          }
-        ],
+        "description": "",
         "responses": {
-          "201": {
-            "description": "Monitor created",
-            "schema": {
-              "$ref": "#/definitions/MonitorResponse"
-            }
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/monitors/{id}": {
+    "/api/monitor/monitors/{id}": {
       "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for getting a single monitor.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Monitor ID"
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Monitor updated",
-            "schema": {
-              "$ref": "#/definitions/MonitorResponse"
-            }
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       },
       "put": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for updating a monitor.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Monitor ID"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Monitor object",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/MonitorBody"
-            }
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Monitor updated",
-            "schema": {
-              "$ref": "#/definitions/MonitorResponse"
-            }
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       },
       "delete": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for deleting a single monitor.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Monitor ID"
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "Monitor deleted successfully",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "number",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Monitor deleted"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/monitors/{id}/online": {
+    "/api/monitor/monitors/{id}/online": {
       "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for getting online status for monitor.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "Monitor ID"
-          }
-        ],
+        "description": "",
         "responses": {
-          "200": {
-            "description": "True if online, false if offline"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not Found"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/events/": {
+    "/api/monitor/events/": {
       "post": {
         "tags": [
           "Events"
@@ -502,7 +204,7 @@
         ]
       }
     },
-    "/api/events/{id}": {
+    "/api/monitor/events/{id}": {
       "get": {
         "tags": [
           "Events"
@@ -587,7 +289,7 @@
         }
       }
     },
-    "/api/events/search": {
+    "/api/monitor/events/search": {
       "get": {
         "tags": [
           "Events"

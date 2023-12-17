@@ -10,3 +10,4 @@ export const JWT_SECRET_KEY = process.env.JWS_SECRET_KEY || "insecure";
 export const JWT_EXPIRES_IN = process.env.JWS_EXPIRES_IN || "1h";
 export const JWT_ISSUER = process.env.JWT_ISSUER || "localhost";
 export const JWT_ALGORITHM = process.env.JWT_ALGORITHM || "HS256";
+export const NETWORK_TOKEN = process.env.NETWORK_TOKEN || "insecure";

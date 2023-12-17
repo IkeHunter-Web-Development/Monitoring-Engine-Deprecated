@@ -4,9 +4,40 @@
 import { Request, Response } from "express";
 import { simpleResponse } from "../utils/responses";
 import { MonitorService } from "src/services";
+import { Monitor } from "src/models";
+import { Network } from "src/network";
+import { NODE_ENV } from "src/config";
 
 export class MonitorController {
-  static async createMonitor(req: Request, res: Response) {
+  constructor() {}
+
+  private async scheduleMonitor(monitor: Monitor) {
+    if (NODE_ENV === "development") return;
+
+    await Network.scheduleMonitor(monitor)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  private async unscheduleMonitor(monitor: Monitor) {
+    if (NODE_ENV === "development") return;
+
+    console.log("deleting monitor: ", monitor._id, " from schedule");
+
+    await Network.unscheduleMonitor(monitor)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  createMonitor = async (req: Request, res: Response) => {
     /**======================*
       @swagger Create monitor
       #swagger.parameters['body'] = {
@@ -29,6 +60,7 @@ export class MonitorController {
 
     return MonitorService.createMonitor(req.body)
       .then((monitor: any) => {
+        this.scheduleMonitor(monitor)
         return res.status(201).json(monitor);
       })
       .catch((err: any) => {
@@ -37,7 +69,7 @@ export class MonitorController {
       });
   }
 
-  static async updateMonitor(req: Request, res: Response) {
+  async updateMonitor(req: Request, res: Response) {
     /**======================*
       @swagger Update monitor
       #swagger.tags = ['Monitor']
@@ -78,7 +110,7 @@ export class MonitorController {
       });
   }
 
-  static async getMonitor(req: Request, res: Response) {
+  async getMonitor(req: Request, res: Response) {
     /**==========================*
       @swagger Get single monitor
       #swagger.tags = ['Monitor']
@@ -110,7 +142,7 @@ export class MonitorController {
       });
   }
 
-  static async deleteMonitor(req: Request, res: Response) {
+  deleteMonitor = async (req: Request, res: Response) => {
     /**==========================*
       @swagger Delete single monitor
       #swagger.tags = ['Monitor']
@@ -131,6 +163,11 @@ export class MonitorController {
       }
      *===========================*/
     const { id } = req.params || "";
+    const monitor = await MonitorService.getMonitor(id);
+
+    if (!monitor) return simpleResponse(res, 404, "Monitor not found");
+
+    await this.unscheduleMonitor(monitor);
 
     return MonitorService.deleteMonitor(id)
       .then((success) => {
@@ -145,7 +182,7 @@ export class MonitorController {
       });
   }
 
-  static async getMonitors(_: Request, res: Response) {
+  async getMonitors(_: Request, res: Response) {
     /**==========================*
       @swagger Get all monitors
       #swagger.tags = ['Monitor']
@@ -170,7 +207,7 @@ export class MonitorController {
       });
   }
 
-  static async searchMonitors(req: Request, res: Response) {
+  async searchMonitors(req: Request, res: Response) {
     /**================================*
       @swagger Search monitors by query
       #swagger.tags = ['Monitor']
@@ -205,7 +242,7 @@ export class MonitorController {
       });
   }
 
-  static async getMonitorOnlineStatus(req: Request, res: Response) {
+  async getMonitorOnlineStatus(req: Request, res: Response) {
     /**=================================*
       @swagger Get monitor online status
       #swagger.tags = ['Monitor']
@@ -236,7 +273,7 @@ export class MonitorController {
     }
   }
 
-  static async alertMonitorDown(req: Request, res: Response) {
+  async alertMonitor(req: Request, res: Response) {
     /**=================================*
       @swagger Alert monitor down
       #swagger.tags = ['Monitor']
@@ -247,12 +284,9 @@ export class MonitorController {
         description: "Alert payload",
         required: true,
         schema: {
-          type: "object",
-          properties: {
-            id: { type: "string" },
-            statusCode: { type: "number" },
-            error: { type: "string" },
-          }
+          id: "monitor-id",
+          statusCode: 500,
+          error: "Website experienced an internal server error",
         }
       }
       #swagger.responses[200] = {
@@ -265,7 +299,7 @@ export class MonitorController {
         schema: {$ref: "#/definitions/Error404"},
       }
      *==================================*/
-    const { id, statusCode, error } = req.body;
+    const { id, statusCode, stable, message } = req.body;
 
     let monitor = await MonitorService.getMonitor(id);
 
@@ -273,16 +307,24 @@ export class MonitorController {
       return simpleResponse(res, 404, "Monitor not found");
     }
 
-    let success = MonitorService.handleMonitorDown(monitor, statusCode, error);
+    if (stable === true) {
+      let success = MonitorService.handleMonitorBackOnline(monitor, statusCode);
 
-    if (!success) {
-      return simpleResponse(res, 500, "Error handling monitor down");
+      if (!success) {
+        return simpleResponse(res, 500, "Error handling monitor back online");
+      }
+    } else {
+      let success = MonitorService.handleMonitorDown(monitor, statusCode, message);
+
+      if (!success) {
+        return simpleResponse(res, 500, "Error handling monitor down");
+      }
     }
 
     return res.status(200).send("Alert received");
   }
 
-  static async getDetailedMonitors(_: Request, res: Response) {
+  async getDetailedMonitors(_: Request, res: Response) {
     /**==========================*
       @swagger Get all monitor details
       #swagger.tags = ['Monitor']

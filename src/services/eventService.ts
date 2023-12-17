@@ -58,11 +58,34 @@ export class EventService {
    *
    * @returns The created event.
    */
-  static async registerDownEvent(monitorId: string, statusCode: number, message: string) {
+  static async registerDownEvent(monitor: Monitor, statusCode: number, message: string) {
     let event = await EventService.createEvent({
-      monitorId: monitorId,
+      monitorId: monitor._id,
       statusCode: statusCode,
       online: false,
+      message: message,
+    }).catch((err: any) => {
+      console.log(err);
+      throw err;
+    });
+
+    return event;
+  }
+
+  /**
+   * Register an up event.
+   *
+   * @param monitorId The id of the monitor the event belongs to.
+   * @param statusCode The status code of the event.
+   * @param message The message of the event.
+   *
+   * @returns The created event.
+   */
+  static async registerUpEvent(monitor: Monitor, statusCode: number, message: string) {
+    let event = await EventService.createEvent({
+      monitorId: monitor._id,
+      statusCode: statusCode,
+      online: true,
       message: message,
     }).catch((err: any) => {
       console.log(err);
@@ -210,7 +233,7 @@ export class EventService {
 
     if (params.last) {
       filteredEvents = filteredEvents.sort((a: Event, b: Event) => {
-        return b.timestamp.getTime() - a.timestamp.getTime();
+        return b.timestamp!.getTime() - a.timestamp!.getTime();
       });
 
       filteredEvents = [filteredEvents[0]];
@@ -279,7 +302,7 @@ export class EventService {
       throw err;
     });
 
-    events = events.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+    events = events.sort((a, b) => a.timestamp!.getTime() - b.timestamp!.getTime());
 
     return events || [];
   }
@@ -293,7 +316,7 @@ export class EventService {
     for (let event of events) {
       if (event.online) {
         if (lastOfflineTime) {
-          downTime += event.timestamp.getTime() - lastOfflineTime.getTime();
+          downTime += event.timestamp!.getTime() - lastOfflineTime.getTime();
           lastOfflineTime = null;
         }
         lastOnlineTime = event.timestamp;

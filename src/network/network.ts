@@ -2,7 +2,7 @@ import { Monitor } from "src/models";
 import { request } from "./config";
 import { GATEWAY_URL } from "src/config";
 import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network";
-import { AUTH_URL, PROJECT_SINGLE_URL } from "./utils/endpoints";
+import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
 
 export class Network {
@@ -33,7 +33,7 @@ export class Network {
   // TODO: authenticate with auth engine
   static async authenticate(token: string): Promise<NetworkAuthResponse> {
     const config: NetworkRequest = {
-      endpoint: AUTH_URL,
+      endpoint: AUTH_SERVICE.verify,
       method: 'GET',
       headers: {
         Authorization: 'Token ' + token
@@ -49,7 +49,8 @@ export class Network {
   // TODO: get project name, agency
   static async getProjectInfo(token: string, monitor: Monitor): Promise<NetworkProjectInfo> {
     const config: NetworkRequest  = {
-      endpoint: PROJECT_SINGLE_URL(monitor.projectId),
+      // endpoint: PROJECT_SINGLE_URL(monitor.projectId),
+      endpoint: PROJECT_SERVICE.getOne(monitor.projectId),
       method: 'GET',
       headers: {
         Authorization: 'Token ' + token
@@ -65,12 +66,31 @@ export class Network {
       companyName: res.data?.company,
     };
   }
-  // TODO: add monitor to scheduler
   static async scheduleMonitor(monitor: Monitor): Promise<boolean> {
-    return monitor && true;
+    // return monitor && true;
+    const config: NetworkRequest = {
+      endpoint: SCHEDULE_SERVICE.createMonitor,
+      method: 'POST',
+      data: {
+        foreignId: monitor._id,
+        url: monitor.url,
+        targetCode: monitor.targetStatusCode,
+      }
+    }
+    const res: AxiosResponse | any = await this.sendRequest(config);
+    console.log('res: ', res)
+    
+    return res.status === 201;
   }
-  // TODO: remove monitor from scheduler
   static async unscheduleMonitor(monitor: Monitor): Promise<boolean> {
-    return monitor && true;
+    // return monitor && true;
+    const config: NetworkRequest = {
+      endpoint: SCHEDULE_SERVICE.deleteMonitor(monitor._id.toString()),
+      method: 'DELETE',
+    }
+    const res: AxiosResponse | any = await this.sendRequest(config);
+    console.log('res: ', res)
+    
+    return res.status === 204;
   }
 }

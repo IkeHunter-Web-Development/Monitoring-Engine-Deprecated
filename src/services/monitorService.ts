@@ -267,16 +267,42 @@ export class MonitorService {
    */
   static async handleMonitorDown(monitor: Monitor, statusCode: number, error: string) {
     monitor.online = false;
-    let event = await EventService.registerDownEvent(monitor._id.toString(), statusCode, error);
+    let event = await EventService.registerDownEvent(monitor, statusCode, error);
 
     if (!event) return false;
+    console.log("Handling monitor down: ", monitor.title, " ", statusCode, " ", error);
 
     monitor.recipients.forEach(async (user: any) => {
-      const userObj = User.findById(user.userId);
+      const userObj = await User.findById(user._id);
       if (userObj !== undefined) {
         let message = `Monitor ${monitor.title} is down. Status code: ${statusCode}`;
         console.log("sending email: ", message);
       }
     });
   }
+  /**
+   * Handle a monitor going back online.
+   *
+   * @param monitor The monitor.
+   * @param statusCode The status code of the monitor.
+   * @returns Boolean, whether the monitor was handled.
+   */
+  static async handleMonitorBackOnline(monitor: Monitor, statusCode: number) {
+    monitor.online = false;
+    let event = await EventService.registerUpEvent(monitor, statusCode, "Monitor is back online.");
+
+    if (!event) return false;
+    console.log("Handling monitor back online: ", monitor.title, " ", statusCode);
+
+    monitor.recipients.forEach(async (user: any) => {
+      const userObj = await User.findById(user._id);
+      if (userObj !== undefined) {
+        let message = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
+        console.log("sending email: ", message);
+      }
+    });
+  }
 }
+
+
+  

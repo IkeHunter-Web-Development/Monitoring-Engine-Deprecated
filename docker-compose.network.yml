@@ -13,7 +13,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=8000
-      # - NODE_ENV=network
+      - NODE_ENV=network
       - LOGGING_LEVEL=verbose
       - EMAIL_USER=tests@ikehunter.dev
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
@@ -24,6 +24,7 @@ services:
       - AUTH_SERVICE_URL=http://localhost:8000/auth/
       
       - GATEWAY_URL=http://proxy:8080
+      - NETWORK_TOKEN=network-token
       
       - MONGO_PORT=27017
       - MONGO_DB=monitor
