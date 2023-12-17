@@ -12,6 +12,11 @@ import { Network } from "src/network";
 import { NetworkAuthResponse } from "src/network/types/network";
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
+  /**
+    #swagger.security = [{
+        "bearerAuth": []
+    }]
+   */
   if (NODE_ENV === "development") return next();
 
   // TODO: Create secure authorization protocol for microservices

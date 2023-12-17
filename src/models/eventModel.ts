@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const eventSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
   monitorId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -15,8 +15,8 @@ const eventSchema = new mongoose.Schema({
   },
   timestamp: {
     type: Date,
-    required: false,
-    default: Date.now(),
+    // required: false,
+    default: Date.now,
   },
   message: {
     type: String,
@@ -26,9 +26,17 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+}, {
+  timestamps: true
 });
 
-export const Event = mongoose.model("Event", eventSchema);
-export type Event = InstanceType<typeof Event>;
+
+export const Event = mongoose.model("Event", EventSchema);
+export type Event = InstanceType<typeof Event> & {
+  timestamp: Date
+};
+// export interface Event extends InstanceType<typeof Event> {
+//   timestamp: Date;
+// }
 
 

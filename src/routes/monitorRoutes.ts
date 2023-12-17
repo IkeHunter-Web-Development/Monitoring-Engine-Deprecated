@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { MonitorController } from "src/controllers/monitorController"; // absolute import for swagger
-import { hasPermission, isAuthenticated } from "src/middleware";
+import { isAuthenticated } from "src/middleware/authMiddleware";
+import { hasPermission } from "src/middleware";
 
 const router = Router();
 

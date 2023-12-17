@@ -18,7 +18,7 @@ export class MonitorService {
     let payload = {
       projectId: data.projectId,
       url: data.url || "",
-      users: data.users || [],
+      recipients: data.recipients || [],
       title: data.title || "",
     };
 
@@ -29,7 +29,7 @@ export class MonitorService {
    *
    * @param projectId The id of the project the monitor belongs to.
    * @param url The url to monitor.
-   * @param users The users to notify when the monitor goes offline.
+   * @param recipients The users to notify when the monitor goes offline.
    * @param title The title of the monitor.
    * @returns The created monitor.
    */
@@ -128,7 +128,7 @@ export class MonitorService {
             company: company,
             url: monitor.url,
             recipients: monitor.recipients,
-            status: monitor.status || '',
+            status: monitor.status || 'unknown',
             targetStatusCode: monitor.targetStatusCode,
             currentStatusCode: monitor.statusCode,
             active: monitor.active,
@@ -199,7 +199,7 @@ export class MonitorService {
 
     if (query.userId) {
       monitors = monitors.filter((monitor: any) => {
-        return monitor.users.some((user: any) => {
+        return monitor.recipients.some((user: any) => {
           return user.userId === query.userId;
         });
       });

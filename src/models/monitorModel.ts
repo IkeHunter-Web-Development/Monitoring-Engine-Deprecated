@@ -1,73 +1,76 @@
 import mongoose from "mongoose";
-import { userSchema } from "./userModel";
+import { UserSchema } from "./userModel";
 
-export const monitorSchema = new mongoose.Schema({
-  // TODO: targetStatusCode, currentStatusCode, status
-  // TODO: Recovery mode? send request every x seconds
-  projectId: {
-    type: String,
-    required: true,
-  },
-  url: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  recipients: [userSchema],
-  statusCode: {
-    type: Number,
-    default: 200,
-  },
-  targetStatusCode: {
-    type: Number,
-    default: 200,
-  },
-  active: {
-    type: Boolean,
-    default: true,
-  },
-  status: {
-    type: String,
-    enum: ["online", "offline", "pending", "unstable", "warning", "alert", "stable"],
-    defualt: "pending",
-    // required: true
-  },
+export const MonitorSchema = new mongoose.Schema(
+  {
+    // TODO: targetStatusCode, currentStatusCode, status
+    // TODO: Recovery mode? send request every x seconds
+    projectId: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    recipients: [UserSchema],
+    statusCode: {
+      type: Number,
+      default: 200,
+    },
+    targetStatusCode: {
+      type: Number,
+      default: 200,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    status: {
+      type: String,
+      enum: ["online", "offline", "pending", "unstable", "warning", "alert", "stable"],
+      defualt: "pending",
+      // required: true
+    },
 
-  online: {
-    type: Boolean,
-    default: true,
+    online: {
+      type: Boolean,
+      default: true,
+    },
+    type: {
+      type: String,
+      enum: ["http"],
+      default: "http",
+    },
+    endpoints: {
+      type: Array,
+      default: ["/"],
+    },
+    interval: {
+      type: Number,
+      default: 60,
+    },
+    timeout: {
+      type: Number,
+      default: 30,
+    },
+    retries: {
+      type: Number,
+      default: 3,
+    },
+    coverImage: {
+      type: String,
+      default: "",
+    },
   },
-  type: {
-    type: String,
-    enum: ["http"],
-    default: "http",
-  },
-  endpoints: {
-    type: Array,
-    default: ["/"],
-  },
-  interval: {
-    type: Number,
-    default: 60,
-  },
-  timeout: {
-    type: Number,
-    default: 30,
-  },
-  retries: {
-    type: Number,
-    default: 3,
-  },
-  coverImage: {
-    type: String,
-    default: "",
-  },
-}, {
-  timestamps: true
-});
+  {
+    timestamps: true,
+  }
+);
 
-export const Monitor = mongoose.model("Monitor", monitorSchema);
+export const Monitor = mongoose.model("Monitor", MonitorSchema);
 export type Monitor = InstanceType<typeof Monitor>;

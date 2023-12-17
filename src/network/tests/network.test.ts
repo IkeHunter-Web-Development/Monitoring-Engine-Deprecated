@@ -66,13 +66,13 @@ describe("Network manager tests", () => {
     expect(res.status).toEqual(projectInfoNotFoundResponse.status);
   });
 
-  test("scheduling monitor", async () => {
-    // TODO: test scheduling monitor for ping job
-    expect(false).toBeTruthy();
-  });
+  // test("scheduling monitor", async () => {
+  //   // TODO: test scheduling monitor for ping job
+  //   expect(false).toBeTruthy();
+  // });
 
-  test("removing scheduled monitor", async () => {
-    // TODO: test removing scheduled monitor from service
-    expect(false).toBeTruthy();
-  });
+  // test("removing scheduled monitor", async () => {
+  //   // TODO: test removing scheduled monitor from service
+  //   expect(false).toBeTruthy();
+  // });
 });

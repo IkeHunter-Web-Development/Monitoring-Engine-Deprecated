@@ -1,4 +1,4 @@
-import { userSchema } from './../../models/userModel';
+import { UserSchema } from "./../../models/userModel";
 import { ObjectId } from "mongoose";
 import { Event, Report } from "src/models";
 
@@ -7,7 +7,7 @@ export interface MonitorDetail {
   project: string;
   company: string;
   url: string;
-  recipients: typeof userSchema[] | { name: string; email: string }[];
+  recipients: (typeof UserSchema)[] | { name: string; email: string }[];
   status: string;
   targetStatusCode: number;
   currentStatusCode: number;
@@ -19,24 +19,28 @@ export interface MonitorDetail {
   timeout: number;
   retries: number;
   coverImage: string;
-  events: Event[] | {
-    id: ObjectId;
-    statusCode: number;
-    online: boolean;
-    timestamp: Date;
-    message: string;
-  }[];
-  report: Report | {
-    totalDays: number;
-    totalEventCount: number;
-    totalDowntimeEvents: number;
-    totalUptimeEvents: number;
-    averageResponseTime: number;
-    totalDowntimeMinutes: number;
-    totalUptimeMinutes: number;
-  };
+  events:
+    | Event[]
+    | {
+        id: ObjectId;
+        statusCode: number;
+        online: boolean;
+        timestamp: Date;
+        message: string;
+      }[];
+  report:
+    | Report
+    | {
+        totalDays: number;
+        totalEventCount: number;
+        totalDowntimeEvents: number;
+        totalUptimeEvents: number;
+        averageResponseTime: number;
+        totalDowntimeMinutes: number;
+        totalUptimeMinutes: number;
+      };
   responses: {
     responseTime: number;
     timestamp: Date;
-  }[]
+  }[];
 }

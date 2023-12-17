@@ -6,7 +6,9 @@ import httpMocks from "node-mocks-http";
 import { getResJson } from "src/utils";
 import { Monitor } from "src/models";
 import { MonitorService } from "src/services";
-import { MonitorController as controller } from "src/controllers";
+import { MonitorController } from "src/controllers";
+
+const controller = new MonitorController()
 
 const defaultMonitor = {
   projectId: "123abc",
@@ -188,12 +190,12 @@ describe("Monitor controller", () => {
   it("should return monitors for project", async () => {
     let m1 = await MonitorService.createMonitor({
       ...defaultMonitor,
-      users: [u1, u2],
+      recipients: [u1, u2],
     });
     await MonitorService.createMonitor({
       ...defaultMonitor,
       projectId: "456",
-      users: [u3, u4],
+      recipients: [u3, u4],
     });
 
     req = httpMocks.createRequest({
@@ -214,17 +216,17 @@ describe("Monitor controller", () => {
   it("should return monitors that a user is subscribed to", async () => {
     await MonitorService.createMonitor({
       ...defaultMonitor,
-      users: [u1, u2],
+      recipients: [u1, u2],
     });
-    let m2 = await MonitorService.createMonitor({
+    let m2: Monitor = await MonitorService.createMonitor({
       ...defaultMonitor,
       projectId: "456",
-      users: [u3, u4],
+      recipients: [u3, u4],
     });
 
     req = httpMocks.createRequest({
       method: "GET",
-      query: { userId: m2.users[0].userId },
+      query: { userId: m2.recipients[0].userId },
     });
     await controller.searchMonitors(req, res);
     const body = getResJson(res);

@@ -3,7 +3,7 @@
  */
 import mongoose from "mongoose";
 
-export const userSchema = new mongoose.Schema({
+export const UserSchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -26,6 +26,5 @@ export const userSchema = new mongoose.Schema({
   },
 });
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model("User", UserSchema);
 export type User = InstanceType<typeof User>;
-
