@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User, userSchema } from "./userModel";
+import { userSchema } from "./userModel";
 
 export const monitorSchema = new mongoose.Schema({
   // TODO: targetStatusCode, currentStatusCode, status

@@ -128,16 +128,16 @@ export class ReportService {
     const averageResponseTime: number = this.getAverageResponseTime(events);
 
     const report: Report = await Report.create({
-      startDate: reportStartDate || new Date(),
+      startDate: reportStartDate || monitor.createdAt || new Date(), // if no events, get monitor date, else set today
       endDate: reportEndDate || new Date(),
       totalDays: reportTotalDays,
-      totalUptimeMinutes: minutesReport.uptime || -1,
-      totalDowntimeMinutes: minutesReport.downtime || -1,
+      totalUptimeMinutes: minutesReport.uptime || -1, // not enough time has passed
+      totalDowntimeMinutes: minutesReport.downtime || 0, // assume no downtime by default
       daysWithDowntime: daysWithDowntime as Date[],
       totalEvents: events.length,
-      totalUptimeEvents: eventsWithUptime -1,
-      totalDowntimeEvents: eventsWithDowntime || -1,
-      averageResponseTime: averageResponseTime || -1,
+      totalUptimeEvents: eventsWithUptime || 0,
+      totalDowntimeEvents: eventsWithDowntime || 0,
+      averageResponseTime: averageResponseTime || -1, // not enough time has passed
     });
 
     return report;
