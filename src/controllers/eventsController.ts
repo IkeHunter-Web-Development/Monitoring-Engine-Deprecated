@@ -3,6 +3,7 @@
  */
 import { Request, Response } from "express";
 import { Event } from "src/models";
+import { EventService } from "src/services";
 
 export class EventController {
   /**============*
@@ -126,7 +127,7 @@ export class EventController {
 
       if (last) {
         events = events.sort((a: Event, b: Event) => {
-          return b.timestamp.getTime() - a.timestamp.getTime();
+          return b.timestamp!.getTime() - a.timestamp!.getTime();
         });
 
         events = [events[0]];
@@ -139,7 +140,39 @@ export class EventController {
       });
     }
   }
-}
 
-// TODO: Get the latest 30 day report
-// export const getReport = (req: Request, res: Response) => {};
+  static async createEvent(req: Request, res: Response) {
+    /**======================*
+      @swagger Create Event
+      #swagger.security = [{
+        "bearerAuth": []
+      }]
+      #swagger.parameters['body'] = {
+        in: "body",
+        name: "body",
+        description: "Event object",
+        required: true,
+        schema: {$ref: "#/definitions/EventBody"}
+      }
+      #swagger.tags = ['Events']
+      #swagger.description = 'Endpoint for creating an Event.'
+      #swagger.responses[201] = {
+        schema: { $ref: "#/definitions/EventResponse" },
+        description: "Event created"
+      }
+      #swagger.responses[500] = {
+        schema: {$ref: "#/definitions/Error500"},
+      }
+     *========================*/
+    await EventService.createEvent(req.body)
+      .then((event) => {
+        return res.status(200).json(event);
+      })
+      .catch((error) => {
+        return res.status(500).json({
+          status: 500,
+          message: error,
+        });
+      });
+  }
+}

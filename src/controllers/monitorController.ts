@@ -150,6 +150,9 @@ export class MonitorController {
       @swagger Get all monitors
       #swagger.tags = ['Monitor']
       #swagger.description = 'Endpoint for getting all monitors.'
+      #swagger.security = [{
+        "bearerAuth": []
+      }]
       #swagger.responses[200] = {
         description: "Success",
         schema: [{$ref: "#/definitions/MonitorResponse"}],
@@ -278,15 +281,28 @@ export class MonitorController {
 
     return res.status(200).send("Alert received");
   }
-  
+
   static async getDetailedMonitors(_: Request, res: Response) {
-    // TODO: Add docs
-    const token = res.locals.token || '';
+    /**==========================*
+      @swagger Get all monitor details
+      #swagger.tags = ['Monitor']
+      #swagger.description = 'Endpoint for getting details for all monitors.'
+      #swagger.security = [{
+        "bearerAuth": []
+      }]
+      #swagger.responses[200] = {
+        description: "Success",
+        schema: [{$ref: "#/definitions/MonitorResponseDetailed"}],
+      }
+      #swagger.responses[500] = {
+        schema: {$ref: "#/definitions/Error500"},
+      }
+     *===========================*/
+    const token = res.locals.token || "";
     const monitors = await MonitorService.getDetailedMonitors(token).catch((err) => {
-      return res.status(500).json(err.message)
-    })
-    
+      return res.status(500).json(err.message);
+    });
+
     return res.status(200).json(monitors);
   }
 }
-

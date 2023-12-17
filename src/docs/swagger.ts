@@ -1,14 +1,12 @@
-import { eventResponse } from "./api/event.doc";
-import { monitorBody, monitorResponse } from "./api/monitor.doc";
+import { eventResponse, eventBody } from "./api/event.doc";
+import { monitorBody, monitorResponse, monitorResponseDetailed } from "./api/monitor.doc";
 import swaggerAutogen from "swagger-autogen";
 import "dotenv/config";
 import { HOST, PORT } from "src/config";
 
 const host = HOST !== "0.0.0.0" ? HOST : "localhost";
 const outputFile = "src/docs/swagger_output.json";
-const endpointsFiles = [
-  "src/routes/router.ts",
-];
+const endpointsFiles = ["src/routes/router.ts"];
 
 swaggerAutogen({ openapi: "3.0.0" });
 const doc = {
@@ -42,29 +40,22 @@ const doc = {
       description: "Endpoints for general API functionality",
     },
   ],
-  components: {
-    securitySchemes: {
-      Bearer: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-        in: "header",
-      },
-    },
-    schemas: {
-      // Monitor: { ...monitorBody },
-      // CreateMonitorBody: { ...createMonitorBody },
+
+  securityDefinitions: {
+    bearerAuth: {
+      type: "apiKey",
+      name: "Authorization",
+      in: "header",
+      description: "Token used to authenticate with network.",
     },
   },
-  security: [
-    {
-      Bearer: [],
-    },
-  ],
+
   definitions: {
     MonitorBody: { ...monitorBody },
+    EventBody: { ...eventBody },
     MonitorResponse: { ...monitorResponse },
     EventResponse: { ...eventResponse },
+    MonitorResponseDetailed: { ...monitorResponseDetailed },
 
     Error500: {
       status: 500,

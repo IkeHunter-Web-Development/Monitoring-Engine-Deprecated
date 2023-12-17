@@ -51,7 +51,7 @@ export class ReportService {
         let downTime = 0;
 
         while (prevEvent.online !== true) {
-          let timeDiff = currentEvent.timestamp.getTime() - prevEvent.timestamp.getTime();
+          let timeDiff = currentEvent.timestamp.getTime() - prevEvent.timestamp!.getTime();
           downTime += timeDiff;
 
           prevEvent = events[steps++];
@@ -62,8 +62,8 @@ export class ReportService {
       0
     );
 
-    let eventStartTime: number = events[0]?.timestamp.getTime();
-    let eventEndTime: number = events[events.length - 1]?.timestamp.getTime();
+    let eventStartTime: number = events[0]?.timestamp!.getTime();
+    let eventEndTime: number = events[events.length - 1]?.timestamp!.getTime();
     const totalUptimeMinutes: number = (eventEndTime - eventStartTime) / (1000 * 60);
 
     return { uptime: totalUptimeMinutes, downtime: totalDowntimeMinutes };
@@ -74,7 +74,7 @@ export class ReportService {
 
     for (let event of events) {
       if (!event.online) {
-        let date: Date = event.timestamp;
+        let date: Date = event.timestamp!;
         // let day: string = `${date.getMonth()}/${date.getDay() + 1}/${date.getFullYear()}`;
         let day: string = date.toLocaleDateString("en-US", {
           year: "numeric",
@@ -115,8 +115,8 @@ export class ReportService {
     /** Get events using initial time block */
     const events = await EventService.getEventsInRange(monitor, initialStartDate, initialEndDate);
 
-    const reportStartDate: Date = events[0]?.timestamp;
-    const reportEndDate: Date = events[events.length - 1]?.timestamp;
+    const reportStartDate: Date = events[0]?.timestamp!;
+    const reportEndDate: Date = events[events.length - 1]?.timestamp!;
     const reportTotalDays: number = reportStartDate && reportEndDate ? getDayDifference(reportStartDate, reportEndDate) : 0;
 
     const minutesReport: MinutesReport = await this.getMinutesReport(events);
