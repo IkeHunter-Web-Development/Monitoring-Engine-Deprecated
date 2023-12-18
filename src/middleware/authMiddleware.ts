@@ -3,20 +3,17 @@
  * If unauthenticated, attempt authentication with auth service, if
  * unauthenticated redirect to external login.
  */
-
 import { NextFunction, Request, Response } from "express";
 import { NETWORK_TOKEN, NODE_ENV } from "src/config";
-// import { NODE_ENV } from "src/config";
-// import { verifyToken } from "src/lib";
-import { Network } from "src/network";
-import { NetworkAuthResponse } from "src/network/types/network";
+import { Network, NetworkAuthResponse } from "src/services/network";
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
-  /**
+  /**====================*
+    @swagger Authenticate with network.
     #swagger.security = [{
         "bearerAuth": []
     }]
-   */
+   *=====================*/
   if (NODE_ENV === "development") return next();
 
   // TODO: Create secure authorization protocol for microservices

@@ -4,63 +4,9 @@
 import { Request, Response } from "express";
 import { simpleResponse } from "../utils/responses";
 import { MonitorService } from "src/services";
-import { Monitor } from "src/models";
-import { Network } from "src/network";
-import { NODE_ENV } from "src/config";
-// import { KafkaClient, Producer } from "kafka-node";
 
 export class MonitorController {
   constructor() {}
-
-  private async scheduleMonitor(monitor: Monitor) {
-    if (NODE_ENV === "development") monitor;
-    
-    // const client = new KafkaClient({
-    //   kafkaHost: 'kafka:9092'
-    // })
-
-    // const producer = new Producer(client);
-    // producer.on("ready", () => {
-    //   const payload = [
-    //     {
-    //       topic: "monitors",
-    //       messages: "Topic is ready!",
-    //     },
-    //   ];
-
-    //   producer.send(payload, (err, data) => {
-    //     if (err) {
-    //       console.error("Error publishing the message:", err);
-    //     } else {
-    //       console.log("Message successfully published:", data);
-    //     }
-    //   });
-    // });
-
-    // sendData();
-
-    // await Network.scheduleMonitor(monitor)
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  }
-
-  private async unscheduleMonitor(monitor: Monitor) {
-    if (NODE_ENV === "development") return;
-
-    console.log("deleting monitor: ", monitor._id, " from schedule");
-
-    await Network.unscheduleMonitor(monitor)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
   createMonitor = async (req: Request, res: Response) => {
     /**======================*
@@ -85,7 +31,6 @@ export class MonitorController {
 
     return MonitorService.createMonitor(req.body)
       .then((monitor: any) => {
-        this.scheduleMonitor(monitor);
         return res.status(201).json(monitor);
       })
       .catch((err: any) => {
@@ -191,8 +136,6 @@ export class MonitorController {
     const monitor = await MonitorService.getMonitor(id);
 
     if (!monitor) return simpleResponse(res, 404, "Monitor not found");
-
-    await this.unscheduleMonitor(monitor);
 
     return MonitorService.deleteMonitor(id)
       .then((success) => {

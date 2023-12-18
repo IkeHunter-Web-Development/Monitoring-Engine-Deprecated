@@ -5,15 +5,13 @@ import {
   request,
   verifyUserInvalidResponse,
   verifyUserSuccessResponse,
-} from "src/network";
+} from "src/services/network";
 import { Monitor } from "src/models";
 import { generateMonitor } from "src/utils/testing";
-import { NetworkAuthResponse } from "../types/network";
-
+import { NetworkAuthResponse } from "../types/network.types";
 
 jest.mock("../config.ts");
 const mockRequest = request as any;
-
 
 describe("Network manager tests", () => {
   test("making api request", async () => {
@@ -38,7 +36,7 @@ describe("Network manager tests", () => {
     const token = "invalid-token";
     const res: NetworkAuthResponse = await Network.authenticate(token);
 
-    expect(res.status).toEqual(verifyUserInvalidResponse.status)
+    expect(res.status).toEqual(verifyUserInvalidResponse.status);
     expect(res.userId).toBeUndefined();
   });
 

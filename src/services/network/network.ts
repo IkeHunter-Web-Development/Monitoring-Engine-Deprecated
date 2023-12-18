@@ -1,7 +1,7 @@
 import { Monitor } from "src/models";
 import { request } from "./config";
 import { GATEWAY_URL } from "src/config";
-import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network";
+import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network.types";
 import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
 import { Stream } from "src/lib";
@@ -22,11 +22,10 @@ export class Network {
       params: options.params,
       data: options.data,
       headers: options.headers,
-      
     }).catch((err) => {
-      console.log('err: ', err)
+      console.log("err: ", err);
       return err;
-    })
+    });
     // console.log('res: ', res)
     return res;
   }
@@ -35,32 +34,32 @@ export class Network {
   static async authenticate(token: string): Promise<NetworkAuthResponse> {
     const config: NetworkRequest = {
       endpoint: AUTH_SERVICE.verify,
-      method: 'GET',
+      method: "GET",
       headers: {
-        Authorization: 'Token ' + token
+        Authorization: "Token " + token,
       },
-    }
-    const res: AxiosResponse | any = await this.sendRequest(config)
-    
+    };
+    const res: AxiosResponse | any = await this.sendRequest(config);
+
     return {
       status: res.status,
-      userId: res.data?.id
+      userId: res.data?.id,
     };
   }
   // TODO: get project name, agency
   static async getProjectInfo(token: string, monitor: Monitor): Promise<NetworkProjectInfo> {
-    const config: NetworkRequest  = {
+    const config: NetworkRequest = {
       // endpoint: PROJECT_SINGLE_URL(monitor.projectId),
       endpoint: PROJECT_SERVICE.getOne(monitor.projectId),
-      method: 'GET',
+      method: "GET",
       headers: {
-        Authorization: 'Token ' + token
-      }
-    }
+        Authorization: "Token " + token,
+      },
+    };
     const res: AxiosResponse | any = await this.sendRequest(config);
-    
+
     // console.log('project res: ', res)
-    
+
     return {
       status: res.status,
       projectTitle: res.data?.title,
@@ -71,42 +70,44 @@ export class Network {
     // return monitor && true;
     const config: NetworkRequest = {
       endpoint: SCHEDULE_SERVICE.createMonitor,
-      method: 'POST',
+      method: "POST",
       data: {
         foreignId: monitor._id,
         url: monitor.url,
         targetCode: monitor.targetStatusCode,
-      }
-    }
+      },
+    };
     const res: AxiosResponse | any = await this.sendRequest(config);
-    console.log('res: ', res)
-    
+    console.log("res: ", res);
+
     return res.status === 201;
   }
   static async unscheduleMonitor(monitor: Monitor): Promise<boolean> {
     // return monitor && true;
     const config: NetworkRequest = {
       endpoint: SCHEDULE_SERVICE.deleteMonitor(monitor._id.toString()),
-      method: 'DELETE',
-    }
+      method: "DELETE",
+    };
     const res: AxiosResponse | any = await this.sendRequest(config);
-    console.log('res: ', res)
-    
+    console.log("res: ", res);
+
     return res.status === 204;
   }
-  
+
   static createProducer = () => {
     return new Stream().createProducer();
-  }
-  
+  };
+
+  // TODO: Abstract .on() method to fix testing
   static sendProducerMessage = async (message: any) => {
     const producer = this.createProducer();
-    
-    return producer.on('ready', () => {
+    if (!producer) return; // TODO: Log this event, make sure it's not broken
+
+    return producer.on("ready", () => {
       return producer.send(message, (error, data) => {
         if (error) throw error;
         return data;
-      })
-    })
-  }
+      });
+    });
+  };
 }

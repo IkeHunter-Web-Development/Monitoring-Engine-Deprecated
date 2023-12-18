@@ -1,5 +1,4 @@
-import { eventExamples } from "src/data";
-import { Monitor, Event, Report } from "src/models";
+import { Monitor, Event, Report, eventExamples } from "src/models";
 import { MonitorService, EventService, ReportService } from "src/services";
 
 const defaultMonitor = {
@@ -73,8 +72,8 @@ describe("Report manager with many events", () => {
     m = await MonitorService.createMonitor(defaultMonitor);
 
     eventExamples.sort((eventA, eventB) => {
-      let timeA = new Date(eventA.timestamp.$date);
-      let timeB = new Date(eventB.timestamp.$date);
+      let timeA: Date = new Date(eventA.timestamp.$date);
+      let timeB: Date = new Date(eventB.timestamp.$date);
 
       return timeA.getTime() - timeB.getTime();
     });

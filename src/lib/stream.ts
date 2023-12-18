@@ -1,17 +1,23 @@
-import { KafkaClient, Producer } from "kafka-node";
-import { KAFKA_HOST, KAFKA_PORT } from "src/config";
+import kafka from "kafka-node";
+import { KAFKA_HOST, KAFKA_PORT, NODE_ENV } from "src/config";
 
 export class Stream {
-  client: KafkaClient;
-  producer: Producer;
+  client: kafka.KafkaClient | null;
+  producer: kafka.Producer | null;
 
   constructor() {
-    this.client = new KafkaClient({ kafkaHost: `${KAFKA_HOST}:${KAFKA_PORT}` });
+    this.client = this.createClient();
     this.producer = this.createProducer();
   }
+  createClient = () => {
+    if (NODE_ENV === "development" || NODE_ENV === "test") return null;
+    return new kafka.KafkaClient({
+      kafkaHost: `${KAFKA_HOST}:${KAFKA_PORT}`,
+    });
+  };
 
   createProducer = () => {
-    return new Producer(this.client);
+    if (NODE_ENV === "development" || NODE_ENV === "test") return null;
+    return new kafka.Producer(this.client!);
   };
 }
-

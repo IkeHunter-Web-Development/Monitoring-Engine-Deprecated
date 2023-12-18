@@ -3,7 +3,7 @@
  */
 import { NODE_ENV } from "src/config";
 import { Event, Monitor, Report, User } from "src/models";
-import { Network } from "src/network";
+import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 
 export class MonitorService {

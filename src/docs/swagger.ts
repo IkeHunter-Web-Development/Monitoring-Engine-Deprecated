@@ -6,7 +6,7 @@ import { HOST, PORT } from "src/config";
 
 const host = HOST !== "0.0.0.0" ? HOST : "localhost";
 const outputFile = "src/docs/swagger_output.json";
-const endpointsFiles = ["src/routes/router.ts"];
+const endpointsFiles = ["src/routes/index.ts"];
 
 swaggerAutogen({ openapi: "3.0.0" });
 const doc = {
