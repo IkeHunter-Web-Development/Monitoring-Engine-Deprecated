@@ -11,3 +11,5 @@ export const JWT_EXPIRES_IN = process.env.JWS_EXPIRES_IN || "1h";
 export const JWT_ISSUER = process.env.JWT_ISSUER || "localhost";
 export const JWT_ALGORITHM = process.env.JWT_ALGORITHM || "HS256";
 export const NETWORK_TOKEN = process.env.NETWORK_TOKEN || "insecure";
+export const KAFKA_HOST = process.env.KAFKA_HOST || "";
+export const KAFKA_PORT = process.env.KAFKA_PORT || 0;

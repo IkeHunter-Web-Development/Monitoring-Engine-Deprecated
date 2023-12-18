@@ -1,1 +1,1 @@
-export * from './eventExamples';
+export * from './seed-data/eventExamples';

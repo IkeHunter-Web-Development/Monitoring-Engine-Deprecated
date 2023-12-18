@@ -4,6 +4,7 @@ import { GATEWAY_URL } from "src/config";
 import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network";
 import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
+import { Stream } from "src/lib";
 
 export class Network {
   private gatewayUrl: string;
@@ -92,5 +93,20 @@ export class Network {
     console.log('res: ', res)
     
     return res.status === 204;
+  }
+  
+  static createProducer = () => {
+    return new Stream().createProducer();
+  }
+  
+  static sendProducerMessage = async (message: any) => {
+    const producer = this.createProducer();
+    
+    return producer.on('ready', () => {
+      return producer.send(message, (error, data) => {
+        if (error) throw error;
+        return data;
+      })
+    })
   }
 }

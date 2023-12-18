@@ -1,12 +1,39 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
+import { NODE_ENV } from "src/config";
 import { Event, Monitor, Report, User } from "src/models";
 import { Network } from "src/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 
 export class MonitorService {
-  private constructor() {}
+  public static instance: MonitorService = new MonitorService();
+
+  public static notifyCreateMonitor = (monitor: Monitor) => {
+    if (NODE_ENV === "development") return;
+    Network.sendProducerMessage([
+      {
+        topic: "monitors",
+        messages: JSON.stringify({
+          action: "create",
+          data: JSON.stringify(monitor),
+        }),
+      },
+    ]);
+  };
+
+  public static notifyDeleteMonitor = (monitor: Monitor) => {
+    if (NODE_ENV === "development") return;
+    Network.sendProducerMessage([
+      {
+        topic: "monitors",
+        messages: JSON.stringify({
+          action: "delete",
+          data: JSON.stringify(monitor),
+        }),
+      },
+    ]);
+  };
 
   /**
    * Parse data to create a monitor.
@@ -41,7 +68,8 @@ export class MonitorService {
     // if (!payload.agency) throw new Error("No agency provided");
 
     let monitor = Monitor.create(payload)
-      .then((monitor: any) => {
+      .then((monitor: Monitor) => {
+        this.notifyCreateMonitor(monitor);
         return monitor;
       })
       .catch((err: any) => {
@@ -109,7 +137,8 @@ export class MonitorService {
     if (!monitors) return [];
     // console.log("get monitors reached");
 
-    const detailedMonitors: MonitorDetail[] = await Promise.all(monitors.map(async (monitor: Monitor) => {
+    const detailedMonitors: MonitorDetail[] = await Promise.all(
+      monitors.map(async (monitor: Monitor) => {
         const events: Event[] = await EventService.getEventsForMonitor(monitor);
         const report: Report = await ReportService.generateReport(monitor);
         const responses = [
@@ -128,7 +157,7 @@ export class MonitorService {
             company: company,
             url: monitor.url,
             recipients: monitor.recipients,
-            status: monitor.status || 'unknown',
+            status: monitor.status || "unknown",
             targetStatusCode: monitor.targetStatusCode,
             currentStatusCode: monitor.statusCode,
             active: monitor.active,
@@ -143,21 +172,18 @@ export class MonitorService {
             report: report,
             responses: responses,
           };
-  
+
           // console.log("detail: ", detail);
-  
+
           return detail;
         } catch (error: any) {
           console.log("Error creating monitor details: ", error.message);
           throw error;
         }
-      }))
-      
-      
-    
+      })
+    );
 
-    
-    return detailedMonitors
+    return detailedMonitors;
   }
 
   /**
@@ -168,6 +194,9 @@ export class MonitorService {
    */
   static async deleteMonitor(id: string) {
     let monitor = await Monitor.findOne({ _id: id });
+    if (!monitor) throw new Error("Monitor not found, cannot delete.");
+
+    this.notifyDeleteMonitor(monitor);
 
     if (!monitor) return false;
     let status = monitor
@@ -226,37 +255,6 @@ export class MonitorService {
     return user.projectIds?.includes(monitor.projectId);
   }
 
-  // /**
-  //  * Generate monitor metrics.
-  //  *
-  //  * @param monitor The monitor to generate metrics for.
-  //  * @returns MonitorDetails, The generated metrics.
-  //  */
-  // static async generateMetrics(monitor: Monitor, dayRange: number = 30): MonitorDetailsPromise {
-  //   let details = {
-  //     totalDowntimeMinutes: 0,
-  //     totalUptimeMinutes: 0,
-  //     totalEvents: 0,
-  //     totalDowntimeEvents: 0,
-  //     averageResponseTime: 0,
-  //   };
-
-  //   const now = new Date();
-  //   const totalMinutes = dayRange * 24 * 60;
-  //   const start = new Date(now.getTime() - totalMinutes * 60 * 1000);
-
-  //   const events = await EventService.getEventsInRange(monitor._id, start, now);
-
-  //   details.totalDowntimeMinutes = await EventService.getDowntimeFromEvents(events);
-  //   details.totalUptimeMinutes = totalMinutes - details.totalDowntimeMinutes;
-  //   details.totalEvents = events.length;
-  //   let downtimeEvents = await EventService.filterDowntimeEvents(events);
-  //   details.totalDowntimeEvents = downtimeEvents.length;
-  //   details.averageResponseTime = await EventService.getAverageResponseTimeFromEvents(events);
-
-  //   return { ...monitor, ...details };
-  // }
-
   /**
    * Handle a monitor going down.
    *
@@ -303,6 +301,3 @@ export class MonitorService {
     });
   }
 }
-
-
-  

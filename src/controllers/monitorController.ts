@@ -7,20 +7,45 @@ import { MonitorService } from "src/services";
 import { Monitor } from "src/models";
 import { Network } from "src/network";
 import { NODE_ENV } from "src/config";
+// import { KafkaClient, Producer } from "kafka-node";
 
 export class MonitorController {
   constructor() {}
 
   private async scheduleMonitor(monitor: Monitor) {
-    if (NODE_ENV === "development") return;
+    if (NODE_ENV === "development") monitor;
+    
+    // const client = new KafkaClient({
+    //   kafkaHost: 'kafka:9092'
+    // })
 
-    await Network.scheduleMonitor(monitor)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // const producer = new Producer(client);
+    // producer.on("ready", () => {
+    //   const payload = [
+    //     {
+    //       topic: "monitors",
+    //       messages: "Topic is ready!",
+    //     },
+    //   ];
+
+    //   producer.send(payload, (err, data) => {
+    //     if (err) {
+    //       console.error("Error publishing the message:", err);
+    //     } else {
+    //       console.log("Message successfully published:", data);
+    //     }
+    //   });
+    // });
+
+    // sendData();
+
+    // await Network.scheduleMonitor(monitor)
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }
 
   private async unscheduleMonitor(monitor: Monitor) {
@@ -60,14 +85,14 @@ export class MonitorController {
 
     return MonitorService.createMonitor(req.body)
       .then((monitor: any) => {
-        this.scheduleMonitor(monitor)
+        this.scheduleMonitor(monitor);
         return res.status(201).json(monitor);
       })
       .catch((err: any) => {
         console.log(err);
         return simpleResponse(res, 500, err.message);
       });
-  }
+  };
 
   async updateMonitor(req: Request, res: Response) {
     /**======================*
@@ -180,7 +205,7 @@ export class MonitorController {
         console.log(err);
         return simpleResponse(res, 500, err.message);
       });
-  }
+  };
 
   async getMonitors(_: Request, res: Response) {
     /**==========================*
