@@ -12,6 +12,7 @@ export class EventService {
 
     let payload = {
       monitorId: monitor._id,
+      status: data.status,
       statusCode: data.statusCode,
       online: data.online,
       timestamp: data.timestamp ? data.timestamp : Date.now(),
@@ -45,6 +46,33 @@ export class EventService {
         console.log(err);
         throw err;
       });
+
+    return event;
+  }
+
+  /**
+   * Register generic event.
+   *
+   * @param monitorId The id of the monitor the event belongs to.
+   * @param status Monitor status at time of event
+   * @param statusCode The status code of the event.
+   * @param message The message of the event.
+   */
+  static async registerGenericEvent(
+    monitor: Monitor,
+    status: string,
+    statusCode: number,
+    message: string
+  ) {
+    const payload = {
+      monitorId: monitor._id,
+      status,
+      statusCode,
+      message,
+      timestamp: new Date(),
+    };
+
+    const event: Event = await Event.create(payload);
 
     return event;
   }

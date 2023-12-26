@@ -13,11 +13,11 @@ server.use(urlencodedParser);
 server.use(jsonParser);
 server.use(multer().any());
 // FIXME: CONVERT TO CONDITIONAL VALUE FOR DEV/PROD
-server.use(
-  cors({
-    origin: "*",
-  })
-);
+// server.use(
+//   cors({
+//     origin: "*",
+//   })
+// );
 
 server.use(responseTime());
 server.use(router);

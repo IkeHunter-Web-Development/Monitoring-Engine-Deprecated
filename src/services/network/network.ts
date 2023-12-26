@@ -1,10 +1,11 @@
 import { Monitor } from "src/models";
 import { request } from "./config";
-import { GATEWAY_URL } from "src/config";
+import { GATEWAY_URL, KAFKA_HOST, KAFKA_PORT } from "src/config";
 import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network.types";
 import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
 import { Stream } from "src/lib";
+import { Consumer, KafkaClient } from "kafka-node";
 
 export class Network {
   private gatewayUrl: string;
@@ -106,8 +107,17 @@ export class Network {
     return producer.on("ready", () => {
       return producer.send(message, (error, data) => {
         if (error) throw error;
+        console.log('message sent:', data)
         return data;
       });
     });
   };
+
+  static createConsumer(topic: string) {
+    return new Consumer(
+      new KafkaClient({ kafkaHost: `${KAFKA_HOST}:${KAFKA_PORT}` }),
+      [{ topic: topic }],
+      {}
+    );
+  }
 }

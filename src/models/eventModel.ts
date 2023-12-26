@@ -26,6 +26,12 @@ const EventSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  status: {
+    type: String,
+    // enum: ["online", "alert", "warning", "offline"],
+    // enum: ["stable", "alert", "warning", "pending"],
+    enum: ["online", "alert", "offline", "pending"]
+  }
 }, {
   timestamps: true
 });

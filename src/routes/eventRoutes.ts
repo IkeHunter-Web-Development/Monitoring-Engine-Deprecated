@@ -9,4 +9,6 @@ router.get("/:id", isAuthenticated, EventController.getEvent);
 router.delete("/:id", isAuthenticated, EventController.deleteEvent);
 router.get("/search", isAuthenticated, EventController.searchEvents);
 
+// router.post("/register", isAuthenticated, EventController.registerEvent);
+
 export const eventRoutes = router;

@@ -8,7 +8,7 @@ import { MonitorService } from "src/services";
 export class MonitorController {
   constructor() {}
 
-  createMonitor = async (req: Request, res: Response) => {
+  static createMonitor = async (req: Request, res: Response) => {
     /**======================*
       @swagger Create monitor
       #swagger.parameters['body'] = {
@@ -39,7 +39,7 @@ export class MonitorController {
       });
   };
 
-  async updateMonitor(req: Request, res: Response) {
+  static async updateMonitor(req: Request, res: Response) {
     /**======================*
       @swagger Update monitor
       #swagger.tags = ['Monitor']
@@ -80,7 +80,7 @@ export class MonitorController {
       });
   }
 
-  async getMonitor(req: Request, res: Response) {
+  static async getMonitor(req: Request, res: Response) {
     /**==========================*
       @swagger Get single monitor
       #swagger.tags = ['Monitor']
@@ -112,7 +112,7 @@ export class MonitorController {
       });
   }
 
-  deleteMonitor = async (req: Request, res: Response) => {
+  static deleteMonitor = async (req: Request, res: Response) => {
     /**==========================*
       @swagger Delete single monitor
       #swagger.tags = ['Monitor']
@@ -150,7 +150,7 @@ export class MonitorController {
       });
   };
 
-  async getMonitors(_: Request, res: Response) {
+  static async getMonitors(_: Request, res: Response) {
     /**==========================*
       @swagger Get all monitors
       #swagger.tags = ['Monitor']
@@ -175,7 +175,7 @@ export class MonitorController {
       });
   }
 
-  async searchMonitors(req: Request, res: Response) {
+  static async searchMonitors(req: Request, res: Response) {
     /**================================*
       @swagger Search monitors by query
       #swagger.tags = ['Monitor']
@@ -210,7 +210,7 @@ export class MonitorController {
       });
   }
 
-  async getMonitorOnlineStatus(req: Request, res: Response) {
+  static async getMonitorOnlineStatus(req: Request, res: Response) {
     /**=================================*
       @swagger Get monitor online status
       #swagger.tags = ['Monitor']
@@ -241,7 +241,7 @@ export class MonitorController {
     }
   }
 
-  async alertMonitor(req: Request, res: Response) {
+  static async alertMonitor(req: Request, res: Response) {
     /**=================================*
       @swagger Alert monitor down
       #swagger.tags = ['Monitor']
@@ -292,7 +292,7 @@ export class MonitorController {
     return res.status(200).send("Alert received");
   }
 
-  async getDetailedMonitors(_: Request, res: Response) {
+  static async getDetailedMonitors(_: Request, res: Response) {
     /**==========================*
       @swagger Get all monitor details
       #swagger.tags = ['Monitor']

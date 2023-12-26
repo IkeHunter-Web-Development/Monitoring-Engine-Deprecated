@@ -81,10 +81,31 @@
     },
     "/api/monitor/details": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting details for all monitors.",
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponseDetailed"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         },
         "security": [
@@ -96,20 +117,101 @@
     },
     "/api/monitor/alert": {
       "post": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for alerting service that a monitor is down.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Alert payload",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "monitor-id"
+                },
+                "statusCode": {
+                  "type": "number",
+                  "example": 500
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Website experienced an internal server error"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Alert received"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/api/monitor/search": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for searching monitors.",
+        "parameters": [
+          {
+            "name": "project",
+            "description": "Project ID",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "user",
+            "description": "User ID",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            }
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -121,10 +223,31 @@
     },
     "/api/monitor/monitors/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting all monitors.",
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponse"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -134,10 +257,36 @@
         ]
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for creating a monitor.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Monitor object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MonitorBody"
+            }
+          }
+        ],
         "responses": {
+          "201": {
+            "description": "Monitor created",
+            "schema": {
+              "$ref": "#/definitions/MonitorResponse"
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -149,18 +298,40 @@
     },
     "/api/monitor/monitors/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting a single monitor.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Monitor ID"
           }
         ],
         "responses": {
+          "200": {
+            "description": "Monitor updated",
+            "schema": {
+              "$ref": "#/definitions/MonitorResponse"
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -170,18 +341,49 @@
         ]
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for updating a monitor.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Monitor ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Monitor object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MonitorBody"
+            }
           }
         ],
         "responses": {
+          "200": {
+            "description": "Monitor updated",
+            "schema": {
+              "$ref": "#/definitions/MonitorResponse"
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -191,18 +393,53 @@
         ]
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for deleting a single monitor.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Monitor ID"
           }
         ],
         "responses": {
+          "200": {
+            "description": "Monitor deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Monitor deleted"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -214,18 +451,37 @@
     },
     "/api/monitor/monitors/{id}/online": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting online status for monitor.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Monitor ID"
           }
         ],
         "responses": {
+          "200": {
+            "description": "True if online, false if offline"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           }
         },
         "security": [
@@ -484,6 +740,27 @@
         "responseTime": {
           "type": "number",
           "example": 200
+        }
+      }
+    },
+    "RegisterEventBody": {
+      "type": "object",
+      "properties": {
+        "monitorId": {
+          "type": "string",
+          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
+        },
+        "statusCode": {
+          "type": "number",
+          "example": 200
+        },
+        "status": {
+          "type": "string",
+          "example": "online"
+        },
+        "message": {
+          "type": "string",
+          "example": "Test event"
         }
       }
     },

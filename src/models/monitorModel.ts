@@ -32,7 +32,8 @@ export const MonitorSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["online", "offline", "pending", "unstable", "warning", "alert", "stable"],
+      // enum: ["online", "offline", "pending", "unstable"],
+      enum: ["stable", "alert", "warning", "pending"],
       defualt: "pending",
       // required: true
     },

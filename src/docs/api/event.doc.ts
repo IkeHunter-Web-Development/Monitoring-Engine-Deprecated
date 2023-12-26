@@ -17,3 +17,10 @@ export const eventBody = {
   message: "Example log message.",
   responseTime: 200,
 }
+
+export const registerEventBody = {
+  monitorId: "5f9b0b0b9b9b9b9b9b9b9b9b",
+  statusCode: 200,
+  status: "online",
+  message: "Test event"
+}

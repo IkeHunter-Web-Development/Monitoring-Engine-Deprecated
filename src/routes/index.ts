@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { BaseController } from "src/controllers/baseController";
+import { BaseController } from "../controllers/baseController";
 import { monitorRoutes } from "./monitorRoutes"; // absolute import for swagger
 import { eventRoutes } from "./eventRoutes"; // absolute import for swagger
 

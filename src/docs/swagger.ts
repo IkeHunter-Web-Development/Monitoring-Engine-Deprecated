@@ -1,4 +1,4 @@
-import { eventResponse, eventBody } from "./api/event.doc";
+import { eventResponse, eventBody, registerEventBody } from "./api/event.doc";
 import { monitorBody, monitorResponse, monitorResponseDetailed } from "./api/monitor.doc";
 import swaggerAutogen from "swagger-autogen";
 import "dotenv/config";
@@ -53,6 +53,7 @@ const doc = {
   definitions: {
     MonitorBody: { ...monitorBody },
     EventBody: { ...eventBody },
+    RegisterEventBody: { ...registerEventBody },
     MonitorResponse: { ...monitorResponse },
     EventResponse: { ...eventResponse },
     MonitorResponseDetailed: { ...monitorResponseDetailed },

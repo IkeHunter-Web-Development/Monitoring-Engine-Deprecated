@@ -47,6 +47,7 @@ export class MonitorService {
       url: data.url || "",
       recipients: data.recipients || [],
       title: data.title || "",
+      status: data.status || "pending"
     };
 
     return payload;
