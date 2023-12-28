@@ -5,6 +5,7 @@ import { NODE_ENV } from "src/config";
 import { Event, Monitor, Report, User } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
+import { MonitorResponse } from "src/models/responseModel";
 
 export class MonitorService {
   public static instance: MonitorService = new MonitorService();
@@ -47,7 +48,7 @@ export class MonitorService {
       url: data.url || "",
       recipients: data.recipients || [],
       title: data.title || "",
-      status: data.status || "pending"
+      status: data.status || "pending",
     };
 
     return payload;
@@ -142,22 +143,27 @@ export class MonitorService {
       monitors.map(async (monitor: Monitor) => {
         const events: Event[] = await EventService.getEventsForMonitor(monitor);
         const report: Report = await ReportService.generateReport(monitor);
-        const responses = [
-          {
-            responseTime: 0,
-            timestamp: new Date(),
-          },
-        ];
+        // const responses = [
+        //   {
+        //     responseTime: 0,
+        //     timestamp: new Date(),
+        //   },
+        // ];
+        const responses: MonitorResponse[] = await MonitorResponse.find({ monitorId: monitor._id });
         const networkRes = await Network.getProjectInfo(networkToken, monitor);
         const project: string = networkRes.projectTitle;
         const company: string = networkRes.companyName || "No company.";
+
+        const responseTime =
+          responses.length > 0 ? responses[responses.length - 1].responseTime : 0;
+
         try {
           const detail: MonitorDetail = {
             id: monitor._id.toString() || "",
             project: project,
             company: company,
             url: monitor.url,
-            recipients: monitor.recipients,
+            recipients: monitor.recipients || [],
             status: monitor.status || "unknown",
             targetStatusCode: monitor.targetStatusCode,
             currentStatusCode: monitor.statusCode,
@@ -165,13 +171,13 @@ export class MonitorService {
             title: monitor.title,
             type: monitor.type,
             dateAdded: monitor.createdAt,
-            responseTime: -1,
+            responseTime: responseTime,
             timeout: monitor.timeout,
             retries: monitor.retries,
             coverImage: monitor.coverImage,
-            events: events,
+            events: events || [],
             report: report,
-            responses: responses,
+            responses: responses || [],
           };
 
           // console.log("detail: ", detail);
@@ -265,8 +271,10 @@ export class MonitorService {
    * @returns Boolean, whether the monitor was handled.
    */
   static async handleMonitorDown(monitor: Monitor, statusCode: number, error: string) {
-    monitor.online = false;
+    // monitor.online = false;
     let event = await EventService.registerDownEvent(monitor, statusCode, error);
+
+    monitor.updateOne({ online: false, statusCode: statusCode, status: "offline" });
 
     if (!event) return false;
     console.log("Handling monitor down: ", monitor.title, " ", statusCode, " ", error);

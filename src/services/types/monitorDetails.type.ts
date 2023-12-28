@@ -1,13 +1,14 @@
-import { UserSchema } from "./../../models/userModel";
+import { UserInlineSchema, UserSchema } from "src/models";
 import { ObjectId } from "mongoose";
 import { Event, Report } from "src/models";
+import { MonitorResponse } from "src/models/responseModel";
 
 export interface MonitorDetail {
   id: string;
   project: string;
   company: string;
   url: string;
-  recipients: (typeof UserSchema)[] | { name: string; email: string }[];
+  recipients: (typeof UserInlineSchema)[] | { name: string; email: string }[];
   status: string;
   targetStatusCode: number;
   currentStatusCode: number;
@@ -39,8 +40,9 @@ export interface MonitorDetail {
         totalDowntimeMinutes: number;
         totalUptimeMinutes: number;
       };
-  responses: {
-    responseTime: number;
-    timestamp: Date;
-  }[];
+  // responses: {
+  //   responseTime: number;
+  //   timestamp: Date;
+  // }[];
+  responses: MonitorResponse[];
 }

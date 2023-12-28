@@ -689,9 +689,9 @@
           "items": {
             "type": "object",
             "properties": {
-              "userId": {
+              "name": {
                 "type": "string",
-                "example": "123"
+                "example": "John Doe"
               },
               "email": {
                 "type": "string",

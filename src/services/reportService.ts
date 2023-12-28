@@ -1,4 +1,5 @@
 import { Report, Event, Monitor } from "src/models";
+import { MonitorResponse } from "src/models/responseModel";
 import { EventService } from "src/services";
 
 interface MinutesReport {
@@ -63,8 +64,9 @@ export class ReportService {
     );
 
     let eventStartTime: number = events[0]?.timestamp!.getTime();
-    let eventEndTime: number = events[events.length - 1]?.timestamp!.getTime();
-    const totalUptimeMinutes: number = (eventEndTime - eventStartTime) / (1000 * 60);
+    // let eventEndTime: number = events[events.length - 1]?.timestamp!.getTime();
+    let endTime: number = new Date().getTime();
+    const totalUptimeMinutes: number = Math.ceil((endTime - eventStartTime) / (1000 * 60));
 
     return { uptime: totalUptimeMinutes, downtime: totalDowntimeMinutes };
   }
@@ -88,16 +90,18 @@ export class ReportService {
     return days.map((day) => new Date(day));
   }
 
-  private static getAverageResponseTime(events: Event[]): number {
-    const responseTimes: Array<number> = [];
+  private static getAverageResponseTime(responses: MonitorResponse[]): number {
+    // const responseTimes: Array<number> = [];
+    const responseTimes: number[] = responses.map((res) => res.responseTime);
+    console.log('response times:', responseTimes)
 
-    for (let event of events) {
-      if (event.responseTime) responseTimes.push(event.responseTime);
-    }
+    const sum = responseTimes.reduce((sum, currentEvent) => sum + currentEvent, 0);
+    console.log('sum:', sum)
+    
+    const avg = Math.ceil(sum/responseTimes.length);
+    console.log('avg:', avg)
 
-    let sum = responseTimes.reduce((sum, currentEvent) => sum + currentEvent, 0);
-
-    return Math.ceil(sum / responseTimes.length);
+    return avg;
   }
 
   /**
@@ -114,10 +118,12 @@ export class ReportService {
 
     /** Get events using initial time block */
     const events = await EventService.getEventsInRange(monitor, initialStartDate, initialEndDate);
+    const responses = await MonitorResponse.find({ monitorId: monitor._id });
 
     const reportStartDate: Date = events[0]?.timestamp!;
     const reportEndDate: Date = events[events.length - 1]?.timestamp!;
-    const reportTotalDays: number = reportStartDate && reportEndDate ? getDayDifference(reportStartDate, reportEndDate) : 0;
+    const reportTotalDays: number =
+      reportStartDate && reportEndDate ? getDayDifference(reportStartDate, reportEndDate) : 0;
 
     const minutesReport: MinutesReport = await this.getMinutesReport(events);
     const daysWithDowntime: Array<Date> = await this.getDaysWithDowntime(events);
@@ -125,7 +131,7 @@ export class ReportService {
     const eventsWithDowntime: number = events.filter((event: Event) => !event.online).length;
     const eventsWithUptime: number = events.length - eventsWithDowntime;
 
-    const averageResponseTime: number = this.getAverageResponseTime(events);
+    const averageResponseTime: number = this.getAverageResponseTime(responses);
 
     const report: Report = await Report.create({
       startDate: reportStartDate || monitor.createdAt || new Date(), // if no events, get monitor date, else set today
@@ -137,7 +143,7 @@ export class ReportService {
       totalEvents: events.length,
       totalUptimeEvents: eventsWithUptime || 0,
       totalDowntimeEvents: eventsWithDowntime || 0,
-      averageResponseTime: averageResponseTime || -1, // not enough time has passed
+      averageResponseTime: averageResponseTime || 0, // not enough time has passed
     });
 
     return report;

@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-import { UserSchema } from "./userModel";
+import { UserInlineSchema, UserSchema } from "./userModel";
+
+
 
 export const MonitorSchema = new mongoose.Schema(
   {
@@ -17,7 +19,7 @@ export const MonitorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    recipients: [UserSchema],
+    recipients: [UserInlineSchema],
     statusCode: {
       type: Number,
       default: 200,
@@ -32,8 +34,8 @@ export const MonitorSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      // enum: ["online", "offline", "pending", "unstable"],
-      enum: ["stable", "alert", "warning", "pending"],
+      enum: ["online", "alert", "offline", "pending"],
+      // enum: ["stable", "alert", "warning", "pending"],
       defualt: "pending",
       // required: true
     },

@@ -8,7 +8,7 @@ import { Monitor } from "src/models";
 import { MonitorService } from "src/services";
 import { MonitorController } from "src/controllers";
 
-const controller = new MonitorController()
+const controller = MonitorController
 
 const defaultMonitor = {
   projectId: "123abc",
