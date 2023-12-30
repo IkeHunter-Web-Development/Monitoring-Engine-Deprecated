@@ -11,7 +11,8 @@ export class EventService {
     if (!monitor) throw new Error("Monitor id invalid. Monitor doesn't exist.");
 
     let payload = {
-      monitorId: monitor._id,
+      monitorId: monitor?._id,
+      projectId: data.projectId || monitor?.projectId,
       status: data.status,
       statusCode: data.statusCode,
       online: data.online,

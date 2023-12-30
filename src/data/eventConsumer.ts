@@ -2,6 +2,8 @@ import { Event, Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
 import { Network } from "src/services";
 
+const RESPONSE_INTERVAL_MIN = 30
+
 export class EventConsumer {
   constructor() {
     const consumer = Network.createConsumer("monitor-events");
@@ -43,9 +45,9 @@ export class EventConsumer {
   };
 
   private handleAddResponse = async (message: any) => {
-    // if (new Date().getMinutes() % 10 !== 0) return;
+    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0 ) return;
     const data: any = JSON.parse(message);
-
+    
     const { monitorId, responseTime, timestamp } = data;
     const monitor: Monitor | null = await Monitor.findById(monitorId);
 

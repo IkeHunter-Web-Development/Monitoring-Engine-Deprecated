@@ -68,11 +68,15 @@ export class MonitorController {
     const { id } = req.params || "";
 
     return MonitorService.updateMonitor(id, req.body)
-      .then((monitor: any) => {
+      .then(async (monitor: any) => {
         if (!monitor) {
+          console.log("monitor not found:", id);
           return simpleResponse(res, 404, "Monitor not found");
         }
-        return res.status(200).json(monitor);
+        const { token } = res.locals;
+        const detailed = await MonitorService.getMonitorDetails(token, monitor);
+
+        return res.status(200).json(detailed);
       })
       .catch((err: any) => {
         console.log(err);

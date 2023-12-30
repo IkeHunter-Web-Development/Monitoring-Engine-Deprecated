@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import { UserInlineSchema, UserSchema } from "./userModel";
-
-
+import { UserInlineSchema } from "./userModel";
 
 export const MonitorSchema = new mongoose.Schema(
   {

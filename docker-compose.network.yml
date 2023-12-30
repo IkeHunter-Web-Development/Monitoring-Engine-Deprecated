@@ -56,7 +56,6 @@ volumes:
 
 networks:
   cluster:
-    # name: clientcrm_default
     name: cluster_network
     external: true
 

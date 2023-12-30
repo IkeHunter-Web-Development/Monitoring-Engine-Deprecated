@@ -1,4 +1,4 @@
-import { UserInlineSchema, UserSchema } from "src/models";
+import { UserInlineSchema } from "src/models";
 import { ObjectId } from "mongoose";
 import { Event, Report } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";

@@ -93,13 +93,13 @@ export class ReportService {
   private static getAverageResponseTime(responses: MonitorResponse[]): number {
     // const responseTimes: Array<number> = [];
     const responseTimes: number[] = responses.map((res) => res.responseTime);
-    console.log('response times:', responseTimes)
+    console.log("response times:", responseTimes);
 
     const sum = responseTimes.reduce((sum, currentEvent) => sum + currentEvent, 0);
-    console.log('sum:', sum)
-    
-    const avg = Math.ceil(sum/responseTimes.length);
-    console.log('avg:', avg)
+    console.log("sum:", sum);
+
+    const avg = Math.ceil(sum / responseTimes.length);
+    console.log("avg:", avg);
 
     return avg;
   }
@@ -111,7 +111,20 @@ export class ReportService {
    * @param any options, Additional options to customize the report.
    */
   public static async generateReport(monitor: Monitor, options?: any): Promise<Report> {
-    /** Start with initial time block */
+    /** First check if there is a current report less than 24h old */
+    const dayMs = new Date().getTime() - 1000 * 60 * 60 * 24;
+    const existingReports = await Report.find({
+      monitorId: monitor._id,
+      createdAt: {
+        $gte: new Date(dayMs),
+        $lte: new Date(),
+      },
+    });
+    if (existingReports.length > 0) {
+      return existingReports.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+    }
+    
+    /** Create new report, Start with initial time block */
     const dates: ParsedDates = this.parseDates(options);
     const initialStartDate: Date = dates.startDate;
     const initialEndDate: Date = dates.endDate;
@@ -134,6 +147,7 @@ export class ReportService {
     const averageResponseTime: number = this.getAverageResponseTime(responses);
 
     const report: Report = await Report.create({
+      monitorId: monitor._id,
       startDate: reportStartDate || monitor.createdAt || new Date(), // if no events, get monitor date, else set today
       endDate: reportEndDate || new Date(),
       totalDays: reportTotalDays,

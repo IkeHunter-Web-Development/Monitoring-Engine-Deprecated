@@ -22,6 +22,8 @@ services:
       - CENTRAL_GET_ENDPOINT=/engine/get/
       - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
       - AUTH_SERVICE_URL=http://localhost:8000/auth/
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
     depends_on:
       - mongo-monitor
     command: npm run dev

@@ -13,6 +13,7 @@ router.get("/monitors/", isAuthenticated, MonitorController.getMonitors);
 router.get("/monitors/:id", isAuthenticated, hasPermission, MonitorController.getMonitor);
 router.post("/monitors/", isAuthenticated, MonitorController.createMonitor);
 router.put("/monitors/:id", isAuthenticated, hasPermission, MonitorController.updateMonitor);
+router.patch("/monitors/:id", isAuthenticated, hasPermission, MonitorController.updateMonitor);
 router.delete("/monitors/:id", isAuthenticated, hasPermission, MonitorController.deleteMonitor);
 router.get(
   "/monitors/:id/online",

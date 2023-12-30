@@ -3,7 +3,10 @@ import { MONGO_URI } from "config/constants";
 
 export const setupDatabase = () =>
   mongoose
-    .connect(MONGO_URI)
+    .connect(MONGO_URI, {
+      autoIndex: true,
+      
+    })
     .then(() => {
       console.log("Connected to MongoDB successfully");
     })

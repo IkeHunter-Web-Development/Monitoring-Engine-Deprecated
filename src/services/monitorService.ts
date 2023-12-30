@@ -6,6 +6,7 @@ import { Event, Monitor, Report, User } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 import { MonitorResponse } from "src/models/responseModel";
+import { getResponseTime } from "src/utils";
 
 export class MonitorService {
   public static instance: MonitorService = new MonitorService();
@@ -69,7 +70,12 @@ export class MonitorService {
     // if (!payload.project) throw new Error("No project provided");
     // if (!payload.agency) throw new Error("No agency provided");
 
-    let monitor = Monitor.create(payload)
+    const initialResponseTime = await getResponseTime(data.url).catch((error) => {
+      console.log("URL failed initial check:", error);
+      throw error;
+    });
+
+    let monitor = await Monitor.create(payload)
       .then((monitor: Monitor) => {
         this.notifyCreateMonitor(monitor);
         return monitor;
@@ -78,6 +84,8 @@ export class MonitorService {
         console.log(err);
         throw err;
       });
+
+    await MonitorResponse.create({ monitorId: monitor._id, responseTime: initialResponseTime, timestamp: Date.now() });
 
     return monitor;
   }
@@ -129,6 +137,56 @@ export class MonitorService {
     return monitors;
   }
 
+  static async getMonitorDetails(networkToken: string, monitor: Monitor) {
+    // async (monitor: Monitor) => {
+    const events: Event[] = await EventService.getEventsForMonitor(monitor);
+    const report: Report = await ReportService.generateReport(monitor);
+    // const responses = [
+    //   {
+    //     responseTime: 0,
+    //     timestamp: new Date(),
+    //   },
+    // ];
+    const responses: MonitorResponse[] = await MonitorResponse.find({ monitorId: monitor._id });
+    const networkRes = await Network.getProjectInfo(networkToken, monitor);
+    const project: string = networkRes.projectTitle;
+    const company: string = networkRes.companyName || "No company.";
+
+    const responseTime = responses.length > 0 ? responses[responses.length - 1].responseTime : 0;
+
+    try {
+      const detail: MonitorDetail = {
+        id: monitor._id.toString() || "",
+        project: project,
+        company: company,
+        url: monitor.url,
+        recipients: monitor.recipients || [],
+        status: monitor.status || "unknown",
+        targetStatusCode: monitor.targetStatusCode,
+        currentStatusCode: monitor.statusCode,
+        active: monitor.active,
+        title: monitor.title,
+        type: monitor.type,
+        dateAdded: monitor.createdAt,
+        responseTime: responseTime,
+        timeout: monitor.timeout,
+        retries: monitor.retries,
+        coverImage: monitor.coverImage,
+        events: events || [],
+        report: report,
+        responses: responses || [],
+      };
+
+      // console.log("detail: ", detail);
+
+      return detail;
+    } catch (error: any) {
+      console.log("Error creating monitor details: ", error.message);
+      throw error;
+    }
+    // }
+  }
+
   /**
    * Get all monitors with their respective metrics,
    * events, reports.
@@ -140,54 +198,7 @@ export class MonitorService {
     // console.log("get monitors reached");
 
     const detailedMonitors: MonitorDetail[] = await Promise.all(
-      monitors.map(async (monitor: Monitor) => {
-        const events: Event[] = await EventService.getEventsForMonitor(monitor);
-        const report: Report = await ReportService.generateReport(monitor);
-        // const responses = [
-        //   {
-        //     responseTime: 0,
-        //     timestamp: new Date(),
-        //   },
-        // ];
-        const responses: MonitorResponse[] = await MonitorResponse.find({ monitorId: monitor._id });
-        const networkRes = await Network.getProjectInfo(networkToken, monitor);
-        const project: string = networkRes.projectTitle;
-        const company: string = networkRes.companyName || "No company.";
-
-        const responseTime =
-          responses.length > 0 ? responses[responses.length - 1].responseTime : 0;
-
-        try {
-          const detail: MonitorDetail = {
-            id: monitor._id.toString() || "",
-            project: project,
-            company: company,
-            url: monitor.url,
-            recipients: monitor.recipients || [],
-            status: monitor.status || "unknown",
-            targetStatusCode: monitor.targetStatusCode,
-            currentStatusCode: monitor.statusCode,
-            active: monitor.active,
-            title: monitor.title,
-            type: monitor.type,
-            dateAdded: monitor.createdAt,
-            responseTime: responseTime,
-            timeout: monitor.timeout,
-            retries: monitor.retries,
-            coverImage: monitor.coverImage,
-            events: events || [],
-            report: report,
-            responses: responses || [],
-          };
-
-          // console.log("detail: ", detail);
-
-          return detail;
-        } catch (error: any) {
-          console.log("Error creating monitor details: ", error.message);
-          throw error;
-        }
-      })
+      monitors.map(async (monitor) => this.getMonitorDetails(networkToken, monitor))
     );
 
     return detailedMonitors;
@@ -204,6 +215,9 @@ export class MonitorService {
     if (!monitor) throw new Error("Monitor not found, cannot delete.");
 
     this.notifyDeleteMonitor(monitor);
+
+    await Event.deleteMany({ monitorId: monitor._id });
+    await Event.create({projectId: monitor.projectId, online: true, statusCode: 200, message: `Monitor ${monitor.title} deleted.`})
 
     if (!monitor) return false;
     let status = monitor

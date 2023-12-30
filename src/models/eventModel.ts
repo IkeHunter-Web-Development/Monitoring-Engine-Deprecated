@@ -3,6 +3,10 @@ import mongoose, { Schema } from "mongoose";
 const EventSchema = new mongoose.Schema({
   monitorId: {
     type: Schema.Types.ObjectId,
+    required: false,
+  },
+  projectId: {
+    type: String,
     required: true,
   },
   statusCode: {

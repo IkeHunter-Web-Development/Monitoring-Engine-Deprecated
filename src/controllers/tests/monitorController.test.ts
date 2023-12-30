@@ -226,7 +226,7 @@ describe("Monitor controller", () => {
 
     req = httpMocks.createRequest({
       method: "GET",
-      query: { userId: m2.recipients[0].userId },
+      query: { userId: m2.recipients[0] },
     });
     await controller.searchMonitors(req, res);
     const body = getResJson(res);
