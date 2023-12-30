@@ -1,8 +1,8 @@
-import { Event, Monitor } from "src/models";
+import { Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
-import { Network } from "src/services";
+import { EventService, Network } from "src/services";
 
-const RESPONSE_INTERVAL_MIN = 30
+const RESPONSE_INTERVAL_MIN = 30;
 
 export class EventConsumer {
   constructor() {
@@ -31,12 +31,13 @@ export class EventConsumer {
 
     if (!monitorId) return;
 
-    const event = await Event.create({
-      monitorId,
-      status,
-      statusCode,
-      message,
-    });
+    // const event = await Event.create({
+    //   monitorId,
+    //   status,
+    //   statusCode,
+    //   message,
+    // });
+    const event = await EventService.createEvent({ monitorId, status, statusCode, message });
 
     console.log("Event created:", event);
 
@@ -45,9 +46,9 @@ export class EventConsumer {
   };
 
   private handleAddResponse = async (message: any) => {
-    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0 ) return;
+    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return;
     const data: any = JSON.parse(message);
-    
+
     const { monitorId, responseTime, timestamp } = data;
     const monitor: Monitor | null = await Monitor.findById(monitorId);
 

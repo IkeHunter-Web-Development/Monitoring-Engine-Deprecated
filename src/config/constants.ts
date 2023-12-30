@@ -13,3 +13,13 @@ export const NETWORK_TOKEN = process.env.NETWORK_TOKEN || "insecure";
 
 export const KAFKA_HOST = process.env.KAFKA_HOST || "";
 export const KAFKA_PORT = process.env.KAFKA_PORT || 0;
+
+export const KAFKA_TOPICS = {
+  monitors: 'monitors'
+}
+export const KAFKA_ACTIONS = {
+  monitors: {
+    create: 'create',
+    delete: 'delete'
+  }
+}

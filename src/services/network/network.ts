@@ -1,11 +1,12 @@
 import { Monitor } from "src/models";
 import { request } from "./config";
-import { GATEWAY_URL, KAFKA_HOST, KAFKA_PORT } from "src/config";
+import { GATEWAY_URL, KAFKA_HOST, KAFKA_PORT, KAFKA_TOPICS } from "src/config";
 import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network.types";
 import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
-import { Stream } from "src/lib";
+// import { Stream } from "src/lib";
 import { Consumer, KafkaClient } from "kafka-node";
+import { MonitorProducer } from "src/data";
 
 export class Network {
   private gatewayUrl: string;
@@ -95,21 +96,13 @@ export class Network {
     return res.status === 204;
   }
 
-  static createProducer = () => {
-    return new Stream().createProducer();
-  };
-
   // TODO: Abstract .on() method to fix testing
-  static sendProducerMessage = async (message: any) => {
-    const producer = this.createProducer();
-    if (!producer) return; // TODO: Log this event, make sure it's not broken
-
-    return producer.on("ready", () => {
-      return producer.send(message, (error, data) => {
-        if (error) throw error;
-        console.log('message sent:', data)
-        return data;
-      });
+  static sendMonitorMessage = async (
+    action: string,
+    data: any
+  ): Promise<void> => {
+    await MonitorProducer.sendMessage(KAFKA_TOPICS.monitors, action, data).catch((error) => {
+      console.log("Could not send message:", error);
     });
   };
 

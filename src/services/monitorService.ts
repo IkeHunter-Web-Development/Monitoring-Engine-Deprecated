@@ -1,7 +1,7 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import { NODE_ENV } from "src/config";
+import { KAFKA_ACTIONS, NODE_ENV } from "src/config";
 import { Event, Monitor, Report, User } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
@@ -13,28 +13,12 @@ export class MonitorService {
 
   public static notifyCreateMonitor = (monitor: Monitor) => {
     if (NODE_ENV === "development") return;
-    Network.sendProducerMessage([
-      {
-        topic: "monitors",
-        messages: JSON.stringify({
-          action: "create",
-          data: JSON.stringify(monitor),
-        }),
-      },
-    ]);
+    Network.sendMonitorMessage(KAFKA_ACTIONS.monitors.create, monitor);
   };
 
   public static notifyDeleteMonitor = (monitor: Monitor) => {
     if (NODE_ENV === "development") return;
-    Network.sendProducerMessage([
-      {
-        topic: "monitors",
-        messages: JSON.stringify({
-          action: "delete",
-          data: JSON.stringify(monitor),
-        }),
-      },
-    ]);
+    Network.sendMonitorMessage(KAFKA_ACTIONS.monitors.delete, monitor);
   };
 
   /**
@@ -85,7 +69,11 @@ export class MonitorService {
         throw err;
       });
 
-    await MonitorResponse.create({ monitorId: monitor._id, responseTime: initialResponseTime, timestamp: Date.now() });
+    await MonitorResponse.create({
+      monitorId: monitor._id,
+      responseTime: initialResponseTime,
+      timestamp: Date.now(),
+    });
 
     return monitor;
   }
@@ -217,7 +205,12 @@ export class MonitorService {
     this.notifyDeleteMonitor(monitor);
 
     await Event.deleteMany({ monitorId: monitor._id });
-    await Event.create({projectId: monitor.projectId, online: true, statusCode: 200, message: `Monitor ${monitor.title} deleted.`})
+    await Event.create({
+      projectId: monitor.projectId,
+      online: true,
+      statusCode: 200,
+      message: `Monitor ${monitor.title} deleted.`,
+    });
 
     if (!monitor) return false;
     let status = monitor
