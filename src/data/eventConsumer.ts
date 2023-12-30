@@ -1,6 +1,7 @@
+// import { Monitor } from "src/models";
 import { Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
-import { EventService, Network } from "src/services";
+import { EventService, MonitorService, Network } from "src/services";
 
 const RESPONSE_INTERVAL_MIN = 30;
 
@@ -28,6 +29,7 @@ export class EventConsumer {
     const data: any = JSON.parse(eventMessage);
 
     const { monitorId, status, statusCode, message } = data;
+    const eventPayload = { monitorId, status, statusCode, message }
 
     if (!monitorId) return;
 
@@ -37,11 +39,22 @@ export class EventConsumer {
     //   statusCode,
     //   message,
     // });
-    const event = await EventService.createEvent({ monitorId, status, statusCode, message });
-
-    console.log("Event created:", event);
-
-    const monitor = await Monitor.findOneAndUpdate({ _id: monitorId }, { status: status });
+    
+    
+    // console.log("Event created:", event);
+    
+    // const monitor = await Monitor.findOneAndUpdate({ _id: monitorId }, { status: status });
+    const monitor = await MonitorService.getMonitor(monitorId)
+    
+    if (!monitor) return;
+    
+    if (monitor.online === true && status === 'offline') {
+      MonitorService.handleMonitorDown(monitor, statusCode, message);
+      // const event = await EventService.createEvent();
+    } else if (monitor.online === false && status === 'online') {
+      MonitorService.handleMonitorBackOnline(monitor, statusCode);
+    }
+    
     console.log("monitor udpated: ", monitor);
   };
 

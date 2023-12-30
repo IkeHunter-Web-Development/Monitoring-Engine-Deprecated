@@ -1,12 +1,13 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import { KAFKA_ACTIONS, NODE_ENV } from "src/config";
+import { KAFKA_ACTIONS, KAFKA_TOPICS, NODE_ENV } from "src/config";
 import { Event, Monitor, Report, User } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 import { MonitorResponse } from "src/models/responseModel";
 import { getResponseTime } from "src/utils";
+import { MonitorProducer } from "src/data";
 
 export class MonitorService {
   public static instance: MonitorService = new MonitorService();
@@ -19,6 +20,41 @@ export class MonitorService {
   public static notifyDeleteMonitor = (monitor: Monitor) => {
     if (NODE_ENV === "development") return;
     Network.sendMonitorMessage(KAFKA_ACTIONS.monitors.delete, monitor);
+  };
+
+  public static notifyMonitorDown = async (
+    monitor: Monitor,
+    statusCode: number,
+    message: string
+  ) => {
+    const subject = `${monitor.title} is down`;
+    const body = `${monitor.title} is down. Status code: ${statusCode}. Message: ${message}`;
+    const recipients: string[] = [];
+
+    monitor.recipients.forEach(async (user: any) => {
+      recipients.push(user.email);
+    });
+
+    await Network.sendEmailNotification(recipients, subject, body);
+  };
+
+  public static notifyMonitorUp = async (monitor: Monitor, statusCode: number) => {
+    const message = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
+    const recipients: string[] = [];
+
+    monitor.recipients.forEach(async (user: any) => {
+      recipients.push(user.email);
+    });
+
+    await MonitorProducer.sendMessage(
+      KAFKA_TOPICS.notifications,
+      KAFKA_ACTIONS.notifications.email,
+      {
+        recipients: [recipients.join(",")],
+        subject: `${monitor.title} is back online.`,
+        body: message,
+      }
+    );
   };
 
   /**
@@ -278,21 +314,17 @@ export class MonitorService {
    * @returns Boolean, whether the monitor was handled.
    */
   static async handleMonitorDown(monitor: Monitor, statusCode: number, error: string) {
-    // monitor.online = false;
-    let event = await EventService.registerDownEvent(monitor, statusCode, error);
+    const syncedMonitor = await Monitor.findById(monitor._id);
+    if (!syncedMonitor) return;
 
-    monitor.updateOne({ online: false, statusCode: statusCode, status: "offline" });
+    let event = await EventService.registerDownEvent(syncedMonitor, statusCode, error);
+
+    await syncedMonitor.updateOne({ online: false, statusCode: statusCode, status: "offline" });
 
     if (!event) return false;
-    console.log("Handling monitor down: ", monitor.title, " ", statusCode, " ", error);
+    console.log("Handling monitor down: ", syncedMonitor.title, " ", statusCode, " ", error);
 
-    monitor.recipients.forEach(async (user: any) => {
-      const userObj = await User.findById(user._id);
-      if (userObj !== undefined) {
-        let message = `Monitor ${monitor.title} is down. Status code: ${statusCode}`;
-        console.log("sending email: ", message);
-      }
-    });
+    await this.notifyMonitorDown(monitor, statusCode, error);
   }
   /**
    * Handle a monitor going back online.
@@ -302,18 +334,19 @@ export class MonitorService {
    * @returns Boolean, whether the monitor was handled.
    */
   static async handleMonitorBackOnline(monitor: Monitor, statusCode: number) {
-    monitor.online = false;
-    let event = await EventService.registerUpEvent(monitor, statusCode, "Monitor is back online.");
+    const syncedMonitor = await Monitor.findById(monitor._id);
+    if (!syncedMonitor) return;
+
+    let event = await EventService.registerUpEvent(
+      syncedMonitor,
+      statusCode,
+      "Monitor is back online."
+    );
+    await syncedMonitor.updateOne({ online: true, statusCode: statusCode, status: "online" });
 
     if (!event) return false;
-    console.log("Handling monitor back online: ", monitor.title, " ", statusCode);
+    console.log("Handling monitor back online: ", syncedMonitor.title, " ", statusCode);
 
-    monitor.recipients.forEach(async (user: any) => {
-      const userObj = await User.findById(user._id);
-      if (userObj !== undefined) {
-        let message = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
-        console.log("sending email: ", message);
-      }
-    });
+    await this.notifyMonitorUp(monitor, statusCode);
   }
 }

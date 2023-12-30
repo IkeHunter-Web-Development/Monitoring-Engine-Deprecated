@@ -23,6 +23,7 @@ export class MonitorProducer {
 
   public static sendMessage = async (topic: string, action: string, data: any) => {
     const instance = this.getInstance();
+    console.log('producer:', instance.producer);
 
     instance.producer?.send(
       [

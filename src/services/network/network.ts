@@ -1,6 +1,6 @@
 import { Monitor } from "src/models";
 import { request } from "./config";
-import { GATEWAY_URL, KAFKA_HOST, KAFKA_PORT, KAFKA_TOPICS } from "src/config";
+import { GATEWAY_URL, KAFKA_ACTIONS, KAFKA_HOST, KAFKA_PORT, KAFKA_TOPICS } from "src/config";
 import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network.types";
 import { PROJECT_SERVICE, SCHEDULE_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
 import { AxiosResponse } from "axios";
@@ -97,13 +97,22 @@ export class Network {
   }
 
   // TODO: Abstract .on() method to fix testing
-  static sendMonitorMessage = async (
-    action: string,
-    data: any
-  ): Promise<void> => {
+  static sendMonitorMessage = async (action: string, data: any): Promise<void> => {
     await MonitorProducer.sendMessage(KAFKA_TOPICS.monitors, action, data).catch((error) => {
       console.log("Could not send message:", error);
     });
+  };
+
+  static sendEmailNotification = async (recipients: string[], subject: string, body: string): Promise<void> => {
+    await MonitorProducer.sendMessage(
+      KAFKA_TOPICS.notifications,
+      KAFKA_ACTIONS.notifications.email,
+      {
+        recipients: [recipients.join(",")],
+        subject: subject,
+        body: body,
+      }
+    );
   };
 
   static createConsumer(topic: string) {

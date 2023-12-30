@@ -15,11 +15,15 @@ export const KAFKA_HOST = process.env.KAFKA_HOST || "";
 export const KAFKA_PORT = process.env.KAFKA_PORT || 0;
 
 export const KAFKA_TOPICS = {
-  monitors: 'monitors'
+  monitors: 'monitors',
+  notifications: 'notifications'
 }
 export const KAFKA_ACTIONS = {
   monitors: {
     create: 'create',
     delete: 'delete'
+  },
+  notifications: {
+    email: 'send-email',
   }
 }
