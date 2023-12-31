@@ -29,13 +29,21 @@ export const UserSchema = new mongoose.Schema({
 export const UserInlineSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
-  }
-})
+    // required: true
+  },
+  phone: {
+    type: String,
+  },
+  enabled: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+});
 
-export const User = mongoose.model("User", UserSchema);
-export type User = InstanceType<typeof User>;
+// export const User = mongoose.model("User", UserSchema);
+// export type User = InstanceType<typeof User>;

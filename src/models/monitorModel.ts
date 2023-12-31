@@ -18,11 +18,11 @@ export const MonitorSchema = new mongoose.Schema(
       required: true,
     },
     recipients: [UserInlineSchema],
-    statusCode: {
+    targetStatusCode: {
       type: Number,
       default: 200,
     },
-    targetStatusCode: {
+    currentStatusCode: {
       type: Number,
       default: 200,
     },

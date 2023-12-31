@@ -76,7 +76,7 @@ export class Network {
       data: {
         foreignId: monitor._id,
         url: monitor.url,
-        targetCode: monitor.targetStatusCode,
+        targetCode: monitor.currentStatusCode,
       },
     };
     const res: AxiosResponse | any = await this.sendRequest(config);
@@ -103,7 +103,11 @@ export class Network {
     });
   };
 
-  static sendEmailNotification = async (recipients: string[], subject: string, body: string): Promise<void> => {
+  static sendEmailNotification = async (
+    recipients: string[],
+    subject: string,
+    body: string
+  ): Promise<void> => {
     await MonitorProducer.sendMessage(
       KAFKA_TOPICS.notifications,
       KAFKA_ACTIONS.notifications.email,

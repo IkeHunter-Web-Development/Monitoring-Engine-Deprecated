@@ -2,7 +2,7 @@
  * @fileoverview Manager for the monitor model.
  */
 import { KAFKA_ACTIONS, KAFKA_TOPICS, NODE_ENV } from "src/config";
-import { Event, Monitor, Report, User } from "src/models";
+import { Event, Monitor, Report, UserInlineSchema } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 import { MonitorResponse } from "src/models/responseModel";
@@ -67,7 +67,13 @@ export class MonitorService {
     let payload = {
       projectId: data.projectId,
       url: data.url || "",
-      recipients: data.recipients || [],
+      recipients:
+        data.recipients?.map((recipient: any) => ({
+          name: recipient.name || "",
+          email: recipient.email || "",
+          phone: recipient.phone || "",
+          enabled: recipient.enabled || true,
+        })) || [],
       title: data.title || "",
       status: data.status || "pending",
     };
@@ -187,7 +193,7 @@ export class MonitorService {
         recipients: monitor.recipients || [],
         status: monitor.status || "unknown",
         targetStatusCode: monitor.targetStatusCode,
-        currentStatusCode: monitor.statusCode,
+        currentStatusCode: monitor.currentStatusCode,
         active: monitor.active,
         title: monitor.title,
         type: monitor.type,
@@ -244,6 +250,7 @@ export class MonitorService {
     await Event.create({
       projectId: monitor.projectId,
       online: true,
+      status: 'alert',
       statusCode: 200,
       message: `Monitor ${monitor.title} deleted.`,
     });
@@ -301,9 +308,9 @@ export class MonitorService {
    * @param monitor The monitor to check.
    * @returns Boolean, whether the user has permission.
    */
-  static async userHasPermission(user: User, monitor: Monitor) {
-    return user.projectIds?.includes(monitor.projectId);
-  }
+  // static async userHasPermission(user: User, monitor: Monitor) {
+  //   return user.projectIds?.includes(monitor.projectId);
+  // }
 
   /**
    * Handle a monitor going down.
@@ -323,7 +330,11 @@ export class MonitorService {
 
     let event = await EventService.registerDownEvent(syncedMonitor, statusCode, error);
 
-    await syncedMonitor.updateOne({ online: false, statusCode: statusCode, status: "offline" });
+    await syncedMonitor.updateOne({
+      online: false,
+      currentStatusCode: statusCode,
+      status: "offline",
+    });
 
     if (!event) return null;
     console.log("Handling monitor down: ", syncedMonitor.title, " ", statusCode, " ", error);
@@ -351,7 +362,11 @@ export class MonitorService {
       statusCode,
       "Monitor is back online."
     );
-    await syncedMonitor.updateOne({ online: true, statusCode: statusCode, status: "online" });
+    await syncedMonitor.updateOne({
+      online: true,
+      currentStatusCode: statusCode,
+      status: "online",
+    });
 
     if (!event) return null;
     console.log("Handling monitor back online: ", syncedMonitor.title, " ", statusCode);
@@ -360,4 +375,23 @@ export class MonitorService {
 
     return event;
   }
+
+  public static registerEvent = async (
+    monitor: Monitor,
+    status: string,
+    statusCode: number,
+    message: string
+  ): Promise<Event | null> => {
+    const event = await EventService.registerGenericEvent(monitor, status, statusCode, message);
+    const syncedMonitor = await Monitor.findById(monitor._id);
+    if (!syncedMonitor) return null;
+
+    await syncedMonitor.updateOne({
+      currentStatusCode: statusCode,
+      status,
+      online: monitor.currentStatusCode === statusCode,
+    });
+    
+    return event;
+  };
 }

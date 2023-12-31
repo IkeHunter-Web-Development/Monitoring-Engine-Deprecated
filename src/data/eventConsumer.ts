@@ -2,7 +2,7 @@
 import { MonitorSocket } from "src/config";
 import { Event, Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
-import { MonitorService, Network } from "src/services";
+import { EventService, MonitorService, Network } from "src/services";
 
 const RESPONSE_INTERVAL_MIN = 30;
 
@@ -43,6 +43,9 @@ export class EventConsumer {
       // const event = await EventService.createEvent();
     } else if (monitor.online === false && status === "online") {
       event = await MonitorService.handleMonitorBackOnline(monitor, statusCode);
+    } else if (monitor.status === "pending") {
+      // event = await EventService.registerUpEvent(monitor, statusCode, message);
+      event = await MonitorService.registerEvent(monitor, status, statusCode, message);
     }
 
     if (event) MonitorSocket.pushClientEvent(monitorId, event);

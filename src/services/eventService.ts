@@ -67,6 +67,7 @@ export class EventService {
   ) {
     const payload = {
       monitorId: monitor._id,
+      projectId: monitor.projectId,
       status,
       statusCode,
       message,

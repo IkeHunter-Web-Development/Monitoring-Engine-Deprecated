@@ -8,7 +8,8 @@ export interface MonitorDetail {
   project: string;
   company: string;
   url: string;
-  recipients: (typeof UserInlineSchema)[] | { name: string; email: string }[];
+  recipients: { name: string; email?: string; phone?: string; enabled: boolean }[];
+  // recipients: Array<(typeof UserInlineSchema)>;
   status: string;
   targetStatusCode: number;
   currentStatusCode: number;
