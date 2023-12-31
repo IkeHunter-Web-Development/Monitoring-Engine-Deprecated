@@ -111,8 +111,8 @@ export class ReportService {
    * @param any options, Additional options to customize the report.
    */
   public static async generateReport(monitor: Monitor, options?: any): Promise<Report> {
-    /** First check if there is a current report less than 24h old */
-    const dayMs = new Date().getTime() - 1000 * 60 * 60 * 24;
+    /** First check if there is a current report less than 1h old */
+    const dayMs = new Date().getTime() - 1000 * 60 * 60 * 1;
     const existingReports = await Report.find({
       monitorId: monitor._id,
       createdAt: {
