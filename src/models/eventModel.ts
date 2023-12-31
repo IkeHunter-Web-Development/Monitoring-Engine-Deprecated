@@ -34,7 +34,8 @@ const EventSchema = new mongoose.Schema({
     type: String,
     // enum: ["online", "alert", "warning", "offline"],
     // enum: ["stable", "alert", "warning", "pending"],
-    enum: ["online", "alert", "offline", "pending"]
+    enum: ["online", "alert", "offline", "pending"],
+    required: true
   }
 }, {
   timestamps: true

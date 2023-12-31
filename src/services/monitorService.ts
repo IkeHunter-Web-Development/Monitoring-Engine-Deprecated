@@ -313,18 +313,24 @@ export class MonitorService {
    * @param error The error message of the monitor.
    * @returns Boolean, whether the monitor was handled.
    */
-  static async handleMonitorDown(monitor: Monitor, statusCode: number, error: string) {
+  static async handleMonitorDown(
+    monitor: Monitor,
+    statusCode: number,
+    error: string
+  ): Promise<Event | null> {
     const syncedMonitor = await Monitor.findById(monitor._id);
-    if (!syncedMonitor) return;
+    if (!syncedMonitor) return null;
 
     let event = await EventService.registerDownEvent(syncedMonitor, statusCode, error);
 
     await syncedMonitor.updateOne({ online: false, statusCode: statusCode, status: "offline" });
 
-    if (!event) return false;
+    if (!event) return null;
     console.log("Handling monitor down: ", syncedMonitor.title, " ", statusCode, " ", error);
 
     await this.notifyMonitorDown(monitor, statusCode, error);
+
+    return event;
   }
   /**
    * Handle a monitor going back online.
@@ -333,9 +339,12 @@ export class MonitorService {
    * @param statusCode The status code of the monitor.
    * @returns Boolean, whether the monitor was handled.
    */
-  static async handleMonitorBackOnline(monitor: Monitor, statusCode: number) {
+  static async handleMonitorBackOnline(
+    monitor: Monitor,
+    statusCode: number
+  ): Promise<Event | null> {
     const syncedMonitor = await Monitor.findById(monitor._id);
-    if (!syncedMonitor) return;
+    if (!syncedMonitor) return null;
 
     let event = await EventService.registerUpEvent(
       syncedMonitor,
@@ -344,9 +353,11 @@ export class MonitorService {
     );
     await syncedMonitor.updateOne({ online: true, statusCode: statusCode, status: "online" });
 
-    if (!event) return false;
+    if (!event) return null;
     console.log("Handling monitor back online: ", syncedMonitor.title, " ", statusCode);
 
     await this.notifyMonitorUp(monitor, statusCode);
+
+    return event;
   }
 }

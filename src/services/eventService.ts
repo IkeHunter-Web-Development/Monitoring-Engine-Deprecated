@@ -91,6 +91,7 @@ export class EventService {
     let event = await EventService.createEvent({
       monitorId: monitor._id,
       statusCode: statusCode,
+      status: "offline",
       online: false,
       message: message,
     }).catch((err: any) => {
@@ -114,6 +115,7 @@ export class EventService {
     let event = await EventService.createEvent({
       monitorId: monitor._id,
       statusCode: statusCode,
+      status: "online",
       online: true,
       message: message,
     }).catch((err: any) => {

@@ -1,6 +1,7 @@
 import WebSocket, { WebSocketServer, Server } from "ws";
 import { v4 as uuidv4 } from "uuid";
 import { IncomingMessage } from "http";
+import { Event } from "src/models";
 
 export class MonitorSocket {
   private socket: Server<typeof WebSocket, typeof IncomingMessage>;
@@ -107,6 +108,23 @@ export class MonitorSocket {
         this.instance.broadcastMessage(client, "set-responsetime", {
           monitorId: monitorId,
           responseTime: responseTime,
+        });
+      });
+    }
+  };
+  
+  public static pushClientEvent = (monitorId: string, event: Event) => {
+    const clients: string[] | undefined = this.instance.monitorClients[monitorId];
+    console.log('event pushed:', event)
+
+    if (clients !== undefined) {
+      clients.forEach((userId) => {
+        const client: WebSocket | undefined = this.instance.clients[userId]?.socket;
+
+        if (!client) return;
+        this.instance.broadcastMessage(client, "push-event", {
+          monitorId: monitorId,
+          event: event
         });
       });
     }
