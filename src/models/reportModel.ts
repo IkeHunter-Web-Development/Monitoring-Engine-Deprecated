@@ -2,16 +2,6 @@ import mongoose, { Schema } from "mongoose";
 
 export const ReportSchema = new mongoose.Schema(
   {
-    // rangeType: {
-    //   type: String,
-    //   required: true,
-    //   enum: ["day", "week", "month", "year"],
-    // },
-    // dayRange: {
-    //   type: Number,
-    //   required: true,
-    //   default: 1,
-    // },
     monitorId: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -61,27 +51,6 @@ export const ReportSchema = new mongoose.Schema(
       default: Date.now,
       expires: 24 * 60 * 60 * 1000,
     },
-    // expireAt: {
-    //   type: Date,
-    //   // default: Date.now() + 24 * 60 * 60 * 1000   // expires in 24h
-    //   // default: Date.now() + 1 * 60 * 1000,
-    //   default: Date.now,
-    //   index: { expires: "1m" },
-    // },
-    // totalRequests: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // totalSuccessfulRequests: {
-    //   // TODO: is this needed?
-    //   type: Number,
-    //   required: true,
-    // },
-    // totalFailedRequests: {
-    //   // TODO: is this needed?
-    //   type: Number,
-    //   required: true,
-    // },
   },
   {
     timestamps: true,

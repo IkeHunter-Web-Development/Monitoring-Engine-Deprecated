@@ -2,9 +2,9 @@ import WebSocket, { WebSocketServer, Server } from "ws";
 import { v4 as uuidv4 } from "uuid";
 import { IncomingMessage } from "http";
 
-export class Socket {
+export class MonitorSocket {
   private socket: Server<typeof WebSocket, typeof IncomingMessage>;
-  static instance: Socket;
+  static instance: MonitorSocket;
   protected clients: { [userId: string]: { socket: WebSocket; monitorIds: string[] } } = {};
   public monitorClients: { [monitorId: string]: string[] } = {};
 
@@ -74,11 +74,41 @@ export class Socket {
     });
   };
 
-  public static createSocket = (server: any): Socket => {
-    if (!Socket.instance) {
-      Socket.instance = new Socket(server);
+  private broadcastMessage = (client: WebSocket, type: string, data: any) => {
+    console.log('broadcast message:', data)
+    if (client.readyState === WebSocket.OPEN) {
+      const payload = JSON.stringify({
+        type,
+        data,
+      });
+      client.send(payload);
+    }
+  };
+
+  /**===============*
+   * Public Methods *
+   *================*/
+  public static createSocket = (server: any): MonitorSocket => {
+    if (!MonitorSocket.instance) {
+      MonitorSocket.instance = new MonitorSocket(server);
     }
 
-    return Socket.instance;
+    return MonitorSocket.instance;
+  };
+
+  public static updateClientResponseTimes = (monitorId: string, responseTime: string) => {
+    const clients: string[] | undefined = this.instance.monitorClients[monitorId];
+
+    if (clients !== undefined) {
+      clients.forEach((userId) => {
+        const client: WebSocket | undefined = this.instance.clients[userId]?.socket;
+
+        if (!client) return;
+        this.instance.broadcastMessage(client, "set-responsetime", {
+          monitorId: monitorId,
+          responseTime: responseTime,
+        });
+      });
+    }
   };
 }

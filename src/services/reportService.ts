@@ -20,9 +20,6 @@ export class ReportService {
   private static defaultDuration: number = 30;
 
   // TODO: optimize by making iterator to only iterate over events once
-  // private static async eventIterator(events: EventArray, ...callbacks: any): EventArrayPromise {
-  //   return [];
-  // }
 
   private static parseDates(options: any): ParsedDates {
     let endDate = options?.endDate ? options.endDate : new Date();
@@ -91,15 +88,9 @@ export class ReportService {
   }
 
   private static getAverageResponseTime(responses: MonitorResponse[]): number {
-    // const responseTimes: Array<number> = [];
     const responseTimes: number[] = responses.map((res) => res.responseTime);
-    console.log("response times:", responseTimes);
-
     const sum = responseTimes.reduce((sum, currentEvent) => sum + currentEvent, 0);
-    console.log("sum:", sum);
-
     const avg = Math.ceil(sum / responseTimes.length);
-    console.log("avg:", avg);
 
     return avg;
   }
@@ -123,7 +114,7 @@ export class ReportService {
     if (existingReports.length > 0) {
       return existingReports.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
     }
-    
+
     /** Create new report, Start with initial time block */
     const dates: ParsedDates = this.parseDates(options);
     const initialStartDate: Date = dates.startDate;

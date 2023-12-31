@@ -1,4 +1,5 @@
 // import { Monitor } from "src/models";
+import { MonitorSocket } from "src/config";
 import { Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
 import { MonitorService, Network } from "src/services";
@@ -27,22 +28,10 @@ export class EventConsumer {
 
   private handleAddEvent = async (eventMessage: any) => {
     const data: any = JSON.parse(eventMessage);
-
     const { monitorId, status, statusCode, message } = data;
-    // const eventPayload = { monitorId, status, statusCode, message }
 
     if (!monitorId) return;
 
-    // const event = await Event.create({
-    //   monitorId,
-    //   status,
-    //   statusCode,
-    //   message,
-    // });
-
-    // console.log("Event created:", event);
-
-    // const monitor = await Monitor.findOneAndUpdate({ _id: monitorId }, { status: status });
     const monitor = await MonitorService.getMonitor(monitorId);
 
     if (!monitor) return;
@@ -58,10 +47,12 @@ export class EventConsumer {
   };
 
   private handleAddResponse = async (message: any) => {
-    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return;
     const data: any = JSON.parse(message);
-
     const { monitorId, responseTime, timestamp } = data;
+    MonitorSocket.updateClientResponseTimes(monitorId, responseTime);
+    
+    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return;
+
     const monitor: Monitor | null = await Monitor.findById(monitorId);
 
     if (!monitor) return;
