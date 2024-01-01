@@ -103,6 +103,26 @@ export class Network {
     });
   };
 
+  static sendPushNotifications = async (monitor: Monitor, subject: string, body: string) => {
+    const emailRecipients: string[] = monitor.recipients
+      .filter((rec) => rec.preferredMethod === "email")
+      .map((rec) => rec.email || "")
+      .filter((email) => email !== "");
+    const messageRecipients: string[] = monitor.recipients
+      .filter((rec) => rec.preferredMethod === "phone")
+      .map((rec) => rec.phone || "")
+      .filter((phone) => phone !== "");
+
+    console.log("email recipients:", emailRecipients);
+    console.log("message recipients:", messageRecipients);
+
+    if (emailRecipients.length > 0)
+      await Network.sendEmailNotification(emailRecipients, subject, body);
+
+    if (messageRecipients.length > 0)
+      await Network.sendMessageNotification(messageRecipients, body);
+  };
+
   static sendEmailNotification = async (
     recipients: string[],
     subject: string,
@@ -114,6 +134,17 @@ export class Network {
       {
         recipients: [recipients.join(",")],
         subject: subject,
+        body: body,
+      }
+    );
+  };
+
+  static sendMessageNotification = async (recipients: string[], body: string): Promise<void> => {
+    await MonitorProducer.sendMessage(
+      KAFKA_TOPICS.notifications,
+      KAFKA_ACTIONS.notifications.message,
+      {
+        recipients: [recipients.join(",")],
         body: body,
       }
     );

@@ -38,6 +38,11 @@ export const UserInlineSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
+  preferredMethod: {
+    type: String,
+    enum: ["email", "phone"],
+    default: "email",
+  },
   enabled: {
     type: Boolean,
     default: true,

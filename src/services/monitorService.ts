@@ -1,13 +1,12 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import { KAFKA_ACTIONS, KAFKA_TOPICS, NODE_ENV } from "src/config";
-import { Event, Monitor, Report, UserInlineSchema } from "src/models";
+import { KAFKA_ACTIONS, NODE_ENV } from "src/config";
+import { Event, Monitor, Report } from "src/models";
 import { Network } from "src/services/network";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 import { MonitorResponse } from "src/models/responseModel";
 import { getResponseTime } from "src/utils";
-import { MonitorProducer } from "src/data";
 
 export class MonitorService {
   public static instance: MonitorService = new MonitorService();
@@ -29,32 +28,15 @@ export class MonitorService {
   ) => {
     const subject = `${monitor.title} is down`;
     const body = `${monitor.title} is down. Status code: ${statusCode}. Message: ${message}`;
-    const recipients: string[] = [];
-
-    monitor.recipients.forEach(async (user: any) => {
-      recipients.push(user.email);
-    });
-
-    await Network.sendEmailNotification(recipients, subject, body);
+    
+    Network.sendPushNotifications(monitor, subject, body);
   };
 
   public static notifyMonitorUp = async (monitor: Monitor, statusCode: number) => {
-    const message = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
-    const recipients: string[] = [];
-
-    monitor.recipients.forEach(async (user: any) => {
-      recipients.push(user.email);
-    });
-
-    await MonitorProducer.sendMessage(
-      KAFKA_TOPICS.notifications,
-      KAFKA_ACTIONS.notifications.email,
-      {
-        recipients: [recipients.join(",")],
-        subject: `${monitor.title} is back online.`,
-        body: message,
-      }
-    );
+    const subject = `${monitor.title} is back up`;
+    const body = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
+    
+    Network.sendPushNotifications(monitor, subject, body);
   };
 
   /**
@@ -73,6 +55,7 @@ export class MonitorService {
           email: recipient.email || "",
           phone: recipient.phone || "",
           enabled: recipient.enabled || true,
+          preferredMethod: recipient.preferredMethod || "email",
         })) || [],
       title: data.title || "",
       status: data.status || "pending",
@@ -250,7 +233,7 @@ export class MonitorService {
     await Event.create({
       projectId: monitor.projectId,
       online: true,
-      status: 'alert',
+      status: "alert",
       statusCode: 200,
       message: `Monitor ${monitor.title} deleted.`,
     });
@@ -391,7 +374,7 @@ export class MonitorService {
       status,
       online: monitor.currentStatusCode === statusCode,
     });
-    
+
     return event;
   };
 }

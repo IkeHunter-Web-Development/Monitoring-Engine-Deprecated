@@ -25,5 +25,6 @@ export const KAFKA_ACTIONS = {
   },
   notifications: {
     email: 'send-email',
+    message: 'send-message',
   }
 }

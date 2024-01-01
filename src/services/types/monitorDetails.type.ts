@@ -1,4 +1,3 @@
-import { UserInlineSchema } from "src/models";
 import { ObjectId } from "mongoose";
 import { Event, Report } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
@@ -8,7 +7,13 @@ export interface MonitorDetail {
   project: string;
   company: string;
   url: string;
-  recipients: { name: string; email?: string; phone?: string; enabled: boolean }[];
+  recipients: {
+    name: string;
+    email?: string;
+    phone?: string;
+    preferredMethod: string;
+    enabled: boolean;
+  }[];
   // recipients: Array<(typeof UserInlineSchema)>;
   status: string;
   targetStatusCode: number;

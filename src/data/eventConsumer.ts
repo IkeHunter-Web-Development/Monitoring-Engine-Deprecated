@@ -2,7 +2,7 @@
 import { MonitorSocket } from "src/config";
 import { Event, Monitor } from "src/models";
 import { MonitorResponse } from "src/models/responseModel";
-import { EventService, MonitorService, Network } from "src/services";
+import { MonitorService, Network } from "src/services";
 
 const RESPONSE_INTERVAL_MIN = 30;
 
