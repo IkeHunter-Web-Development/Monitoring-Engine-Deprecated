@@ -1,16 +1,15 @@
-import { Producer } from "kafka-node";
-import { Stream } from "src/lib";
+// import { Producer } from "kafka-node";
+import { Stream, StreamTopic } from "src/lib";
+import { Monitor } from "src/models";
+
+type MonitorProducerAction = "create" | "delete";
 
 export class MonitorProducer {
-  protected producer: Producer | null;
   static instance: MonitorProducer;
+  protected stream: Stream;
 
   private constructor() {
-    this.producer = new Stream().createProducer();
-
-    this.producer?.on("ready", () => {
-      console.log("Connected to Kafka client.");
-    });
+    this.stream = Stream.getInstance();
   }
 
   public static getInstance = () => {
@@ -21,28 +20,10 @@ export class MonitorProducer {
     return MonitorProducer.instance;
   };
 
-  public static sendMessage = async (topic: string, action: string, data: any) => {
+  public static sendMonitorMessage = async (action: MonitorProducerAction, data: Monitor) => {
     const instance = this.getInstance();
-    console.log('producer:', instance.producer);
+    const topic: StreamTopic = "monitors";
 
-    instance.producer?.send(
-      [
-        {
-          topic,
-          messages: JSON.stringify({
-            action,
-            data: JSON.stringify(data),
-          }),
-        },
-      ],
-      (error, data) => {
-        if (error) {
-          console.log("Error sending message:", error);
-          throw error;
-        }
-
-        console.log("Message sent to stream:", data);
-      }
-    );
+    await instance.stream.send(topic, [{ action, data: data }]);
   };
 }

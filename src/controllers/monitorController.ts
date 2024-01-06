@@ -6,7 +6,6 @@ import { simpleResponse } from "../utils/responses";
 import { MonitorService } from "src/services";
 
 export class MonitorController {
-  constructor() {}
 
   static createMonitor = async (req: Request, res: Response) => {
     /**======================*

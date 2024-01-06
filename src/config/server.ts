@@ -18,6 +18,4 @@ app.use(multer().any());
 app.use(responseTime());
 app.use(router);
 
-
-
 export const server = http.createServer(app);

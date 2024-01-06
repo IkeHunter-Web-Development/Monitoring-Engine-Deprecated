@@ -1,24 +1,47 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
-import { KAFKA_ACTIONS, NODE_ENV } from "src/config";
+import { NODE_ENV } from "src/config";
 import { Event, Monitor, Report } from "src/models";
-import { Network } from "src/services/network";
+import { MonitorProducer, Network } from "src/data";
 import { EventService, MonitorDetail, ReportService } from "src/services";
 import { MonitorResponse } from "src/models/responseModel";
 import { getResponseTime } from "src/utils";
+import { NotificationProducer } from "src/data/notificationProducer";
 
 export class MonitorService {
-  public static instance: MonitorService = new MonitorService();
-
   public static notifyCreateMonitor = (monitor: Monitor) => {
     if (NODE_ENV === "development") return;
-    Network.sendMonitorMessage(KAFKA_ACTIONS.monitors.create, monitor);
+    MonitorProducer.sendMonitorMessage("create", monitor);
+  };
+
+  private static sendRecipientsPushNotification = async (
+    monitor: Monitor,
+    subject: string,
+    body: string
+  ) => {
+    const emailRecipients: string[] = monitor.recipients
+      .filter((rec) => rec.preferredMethod === "email")
+      .map((rec) => rec.email || "")
+      .filter((email) => email !== "");
+    const messageRecipients: string[] = monitor.recipients
+      .filter((rec) => rec.preferredMethod === "phone")
+      .map((rec) => rec.phone || "")
+      .filter((phone) => phone !== "");
+
+    console.log("email recipients:", emailRecipients);
+    console.log("message recipients:", messageRecipients);
+
+    if (emailRecipients.length > 0)
+      await NotificationProducer.sendEmailMessage(emailRecipients, subject, body);
+
+    if (messageRecipients.length > 0)
+      await NotificationProducer.sendSmsMessage(messageRecipients, body);
   };
 
   public static notifyDeleteMonitor = (monitor: Monitor) => {
     if (NODE_ENV === "development") return;
-    Network.sendMonitorMessage(KAFKA_ACTIONS.monitors.delete, monitor);
+    MonitorProducer.sendMonitorMessage("delete", monitor);
   };
 
   public static notifyMonitorDown = async (
@@ -28,15 +51,15 @@ export class MonitorService {
   ) => {
     const subject = `${monitor.title} is down`;
     const body = `${monitor.title} is down. Status code: ${statusCode}. Message: ${message}`;
-    
-    Network.sendPushNotifications(monitor, subject, body);
+
+    this.sendRecipientsPushNotification(monitor, subject, body);
   };
 
   public static notifyMonitorUp = async (monitor: Monitor, statusCode: number) => {
     const subject = `${monitor.title} is back up`;
     const body = `Monitor ${monitor.title} is back online. Status code: ${statusCode}`;
-    
-    Network.sendPushNotifications(monitor, subject, body);
+
+    this.sendRecipientsPushNotification(monitor, subject, body);
   };
 
   /**

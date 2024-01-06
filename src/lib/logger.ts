@@ -4,6 +4,7 @@ import winston from "winston";
 
 const { combine, timestamp, printf, colorize } = winston.format;
 
+// TODO: Implement Logger
 export default class Logger {
   format: any;
   logger: any;

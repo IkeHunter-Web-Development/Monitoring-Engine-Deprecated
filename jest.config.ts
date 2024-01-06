@@ -94,7 +94,7 @@ const config: JestConfigWithTsJest = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "src/(.*)": ["<rootDir>/src/$1"]
+    "^src/(.*)": ["<rootDir>/src/$1"]
   },
   // this enables us to use tsconfig-paths with jest
   // modulePaths: [compilerOptions.baseUrl],

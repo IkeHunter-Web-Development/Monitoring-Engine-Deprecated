@@ -1,7 +1,9 @@
-import { EventConsumer } from "./eventConsumer"
+import { EventConsumer } from "./eventConsumer";
 
 export const registerConsumers = () => {
-  EventConsumer.registerConsumer()
-}
+  EventConsumer.registerConsumer();
+};
 
-export * from './monitorProducer';
+export * from "./eventConsumer";
+export * from "./monitorProducer";
+export * from "./network";

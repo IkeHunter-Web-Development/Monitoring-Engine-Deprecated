@@ -1,8 +1,8 @@
+import swaggerAutogen from "swagger-autogen";
 import { eventResponse, eventBody, registerEventBody } from "./api/event.doc";
 import { monitorBody, monitorResponse, monitorResponseDetailed } from "./api/monitor.doc";
-import swaggerAutogen from "swagger-autogen";
-import "dotenv/config";
 import { HOST, PORT } from "src/config";
+import "dotenv/config";
 
 const host = HOST !== "0.0.0.0" ? HOST : "localhost";
 const outputFile = "src/docs/swagger_output.json";

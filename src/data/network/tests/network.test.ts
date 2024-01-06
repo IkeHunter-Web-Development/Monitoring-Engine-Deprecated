@@ -5,7 +5,7 @@ import {
   request,
   verifyUserInvalidResponse,
   verifyUserSuccessResponse,
-} from "src/services/network";
+} from "src/data/network";
 import { Monitor } from "src/models";
 import { generateMonitor } from "src/utils/testing";
 import { NetworkAuthResponse } from "../types/network.types";

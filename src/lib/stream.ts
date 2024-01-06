@@ -1,23 +1,56 @@
-import kafka from "kafka-node";
-import { KAFKA_HOST, KAFKA_PORT, NODE_ENV } from "src/config";
+// import { Consumer, KafkaClient, Producer } from "kafka-node";
+import { Kafka, Producer, Consumer, KafkaMessage } from "kafkajs";
+import { KAFKA_HOST, KAFKA_PORT } from "src/config";
+
+export type StreamTopic = "monitors" | "notifications" | "monitor-events";
+type StreamMessage = {
+  action: string;
+  data: any;
+}
 
 export class Stream {
-  client: kafka.KafkaClient | null;
-  producer: kafka.Producer | null;
+  client: Kafka | null;
+  producer: Producer | null;
+  consumer: Consumer | null;
+  static instance: Stream;
 
-  constructor() {
-    this.client = this.createClient();
-    this.producer = this.createProducer();
-  }
-  createClient = () => {
-    if (NODE_ENV === "development" || NODE_ENV === "test") return null;
-    return new kafka.KafkaClient({
-      kafkaHost: `${KAFKA_HOST}:${KAFKA_PORT}`,
+  private constructor() {
+    this.client = new Kafka({
+      clientId: "monitor-engine",
+      brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`],
     });
+
+    this.producer = this.client.producer();
+    this.consumer = this.client.consumer({ groupId: "monitor-engine" });
+  }
+
+  public static getInstance = () => {
+    if (!Stream.instance) {
+      Stream.instance = new Stream();
+    }
+
+    return Stream.instance;
   };
 
-  createProducer = () => {
-    if (NODE_ENV === "development" || NODE_ENV === "test") return null;
-    return new kafka.Producer(this.client!);
+  public send = async (topic: StreamTopic, messages: StreamMessage[]) => {
+    await this.producer?.connect();
+    await this.producer?.send({
+      topic,
+      messages: messages.map((message) => ({
+        value: JSON.stringify(message),
+      })),
+    });
+    await this.producer?.disconnect();
+  };
+  public subscribe = async (
+    topic: StreamTopic,
+    onMessage: (data: { topic: string; partition: number; message: KafkaMessage }) => void
+  ) => {
+    await this.consumer?.connect();
+    await this.consumer?.subscribe({ topic });
+    await this.consumer?.run({
+      eachMessage: async ({ topic, partition, message }) =>
+        onMessage({ topic, partition, message }),
+    });
   };
 }

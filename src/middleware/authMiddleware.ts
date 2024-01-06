@@ -5,7 +5,7 @@
  */
 import { NextFunction, Request, Response } from "express";
 import { NETWORK_TOKEN, NODE_ENV } from "src/config";
-import { Network, NetworkAuthResponse } from "src/services/network";
+import { Network, NetworkAuthResponse } from "src/data/network";
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   /**====================*

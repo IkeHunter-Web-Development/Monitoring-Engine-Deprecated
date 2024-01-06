@@ -176,40 +176,40 @@ export class EventController {
       });
   }
   
-  static async registerEvent(req: Request, res: Response) {
-    /**======================*
-      @swagger Create Event
-      #swagger.security = [{
-        "bearerAuth": []
-      }]
-      #swagger.parameters['body'] = {
-        in: "body",
-        name: "body",
-        description: "Event object",
-        required: true,
-        schema: {$ref: "#/definitions/EventBody"}
-      }
-      #swagger.tags = ['Events']
-      #swagger.description = 'Endpoint for creating an Event.'
-      #swagger.responses[201] = {
-        schema: { $ref: "#/definitions/EventResponse" },
-        description: "Event created"
-      }
-      #swagger.responses[500] = {
-        schema: {$ref: "#/definitions/Error500"},
-      }
-     *========================*/
-    await EventService.createEvent(req.body)
-      .then((event) => {
-        return res.status(200).json(event);
-      })
-      .catch((error) => {
-        return res.status(500).json({
-          status: 500,
-          message: error,
-        });
-      });
-  }
+  // static async registerEvent(req: Request, res: Response) {
+  //   /**======================*
+  //     @swagger Create Event
+  //     #swagger.security = [{
+  //       "bearerAuth": []
+  //     }]
+  //     #swagger.parameters['body'] = {
+  //       in: "body",
+  //       name: "body",
+  //       description: "Event object",
+  //       required: true,
+  //       schema: {$ref: "#/definitions/EventBody"}
+  //     }
+  //     #swagger.tags = ['Events']
+  //     #swagger.description = 'Endpoint for creating an Event.'
+  //     #swagger.responses[201] = {
+  //       schema: { $ref: "#/definitions/EventResponse" },
+  //       description: "Event created"
+  //     }
+  //     #swagger.responses[500] = {
+  //       schema: {$ref: "#/definitions/Error500"},
+  //     }
+  //    *========================*/
+  //   await EventService.createEvent(req.body)
+  //     .then((event) => {
+  //       return res.status(200).json(event);
+  //     })
+  //     .catch((error) => {
+  //       return res.status(500).json({
+  //         status: 500,
+  //         message: error,
+  //       });
+  //     });
+  // }
 }
 
 
