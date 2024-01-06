@@ -22,8 +22,7 @@ export class EventConsumer {
 
       try {
         const payload = JSON.parse(res.message.value?.toString() || "");
-        const action = payload.action;
-        const data = JSON.parse(payload.data);
+        const { action, data } = payload;
 
         if (action === "register-event") {
           this.handleAddEvent(data);
