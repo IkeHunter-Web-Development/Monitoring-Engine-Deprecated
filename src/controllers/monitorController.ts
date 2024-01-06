@@ -2,11 +2,10 @@
  * @fileoverview API controller for the monitor objects.
  */
 import { Request, Response } from "express";
-import { simpleResponse } from "../utils/responses";
 import { MonitorService } from "src/services";
+import { BaseController } from "./baseController";
 
-export class MonitorController {
-
+export class MonitorController extends BaseController {
   static createMonitor = async (req: Request, res: Response) => {
     /**======================*
       @swagger Create monitor
@@ -30,11 +29,12 @@ export class MonitorController {
 
     return MonitorService.createMonitor(req.body)
       .then((monitor: any) => {
-        return res.status(201).json(monitor);
+        // return res.status(201).json(monitor);
+        return this.created(res, monitor);
       })
       .catch((err: any) => {
         console.log(err);
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   };
 
@@ -70,16 +70,16 @@ export class MonitorController {
       .then(async (monitor: any) => {
         if (!monitor) {
           console.log("monitor not found:", id);
-          return simpleResponse(res, 404, "Monitor not found");
+          return this.notFound(res, "Monitor not found");
         }
         const { token } = res.locals;
         const detailed = await MonitorService.getMonitorDetails(token, monitor);
 
-        return res.status(200).json(detailed);
+        return this.ok(res, detailed);
       })
       .catch((err: any) => {
         console.log(err);
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   }
 
@@ -105,13 +105,13 @@ export class MonitorController {
     return MonitorService.getMonitor(id)
       .then((monitor: any) => {
         if (!monitor) {
-          return simpleResponse(res, 404, "Monitor not found");
+          return this.notFound(res, "Monitor not found");
         }
-        return res.status(200).json(monitor);
+        return this.ok(res, monitor);
       })
       .catch((err: any) => {
         console.log(err);
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   }
 
@@ -138,18 +138,18 @@ export class MonitorController {
     const { id } = req.params || "";
     const monitor = await MonitorService.getMonitor(id);
 
-    if (!monitor) return simpleResponse(res, 404, "Monitor not found");
+    if (!monitor) return this.notFound(res, "Monitor not found");
 
     return MonitorService.deleteMonitor(id)
       .then((success) => {
         if (!success) {
-          return simpleResponse(res, 404, "Monitor not found");
+          return this.notFound(res, "Monitor not found");
         }
-        return simpleResponse(res, 200, "Monitor deleted");
+        return this.ok(res, "Monitor deleted");
       })
       .catch((err: any) => {
         console.log(err);
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   };
 
@@ -171,10 +171,10 @@ export class MonitorController {
      *===========================*/
     return MonitorService.getMonitors()
       .then((monitors: any) => {
-        return res.status(200).json(monitors);
+        return this.ok(res, monitors);
       })
       .catch((err: any) => {
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   }
 
@@ -200,16 +200,13 @@ export class MonitorController {
 
     return MonitorService.searchMonitors(params)
       .then((monitors: any) => {
-        if (!monitors)
-          return res.status(404).json({
-            status: 404,
-            message: "No monitors found",
-          });
-        return res.status(200).json(monitors);
+        if (!monitors) return this.notFound(res, "No monitors found");
+
+        return this.ok(res, monitors);
       })
       .catch((err: any) => {
         console.log(err);
-        return simpleResponse(res, 500, err.message);
+        return this.badRequest(res, err?.message);
       });
   }
 
@@ -234,7 +231,7 @@ export class MonitorController {
     let monitor = await MonitorService.getMonitor(id);
 
     if (!monitor) {
-      return simpleResponse(res, 404, "Monitor not found");
+      return this.notFound(res, "Monitor not found");
     }
 
     if (!monitor.online) {
@@ -274,25 +271,17 @@ export class MonitorController {
 
     let monitor = await MonitorService.getMonitor(id);
 
-    if (!monitor) {
-      return simpleResponse(res, 404, "Monitor not found");
-    }
+    if (!monitor) return this.notFound(res, "Monitor not found");
 
     if (stable === true) {
       let success = MonitorService.handleMonitorBackOnline(monitor, statusCode);
-
-      if (!success) {
-        return simpleResponse(res, 500, "Error handling monitor back online");
-      }
+      if (!success) return this.badRequest(res, "Error handling monitor back online");
     } else {
       let success = MonitorService.handleMonitorDown(monitor, statusCode, message);
-
-      if (!success) {
-        return simpleResponse(res, 500, "Error handling monitor down");
-      }
+      if (!success) return this.badRequest(res, "Error handling monitor down");
     }
 
-    return res.status(200).send("Alert received");
+    return this.ok(res, "Alert received");
   }
 
   static async getDetailedMonitors(_: Request, res: Response) {
@@ -313,9 +302,9 @@ export class MonitorController {
      *===========================*/
     const token = res.locals.token || "";
     const monitors = await MonitorService.getDetailedMonitors(token).catch((err) => {
-      return res.status(500).json(err.message);
+      return this.badRequest(res, err?.message);
     });
 
-    return res.status(200).json(monitors);
+    return this.ok(res, monitors);
   }
 }

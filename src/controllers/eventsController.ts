@@ -4,8 +4,9 @@
 import { Request, Response } from "express";
 import { Event } from "src/models";
 import { EventService } from "src/services";
+import { BaseController } from "./baseController";
 
-export class EventController {
+export class EventController extends BaseController {
   /**============*
    * CRUD ROUTES *
    *=============*/
@@ -29,14 +30,9 @@ export class EventController {
     const { id } = req.params || "";
 
     let event = await Event.findById(id);
+    if (!event) return this.notFound(res, "Event not found");
 
-    if (!event)
-      return res.status(404).json({
-        status: 404,
-        message: "Event not found",
-      });
-
-    return res.json(event);
+    return this.ok(res, event);
   }
 
   static async deleteEvent(req: Request, res: Response) {
@@ -64,22 +60,12 @@ export class EventController {
     try {
       let event = await Event.deleteOne({ _id: id });
 
-      if (!event)
-        return res.status(404).json({
-          status: 404,
-          message: "Event not found",
-        });
+      if (!event) return this.notFound(res, "Event not found");
 
-      return res.json({
-        status: 200,
-        message: "Event deleted",
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-        status: 500,
-        message: error,
-      });
+      return this.ok(res, "Event deleted");
+    } catch (err: any) {
+      console.log(err);
+      return this.badRequest(res, err?.message);
     }
   }
 
@@ -132,12 +118,10 @@ export class EventController {
 
         events = [events[0]];
       }
-      return res.json(events || []);
-    } catch (error) {
-      return res.json({
-        status: 500,
-        message: error,
-      });
+
+      return this.ok(res, events || []);
+    } catch (err: any) {
+      return this.badRequest(res, err?.message);
     }
   }
 
@@ -166,50 +150,10 @@ export class EventController {
      *========================*/
     await EventService.createEvent(req.body)
       .then((event) => {
-        return res.status(200).json(event);
+        return this.ok(res, event);
       })
-      .catch((error) => {
-        return res.status(500).json({
-          status: 500,
-          message: error,
-        });
+      .catch((error: any) => {
+        return this.badRequest(res, error?.message);
       });
   }
-  
-  // static async registerEvent(req: Request, res: Response) {
-  //   /**======================*
-  //     @swagger Create Event
-  //     #swagger.security = [{
-  //       "bearerAuth": []
-  //     }]
-  //     #swagger.parameters['body'] = {
-  //       in: "body",
-  //       name: "body",
-  //       description: "Event object",
-  //       required: true,
-  //       schema: {$ref: "#/definitions/EventBody"}
-  //     }
-  //     #swagger.tags = ['Events']
-  //     #swagger.description = 'Endpoint for creating an Event.'
-  //     #swagger.responses[201] = {
-  //       schema: { $ref: "#/definitions/EventResponse" },
-  //       description: "Event created"
-  //     }
-  //     #swagger.responses[500] = {
-  //       schema: {$ref: "#/definitions/Error500"},
-  //     }
-  //    *========================*/
-  //   await EventService.createEvent(req.body)
-  //     .then((event) => {
-  //       return res.status(200).json(event);
-  //     })
-  //     .catch((error) => {
-  //       return res.status(500).json({
-  //         status: 500,
-  //         message: error,
-  //       });
-  //     });
-  // }
 }
-
-

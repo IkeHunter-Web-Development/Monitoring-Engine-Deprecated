@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { BaseController } from "../controllers/baseController";
+import { CoreController } from "../controllers/coreController";
 import { monitorRoutes } from "./monitorRoutes"; // absolute import for swagger
 import { eventRoutes } from "./eventRoutes"; // absolute import for swagger
 
 const router = Router();
-router.get("/", BaseController.healthCheck);
+router.get("/", CoreController.healthCheck);
 router.use("/api/monitor", monitorRoutes);
 router.use("/api/monitor/events", eventRoutes);
 
