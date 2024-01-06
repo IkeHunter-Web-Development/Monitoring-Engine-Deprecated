@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { UserInlineSchema } from "./userModel";
+import { UserSchema } from "./userModel";
 
 export const MonitorSchema = new mongoose.Schema(
   {
@@ -17,7 +17,7 @@ export const MonitorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    recipients: [UserInlineSchema],
+    recipients: [UserSchema],
     targetStatusCode: {
       type: Number,
       default: 200,

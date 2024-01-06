@@ -18,11 +18,6 @@ export const MonitorResponseSchema = new mongoose.Schema({
     default: Date.now,
     expires: 24 * 60 * 60 * 1000,
   },
-  // expireAt: {
-  //   type: Date,
-  //   // default: Date.now() + 24 * 60 * 60 * 1000   // expires in 24h
-  //   default: Date.now() + 1 * 60 * 1000
-  // },
 });
 
 export const MonitorResponse = mongoose.model("MonitorResponse", MonitorResponseSchema);

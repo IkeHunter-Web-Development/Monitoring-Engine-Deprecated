@@ -3,19 +3,18 @@ import express from "express";
 import multer from "multer";
 import { router } from "src/routes";
 import responseTime from "response-time";
-import http from "http";
 // import { initializeSwagger } from "src/docs/swagger";
 
-const app = express();
+export const server = express();
 
 const urlencodedParser = express.urlencoded({ extended: false });
 const jsonParser = express.json();
 
-app.use(urlencodedParser);
-app.use(jsonParser);
-app.use(multer().any());
+server.use(urlencodedParser);
+server.use(jsonParser);
+server.use(multer().any());
 
-app.use(responseTime());
-app.use(router);
+server.use(responseTime());
+server.use(router);
 
-export const server = http.createServer(app);
+// export const app = http.createServer(server);

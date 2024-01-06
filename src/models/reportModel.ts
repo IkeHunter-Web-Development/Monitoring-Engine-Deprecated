@@ -57,7 +57,5 @@ export const ReportSchema = new mongoose.Schema(
   }
 );
 
-// ReportSchema.index({ expireAfterSeconds: 1000 });
-
 export const Report = mongoose.model("Report", ReportSchema);
 export type Report = InstanceType<typeof Report>;

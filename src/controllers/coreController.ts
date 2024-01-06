@@ -2,6 +2,7 @@ import { BaseController } from "./baseController";
 import { Request, Response } from "express";
 
 export class CoreController extends BaseController {
+  
   static async healthCheck(_: Request, res: Response) {
     /**==========================*
     #swagger.tags = ['Main']
@@ -23,6 +24,6 @@ export class CoreController extends BaseController {
     /*
     
     */
-    return this.ok(res, payload);
+    return super.ok(res, payload);
   }
 }

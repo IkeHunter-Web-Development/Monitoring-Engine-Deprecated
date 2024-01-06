@@ -30,9 +30,9 @@ export class EventController extends BaseController {
     const { id } = req.params || "";
 
     let event = await Event.findById(id);
-    if (!event) return this.notFound(res, "Event not found");
+    if (!event) return super.notFound(res, "Event not found");
 
-    return this.ok(res, event);
+    return super.ok(res, event);
   }
 
   static async deleteEvent(req: Request, res: Response) {
@@ -60,12 +60,12 @@ export class EventController extends BaseController {
     try {
       let event = await Event.deleteOne({ _id: id });
 
-      if (!event) return this.notFound(res, "Event not found");
+      if (!event) return super.notFound(res, "Event not found");
 
-      return this.ok(res, "Event deleted");
+      return super.ok(res, "Event deleted");
     } catch (err: any) {
       console.log(err);
-      return this.badRequest(res, err?.message);
+      return super.badRequest(res, err?.message);
     }
   }
 
@@ -119,9 +119,9 @@ export class EventController extends BaseController {
         events = [events[0]];
       }
 
-      return this.ok(res, events || []);
+      return super.ok(res, events || []);
     } catch (err: any) {
-      return this.badRequest(res, err?.message);
+      return super.badRequest(res, err?.message);
     }
   }
 
@@ -150,10 +150,10 @@ export class EventController extends BaseController {
      *========================*/
     await EventService.createEvent(req.body)
       .then((event) => {
-        return this.ok(res, event);
+        return super.ok(res, event);
       })
       .catch((error: any) => {
-        return this.badRequest(res, error?.message);
+        return super.badRequest(res, error?.message);
       });
   }
 }

@@ -8,7 +8,7 @@
 
 import { Response } from "express";
 
-export class BaseController {
+export abstract class BaseController {
   private static formatResponse = (status: number, message: string) => {
     return {
       status,
