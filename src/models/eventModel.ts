@@ -1,9 +1,10 @@
+import type { Types } from 'mongoose'
 import mongoose, { Schema } from 'mongoose'
 
-export interface EventInterface {
+export interface IEvent {
   projectId: string
   message: string
-  monitorId?: string
+  monitorId?: Types.ObjectId
   timestamp?: Date
 }
 

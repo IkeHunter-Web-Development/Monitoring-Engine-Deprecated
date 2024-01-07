@@ -1,5 +1,11 @@
 import mongoose, { Types } from 'mongoose'
 
+export interface IMonitorResponse {
+  monitorId: Types.ObjectId
+  responseTime: number
+  timestamp: number
+}
+
 export const MonitorResponseSchema = new mongoose.Schema({
   monitorId: {
     type: Types.ObjectId,

@@ -8,22 +8,11 @@ export interface IncidentInterface {
   timestamp?: Date
 }
 
-const IncidentSchema = new Schema(
+const IncidentSchema = new mongoose.Schema(
   {
     /** REQUIRED */
     monitorId: {
       type: Schema.Types.ObjectId,
-      required: true
-    },
-    type: {
-      type: String,
-      enum: [] as MonitorStatus[],
-      required: true
-    },
-    status: {
-      typs: String,
-      // enum: ["open", "closed", "pending"],
-      enum: [] as IncidentStatus[],
       required: true
     },
     message: {
@@ -34,6 +23,7 @@ const IncidentSchema = new Schema(
     /** OPTIONAL */
     timestamp: {
       type: Date,
+      default: Date.now,
       required: false
     }
   },

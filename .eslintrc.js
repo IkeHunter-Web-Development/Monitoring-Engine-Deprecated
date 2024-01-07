@@ -28,6 +28,7 @@ module.exports = {
     '@typescript-eslint/no-redeclare': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'prefer-const': 'warn',
     // 'prettier/prettier': 'warn',
     'prefer-arrow-functions/prefer-arrow-functions': [
       'warn',

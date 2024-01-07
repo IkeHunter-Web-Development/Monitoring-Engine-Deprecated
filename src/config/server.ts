@@ -5,7 +5,7 @@ import { router } from 'src/routes'
 import responseTime from 'response-time'
 // import { initializeSwagger } from "src/docs/swagger";
 
-export const server = express()
+const server = express()
 
 const urlencodedParser = express.urlencoded({ extended: false })
 const jsonParser = express.json()
@@ -16,5 +16,7 @@ server.use(multer().any())
 
 server.use(responseTime())
 server.use(router)
+
+export { server }
 
 // export const app = http.createServer(server);

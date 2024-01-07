@@ -1,91 +1,66 @@
 /**
  * @fileoverview Tests for the Event model.
  */
-import { Monitor, Event } from "src/models";
+import type { IEvent } from 'src/models'
+import { Monitor, Event } from 'src/models'
 
-/**
- * Tests for the Event model.
- */
-describe("Event", () => {
-  let monitor: any;
-  let eventData: any;
+describe('Event model CRUD data', () => {
+  let monitor: Monitor
+  let eventData: IEvent
 
   /**
    * Create a monitor before each test.
    */
   beforeEach(async () => {
-    let payload = {
-      projectId: "123",
-      url: "https://example.com",
-      users: [],
-      statusCode: 200,
-      title: "Example",
-    };
+    const payload = {
+      projectId: '123',
+      url: 'https://example.com',
+      title: 'Example'
+    }
 
-    monitor = await Monitor.create(payload);
+    monitor = await Monitor.create(payload)
 
     eventData = {
-      monitorId: monitor._id,
-      statusCode: 200,
-      online: true,
-      timestamp: new Date(),
-    };
-  });
+      projectId: '123',
+      message: 'Monitor is offline',
+      monitorId: monitor._id
+    }
+  })
 
-  /**
-   * Event models should be able to be created.
-   */
-  it("should add an event", async () => {
-    const event = { ...eventData };
-    await new Event(event).save();
+  it('should create an event model', async () => {
+    await Event.create(eventData)
 
-    const events = await Event.find({});
-    expect(events.length).toEqual(1);
-  });
+    const events = await Event.find({})
+    expect(events.length).toEqual(1)
+  })
 
-  /**
-   * Event models should be able to be updated.
-   */
-  it("should update an event", async () => {
-    const event = { ...eventData };
+  it('should update an event model', async () => {
+    await Event.create(eventData)
+    const newMessage = 'Monitor is online'
 
-    await new Event(event).save();
+    const updatedEvent: Partial<IEvent> = {
+      message: newMessage
+    }
 
-    const updatedEvent = {
-      monitorId: monitor._id,
-      statusCode: 200,
-      online: false,
-      timestamp: new Date(),
-    };
+    await Event.updateOne(updatedEvent)
 
-    await Event.updateOne(updatedEvent);
+    const events: Array<Event> = await Event.find({})
+    expect(events[0].message).toEqual(newMessage)
+  })
 
-    const events: Array<Event> = await Event.find({});
-    expect(events[0].online).toEqual(false);
-  });
+  it('should get an event model', async () => {
+    await Event.create(eventData)
+    const events = await Event.find({})
 
-  /**
-   * Event models should be able to be retrieved.
-   */
-  it("should get an event", async () => {
-    const event = { ...eventData };
+    expect(events.length).toEqual(1)
+  })
 
-    await new Event(event).save();
-    const events = await Event.find({});
+  it('should delete an event model', async () => {
+    const event = await Event.create(eventData)
 
-    expect(events.length).toEqual(1);
-  });
+    await Event.deleteOne({ _id: event._id })
 
-  /**
-   * Event models should be able to be deleted.
-   */
-  it("should delete an event", async () => {
-    const event = { ...eventData };
-    let obj = await new Event(event).save();
-
-    await Event.deleteOne({ _id: obj._id });
-
-    const events = await Event.find({});
-    expect(events.length).toEqual(0);
-  });
-});
+    const events = await Event.find({})
+    expect(events.length).toEqual(0)
+  })
+})

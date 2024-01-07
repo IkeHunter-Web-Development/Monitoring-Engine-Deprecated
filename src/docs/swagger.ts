@@ -69,6 +69,14 @@ const doc = {
   }
 }
 
-export const initializeSwagger = (): void => {
-  swaggerAutogen(outputFile, endpointsFiles, doc)
+// export const initializeSwagger = async () => {
+//   return new Promise((resolve, reject) => {
+//     swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
+//       resolve()
+//     })
+//   });
+// }
+
+export const initializeSwagger = async () => {
+  return await swaggerAutogen()(outputFile, endpointsFiles, doc)
 }

@@ -1,7 +1,8 @@
 import { type Request, type Response } from 'express'
+import { responses } from './baseController'
 
 export const CoreController = {
-  async healthCheck (_: Request, res: Response) {
+  healthCheck: async (_: Request, res: Response) => {
     /** ==========================*
     #swagger.tags = ['Main']
     #swagger.description = 'Endpoint for checking the health of the API.'
@@ -22,6 +23,6 @@ export const CoreController = {
     /*
 
     */
-    return super.ok(res, payload)
+    return responses.ok(res, payload)
   }
 }

@@ -23,7 +23,7 @@ export class EventConsumer {
   }
 
   private readonly initializeConsumers = async (): Promise<void> => {
-    await this.stream.subscribe('monitor-events', (res) => {
+    await this.stream?.subscribe('monitor-events', (res) => {
       console.log('received:', res.message.value?.toString())
 
       try {

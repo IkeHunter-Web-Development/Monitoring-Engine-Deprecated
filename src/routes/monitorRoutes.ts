@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { MonitorController } from '../controllers' // absolute import for swagger
+import { MonitorController } from '../controllers/monitorController' // absolute import for swagger
+// import * as MonitorController from '../controllers/monitorController';
 import { isAuthenticated } from '../middleware/authMiddleware'
 
 const router = Router()
