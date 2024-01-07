@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { responses } from './baseController'
+import { responses } from './utils/responses'
 
 export const CoreController = {
   healthCheck: async (_: Request, res: Response) => {
@@ -20,9 +20,7 @@ export const CoreController = {
       service: 'Monitor Engine',
       message: 'Systems online'
     }
-    /*
 
-    */
     return responses.ok(res, payload)
   }
 }

@@ -30,7 +30,6 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
     return
   }
 
-  // const networkRes: NetworkAuthResponse = await Network.authenticate(userToken)
   Network.authenticate(userToken).then((networkRes: NetworkAuthResponse) => {
     if (networkRes.status !== 200 || networkRes.userId == null) {
       return res.status(401).json({

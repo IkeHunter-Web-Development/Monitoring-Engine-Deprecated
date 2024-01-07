@@ -1,13 +1,11 @@
 /**
  * @fileoverview Tests for monitor api routes.
  */
-import type { Request, Response } from 'express'
 import httpMocks from 'node-mocks-http'
-import { getResJson } from '../../utils/testing/testingUtils'
-import { Monitor } from '../../models/monitorModel'
-// import { MonitorService } from 'src/services'
+import type { Request, Response } from 'express'
+import { getResJson } from 'src/utils'
+import { Monitor } from 'src/models'
 import { MonitorController } from '../monitorController'
-// import { MonitorController } from '../monitorController'
 
 const controller = MonitorController
 
@@ -17,22 +15,6 @@ const defaultMonitor = {
   users: [],
   title: 'Google'
 }
-// const u1 = {
-//   userId: '123',
-//   email: 'u1@example.com'
-// }
-// const u2 = {
-//   userId: '456',
-//   email: 'u2@example.com'
-// }
-// const u3 = {
-//   userId: '789',
-//   email: 'u3@example.com'
-// }
-// const u4 = {
-//   userId: '012',
-//   email: 'u4@example.com'
-// }
 
 describe('Monitor controller', () => {
   let req: Request
@@ -161,81 +143,4 @@ describe('Monitor controller', () => {
     expect(sorted[1].projectId).toEqual(monitor2.projectId)
     expect(sorted[2].projectId).toEqual(monitor3.projectId)
   })
-
-  /**=================
-   * MANAGEMENT ROUTES
-   ===================*/
-  /**
-   * GET /monitors/:id/online should return true
-   * if the site is online
-   */
-  // it('should return true if the site is online', async () => {
-  //   const monitor = await MonitorService.createMonitor({
-  //     ...defaultMonitor,
-  //     online: true
-  //   })
-
-  //   const req = httpMocks.createRequest({
-  //     method: 'GET',
-  //     params: monitor._id
-  //   })
-  //   await controller.getMonitorOnlineStatus(req, res)
-  //   const body = (res as any)._getData()
-
-  //   expect(res.statusCode).toEqual(200)
-  //   expect(body).toEqual('true')
-  // })
-
-  /**
-   * GET /monitors/search/?project=id should return monitors
-   * that belong to a project.
-   */
-  // it('should return monitors for project', async () => {
-  //   const m1 = await MonitorService.createMonitor({
-  //     ...defaultMonitor,
-  //     recipients: [u1, u2]
-  //   })
-  //   await MonitorService.createMonitor({
-  //     ...defaultMonitor,
-  //     projectId: '456',
-  //     recipients: [u3, u4]
-  //   })
-
-  //   req = httpMocks.createRequest({
-  //     method: 'GET',
-  //     query: { projectId: m1.projectId }
-  //   })
-  //   await controller.searchMonitors(req, res)
-  //   const body = getResJson(res)
-
-  //   expect(res.statusCode).toEqual(200)
-  //   expect(body.length).toEqual(1)
-  //   expect(body[0].projectId).toEqual(m1.projectId)
-  // })
-  /**
-   * GET /monitors/search/?user=id should return monitors
-   * that a user is subscribed to.
-   */
-  //   it('should return monitors that a user is subscribed to', async () => {
-  //     await MonitorService.createMonitor({
-  //       ...defaultMonitor,
-  //       recipients: [u1, u2]
-  //     })
-  //     const m2: Monitor = await MonitorService.createMonitor({
-  //       ...defaultMonitor,
-  //       projectId: '456',
-  //       recipients: [u3, u4]
-  //     })
-
-  //     req = httpMocks.createRequest({
-  //       method: 'GET',
-  //       query: { userId: m2.recipients[0] }
-  //     })
-  //     await controller.searchMonitors(req, res)
-  //     const body = getResJson(res)
-
-  //     expect(res.statusCode).toEqual(200)
-  //     expect(body.length).toEqual(1)
-  //     expect(body[0].projectId).toEqual(m2.projectId)
-  //   })
 })

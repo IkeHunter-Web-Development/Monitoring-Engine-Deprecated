@@ -1,9 +1,7 @@
-// import swaggerUi from "swagger-ui-express";
 import express from 'express'
 import multer from 'multer'
 import { router } from 'src/routes'
 import responseTime from 'response-time'
-// import { initializeSwagger } from "src/docs/swagger";
 
 const server = express()
 
@@ -19,4 +17,3 @@ server.use(router)
 
 export { server }
 
-// export const app = http.createServer(server);

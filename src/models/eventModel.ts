@@ -29,23 +29,6 @@ const EventSchema = new mongoose.Schema(
       type: Date,
       default: Date.now
     }
-    // statusCode: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // online: {
-    //   type: Boolean,
-    //   default: true,
-    // },
-    // responseTime: {
-    //   type: Number,
-    //   required: false,
-    // },
-    // status: {
-    //   type: String,
-    //   enum: ["online", "alert", "offline", "pending"],
-    //   required: true
-    // }
   },
   {
     timestamps: true

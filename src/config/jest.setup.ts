@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-import 'dotenv/config'
 import { MONGO_URI } from './constants'
+import 'dotenv/config'
 
 const uri = MONGO_URI ?? 'mongodb://root:changeme@mongo-monitor:27017'
 
@@ -15,11 +15,6 @@ const closeDatabase = async (): Promise<void> => {
 
 const clearDatabase = async (): Promise<void> => {
   await mongoose.connection.db.dropDatabase()
-  // const collections = mongoose.connection.collections;
-  // for (const key in collections) {
-  //   const collection = collections[key];
-  //   await collection.deleteMany({});
-  // }
 }
 
 beforeEach(async () => { await connect() })

@@ -1,9 +1,6 @@
-// import { Monitor } from "src/models";
 import { MonitorSocket } from 'src/config'
 import { type Event, Monitor } from 'src/models'
 import { MonitorResponse } from 'src/models/responseModel'
-// import { MonitorService } from 'src/services'
-
 import { Stream } from 'src/lib'
 
 const RESPONSE_INTERVAL_MIN = 30
@@ -51,7 +48,6 @@ export class EventConsumer {
 
     if (_monitorId == null) return
 
-    // const monitor = await MonitorService.getMonitor(monitorId)
     const monitor = await Monitor.findById(_monitorId)
     if (monitor == null) return
     const monitorId = monitor._id.toString()
@@ -59,14 +55,14 @@ export class EventConsumer {
     const event: Event | null = null
 
     if (monitor.online && status === 'offline') {
-      // event = await MonitorService.handleMonitorDown(monitor, statusCode, message)
       console.log('monitor down:', monitor)
+      // TODO: Handle monitor down
     } else if (!monitor.online && status === 'online') {
-      // event = await MonitorService.handleMonitorBackOnline(monitor, statusCode)
       console.log('monitor back online:', monitor)
+      // TODO: Handle monitor online
     } else if (monitor.status === 'pending') {
-      // event = await MonitorService.registerEvent(monitor, status, statusCode, message)
       console.log('monitor pending:', monitor)
+      // TODO: Handle monitor pending
     }
 
     if (event != null) MonitorSocket.pushClientEvent(monitorId, event)

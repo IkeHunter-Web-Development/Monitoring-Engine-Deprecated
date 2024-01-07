@@ -1,4 +1,3 @@
-// import { Producer } from "kafka-node";
 import { Stream, type StreamTopic } from 'src/lib'
 import { type Monitor } from 'src/models'
 

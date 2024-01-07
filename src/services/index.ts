@@ -1,1 +1,1 @@
-export * as MonitorService from './monitorService'
+export *  from './monitorService'
