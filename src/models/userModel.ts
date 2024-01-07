@@ -1,29 +1,28 @@
 /**
  * @fileoverview User model.
  */
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 export const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   email: {
-    type: String,
+    type: String
     // required: true
   },
   phone: {
-    type: String,
+    type: String
   },
   preferredMethod: {
     type: String,
-    enum: ["email", "phone"],
-    default: "email",
+    enum: ['email', 'phone'],
+    default: 'email'
   },
   enabled: {
     type: Boolean,
     default: true,
-    required: true,
-  },
-});
-
+    required: true
+  }
+})

@@ -1,81 +1,96 @@
 // import { Monitor } from "src/models";
-import { MonitorSocket } from "src/config";
-import { Event, Monitor } from "src/models";
-import { MonitorResponse } from "src/models/responseModel";
-import { MonitorService } from "src/services";
+import { MonitorSocket } from 'src/config'
+import { type Event, Monitor } from 'src/models'
+import { MonitorResponse } from 'src/models/responseModel'
+// import { MonitorService } from 'src/services'
 
-import { Stream } from "src/lib";
+import { Stream } from 'src/lib'
 
-const RESPONSE_INTERVAL_MIN = 30;
+const RESPONSE_INTERVAL_MIN = 30
 
 export class EventConsumer {
-  static instance: EventConsumer;
-  protected stream: Stream;
+  static instance: EventConsumer
+  protected stream: Stream
   private constructor() {
-    this.stream = Stream.getInstance();
-    this.initializeConsumers();
+    this.stream = Stream.getInstance()
+    this.initializeConsumers()
+      .then(() => {
+        console.log('Event consumer initialized')
+      })
+      .catch((err) => {
+        console.error('Error initializing event consumer:', err)
+      })
   }
 
-  private initializeConsumers = () => {
-    this.stream.subscribe("monitor-events", (res) => {
-      console.log("received:", res.message.value?.toString());
+  private readonly initializeConsumers = async (): Promise<void> => {
+    await this.stream.subscribe('monitor-events', (res) => {
+      console.log('received:', res.message.value?.toString())
 
       try {
-        const payload = JSON.parse(res.message.value?.toString() || "");
-        const { action, data } = payload;
+        const payload = JSON.parse(res.message.value?.toString() ?? '')
+        const { action, data } = payload
 
-        if (action === "register-event") {
-          this.handleAddEvent(data);
-        } else if (action === "register-response") {
-          console.log("registering response:", data);
-          this.handleAddResponse(data);
+        if (action === 'register-event') {
+          this.handleAddEvent(data).catch((err) => {
+            console.error('Error handling add event:', err)
+          })
+        } else if (action === 'register-response') {
+          console.log('registering response:', data)
+          this.handleAddResponse(data).catch((err) => {
+            console.error('Error handling add response:', err)
+          })
         }
       } catch (error) {
-        console.error("Error getting data from stream:", error);
+        console.error('Error getting data from stream:', error)
       }
-    });
-  };
+    })
+  }
 
-  private handleAddEvent = async (data: any) => {
-    const { monitorId, status, statusCode, message } = data;
+  private readonly handleAddEvent = async (data: any): Promise<void> => {
+    const { _monitorId, status, statusCode, message } = data
 
-    if (!monitorId) return;
-    
-    const monitor = await MonitorService.getMonitor(monitorId);
-    if (!monitor) return;
+    if (_monitorId == null) return
 
-    let event: Event | null = null;
+    // const monitor = await MonitorService.getMonitor(monitorId)
+    const monitor = await Monitor.findById(_monitorId)
+    if (monitor == null) return
+    const monitorId = monitor._id.toString()
 
-    if (monitor.online === true && status === "offline") {
-      event = await MonitorService.handleMonitorDown(monitor, statusCode, message);
-    } else if (monitor.online === false && status === "online") {
-      event = await MonitorService.handleMonitorBackOnline(monitor, statusCode);
-    } else if (monitor.status === "pending") {
-      event = await MonitorService.registerEvent(monitor, status, statusCode, message);
+    const event: Event | null = null
+
+    if (monitor.online && status === 'offline') {
+      // event = await MonitorService.handleMonitorDown(monitor, statusCode, message)
+      console.log('monitor down:', monitor)
+    } else if (!monitor.online && status === 'online') {
+      // event = await MonitorService.handleMonitorBackOnline(monitor, statusCode)
+      console.log('monitor back online:', monitor)
+    } else if (monitor.status === 'pending') {
+      // event = await MonitorService.registerEvent(monitor, status, statusCode, message)
+      console.log('monitor pending:', monitor)
     }
 
-    if (event) MonitorSocket.pushClientEvent(monitorId, event);
+    if (event != null) MonitorSocket.pushClientEvent(monitorId, event)
 
-    console.log("monitor udpated: ", monitor);
-  };
+    console.log('monitor udpated: ', monitor, statusCode, message)
+  }
 
-  private handleAddResponse = async (data: any) => {
-    const { monitorId, responseTime, timestamp } = data;
-    MonitorSocket.updateClientResponseTimes(monitorId, responseTime);
+  private readonly handleAddResponse = async (data: any): Promise<void> => {
+    const { monitorId, responseTime, timestamp } = data
+    MonitorSocket.updateClientResponseTimes(String(monitorId), String(responseTime))
 
-    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return;
+    if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return
 
-    const monitor: Monitor | null = await Monitor.findById(monitorId);
-    if (!monitor) return;
+    const monitor: Monitor | null = await Monitor.findById(monitorId)
+    if (monitor == null) return
 
     await MonitorResponse.create({
       monitorId,
       responseTime,
-      timestamp,
-    });
-  };
+      timestamp
+    })
+  }
 
-  public static registerConsumer = () => {
-    return new EventConsumer();
-  };
+  public static registerConsumer = (): EventConsumer => {
+    return new EventConsumer()
+  }
 }

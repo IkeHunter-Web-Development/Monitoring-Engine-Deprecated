@@ -1,159 +1,160 @@
 /**
  * @fileoverview Events controller
  */
-import { Request, Response } from "express";
-import { Event } from "src/models";
-import { EventService } from "src/services";
-import { BaseController } from "./baseController";
+// import { type Request, type Response } from 'express'
+// import { Event } from 'src/models'
+// import * as responses from './baseController'
+// import { EventService } from 'src/services'
+// import { BaseController } from './baseController'
 
-export class EventController extends BaseController {
-  /**============*
+export const EventController = {
+  /** ============*
    * CRUD ROUTES *
-   *=============*/
-  static async getEvent(req: Request, res: Response) {
-    /**==========================*
-    @swagger Get single event.
-    #swagger.tags = ['Events']
-    #swagger.description = 'Endpoint for getting a single event.'
-    #swagger.parameters['id'] = { description: 'Event ID' }
-    #swagger.responses[200] = {
-      description: "Success",
-      schema: { $ref: "#/definitions/EventResponse" },
-    }
-    #swagger.responses[500] = {
-      schema: {$ref: "#/definitions/Error500"}
-    }
-    #swagger.responses[404] = {
-      schema: {$ref: "#/definitions/Error404"}
-    }
-   *===========================*/
-    const { id } = req.params || "";
+   *============= */
+  // async getEvent (req: Request, res: Response) {
+  //   /** ==========================*
+  //   @swagger Get single event.
+  //   #swagger.tags = ['Events']
+  //   #swagger.description = 'Endpoint for getting a single event.'
+  //   #swagger.parameters['id'] = { description: 'Event ID' }
+  //   #swagger.responses[200] = {
+  //     description: "Success",
+  //     schema: { $ref: "#/definitions/EventResponse" },
+  //   }
+  //   #swagger.responses[500] = {
+  //     schema: {$ref: "#/definitions/Error500"}
+  //   }
+  //   #swagger.responses[404] = {
+  //     schema: {$ref: "#/definitions/Error404"}
+  //   }
+  //  *=========================== */
+  //   const { id } = req.params ?? ''
 
-    let event = await Event.findById(id);
-    if (!event) return super.notFound(res, "Event not found");
+  //   const event = await Event.findById(id)
+  //   if (event == null) return await responses.notFound(res, 'Event not found')
 
-    return super.ok(res, event);
-  }
+  //   return await responses.ok(res, event)
+  // },
 
-  static async deleteEvent(req: Request, res: Response) {
-    /**==========================*
-      @swagger Get single event.
-      #swagger.tags = ['Events']
-      #swagger.description = 'Endpoint for deleting a single event.'
-      #swagger.parameters['id'] = { description: 'Event ID' }
-      #swagger.responses[200] = {
-        description: "Success",
-        schema: { 
-          status: 200,
-          message: "Event deleted"
-        },
-      }
-      #swagger.responses[500] = {
-        schema: {$ref: "#/definitions/Error500"}
-      }
-      #swagger.responses[404] = {
-        schema: {$ref: "#/definitions/Error404"}
-      }
-     *===========================*/
-    const { id } = req.params || "";
+  // async deleteEvent (req: Request, res: Response) {
+  //   /** ==========================*
+  //     @swagger Get single event.
+  //     #swagger.tags = ['Events']
+  //     #swagger.description = 'Endpoint for deleting a single event.'
+  //     #swagger.parameters['id'] = { description: 'Event ID' }
+  //     #swagger.responses[200] = {
+  //       description: "Success",
+  //       schema: {
+  //         status: 200,
+  //         message: "Event deleted"
+  //       },
+  //     }
+  //     #swagger.responses[500] = {
+  //       schema: {$ref: "#/definitions/Error500"}
+  //     }
+  //     #swagger.responses[404] = {
+  //       schema: {$ref: "#/definitions/Error404"}
+  //     }
+  //    *=========================== */
+  //   const { id } = req.params ?? ''
 
-    try {
-      let event = await Event.deleteOne({ _id: id });
+  //   try {
+  //     const event = await Event.deleteOne({ _id: id })
 
-      if (!event) return super.notFound(res, "Event not found");
+  //     if (event == null) return await responses.notFound(res, 'Event not found')
 
-      return super.ok(res, "Event deleted");
-    } catch (err: any) {
-      console.log(err);
-      return super.badRequest(res, err?.message);
-    }
-  }
+  //     return await responses.ok(res, 'Event deleted')
+  //   } catch (err: any) {
+  //     console.log(err)
+  //     return await responses.badRequest(res, String(err.message) ?? 'Error deleting event')
+  //   }
+  // },
 
-  /**==============*
+  /** ==============*
    * SEARCH ROUTES *
-   *===============*/
-  static async searchEvents(req: Request, res: Response) {
-    /**==========================*
-    @swagger Get single event.
-    #swagger.tags = ['Events']
-    #swagger.description = 'Endpoint for searching events.'
-    #swagger.parameters['monitor'] = { description: 'Monitor ID' }
-    #swagger.parameters['online'] = { 
-      description: 'Online status',
-      type: 'boolean' 
-    }
-    #swagger.parameters['last'] = { 
-      description: 'Last event',
-      type: 'boolean'
-    }
-    #swagger.responses[200] = {
-      description: "Success",
-      schema: [{$ref: "#/definitions/EventResponse"}],
-    }
-    #swagger.responses[500] = {
-      schema: {$ref: "#/definitions/Error500"}
-    }
-    #swagger.responses[404] = {
-      schema: {$ref: "#/definitions/Error404"}
-    }
-   *===========================*/
-    const params = req.query || {};
-    const { monitor, online, last } = params;
+   *=============== */
+  // async searchEvents (req: Request, res: Response) {
+  //   /** ==========================*
+  //   @swagger Get single event.
+  //   #swagger.tags = ['Events']
+  //   #swagger.description = 'Endpoint for searching events.'
+  //   #swagger.parameters['monitor'] = { description: 'Monitor ID' }
+  //   #swagger.parameters['online'] = {
+  //     description: 'Online status',
+  //     type: 'boolean'
+  //   }
+  //   #swagger.parameters['last'] = {
+  //     description: 'Last event',
+  //     type: 'boolean'
+  //   }
+  //   #swagger.responses[200] = {
+  //     description: "Success",
+  //     schema: [{$ref: "#/definitions/EventResponse"}],
+  //   }
+  //   #swagger.responses[500] = {
+  //     schema: {$ref: "#/definitions/Error500"}
+  //   }
+  //   #swagger.responses[404] = {
+  //     schema: {$ref: "#/definitions/Error404"}
+  //   }
+  //  *=========================== */
+  //   const params = req.query ?? {}
+  //   const { monitor, online, last } = params
 
-    let events: Array<Event> = [];
+  //   let events: Event[] = []
 
-    try {
-      events = await Event.find({ monitorId: monitor });
+  //   try {
+  //     events = await Event.find({ monitorId: monitor })
 
-      if (online != null) {
-        events = events.filter((event: Event) => {
-          return event.online === Boolean(online);
-        });
-      }
+  //     if (online != null) {
+  //       events = events.filter((event: Event) => {
+  //         return event.status === 'online'
+  //       })
+  //     }
 
-      if (last) {
-        events = events.sort((a: Event, b: Event) => {
-          return b.timestamp!.getTime() - a.timestamp!.getTime();
-        });
+  //     if (last) {
+  //       events = events.sort((a: Event, b: Event) => {
+  //         return b.timestamp.getTime() - a.timestamp.getTime()
+  //       })
 
-        events = [events[0]];
-      }
+  //       events = [events[0]]
+  //     }
 
-      return super.ok(res, events || []);
-    } catch (err: any) {
-      return super.badRequest(res, err?.message);
-    }
-  }
+  //     return await responses.ok(res, events || [])
+  //   } catch (err: any) {
+  //     return await responses.badRequest(res, err?.message)
+  //   }
+  // },
 
-  static async createEvent(req: Request, res: Response) {
-    /**======================*
-      @swagger Register Event
-      #swagger.security = [{
-        "bearerAuth": []
-      }]
-      #swagger.parameters['body'] = {
-        in: "body",
-        name: "body",
-        description: "Event object",
-        required: true,
-        schema: {$ref: "#/definitions/EventBody"}
-      }
-      #swagger.tags = ['Events']
-      #swagger.description = 'Endpoint for creating an Event.'
-      #swagger.responses[201] = {
-        schema: { $ref: "#/definitions/EventResponse" },
-        description: "Event created"
-      }
-      #swagger.responses[500] = {
-        schema: {$ref: "#/definitions/Error500"},
-      }
-     *========================*/
-    await EventService.createEvent(req.body)
-      .then((event) => {
-        return super.ok(res, event);
-      })
-      .catch((error: any) => {
-        return super.badRequest(res, error?.message);
-      });
-  }
+  // async createEvent (req: Request, res: Response) {
+  //   /** ======================*
+  //     @swagger Register Event
+  //     #swagger.security = [{
+  //       "bearerAuth": []
+  //     }]
+  //     #swagger.parameters['body'] = {
+  //       in: "body",
+  //       name: "body",
+  //       description: "Event object",
+  //       required: true,
+  //       schema: {$ref: "#/definitions/EventBody"}
+  //     }
+  //     #swagger.tags = ['Events']
+  //     #swagger.description = 'Endpoint for creating an Event.'
+  //     #swagger.responses[201] = {
+  //       schema: { $ref: "#/definitions/EventResponse" },
+  //       description: "Event created"
+  //     }
+  //     #swagger.responses[500] = {
+  //       schema: {$ref: "#/definitions/Error500"},
+  //     }
+  //    *======================== */
+  //   await EventService.createEvent(req.body)
+  //     .then(async (event) => {
+  //       return await responses.ok(res, event)
+  //     })
+  //     .catch(async (error: any) => {
+  //       return await responses.badRequest(res, error?.message)
+  //     })
+  // }
 }

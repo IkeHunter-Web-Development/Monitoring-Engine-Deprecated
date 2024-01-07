@@ -1,18 +1,20 @@
-export const HOST = process.env.HOST || "localhost";
-export const PORT = Number(process.env.PORT) || 8000;
-export const NODE_ENV = process.env.NODE_ENV || "development";
+import 'dotenv/config'
 
-export const MONGO_URI = process.env.MONGO_URI || "mongodb://root:changeme@mongo-monitor:27017";
-export const LOGGING_LEVEL = process.env.LOGGING_LEVEL || "info";
+export const HOST = process.env.HOST ?? 'localhost'
+export const PORT = Number(process.env.PORT) ?? 8000
+export const NODE_ENV = process.env.NODE_ENV ?? 'development'
 
-// export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "";
-// export const EMAIL_USER = process.env.EMAIL_USER || "";
+export const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://root:changeme@mongo-monitor:27017'
+export const LOGGING_LEVEL = process.env.LOGGING_LEVEL ?? 'info'
 
-export const GATEWAY_URL = process.env.GATEWAY_URL || "http://localhost:8080";
-export const NETWORK_TOKEN = process.env.NETWORK_TOKEN || "insecure";
+// export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY ?? "";
+// export const EMAIL_USER = process.env.EMAIL_USER ?? "";
 
-export const KAFKA_HOST = process.env.KAFKA_HOST || "";
-export const KAFKA_PORT = process.env.KAFKA_PORT || 0;
+export const GATEWAY_URL = process.env.GATEWAY_URL ?? 'http://localhost:8080'
+export const NETWORK_TOKEN = process.env.NETWORK_TOKEN ?? 'insecure'
+
+export const KAFKA_HOST = process.env.KAFKA_HOST ?? ''
+export const KAFKA_PORT = process.env.KAFKA_PORT ?? 0
 
 // export const KAFKA_TOPICS = {
 //   monitors: 'monitors',
@@ -25,6 +27,6 @@ export const KAFKA_ACTIONS = {
   },
   notifications: {
     email: 'send-email',
-    message: 'send-message',
+    message: 'send-message'
   }
 }

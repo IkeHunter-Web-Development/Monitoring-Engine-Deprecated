@@ -1,4 +1,4 @@
-export * from "./reportService";
-export * from "./monitorService";
-export * from "./eventService";
-export * from "./types/monitorDetails.type";
+export * from './reportService'
+export * as MonitorService from './monitorService'
+// export * from './eventService'
+export * from './types/monitorDetails.type'

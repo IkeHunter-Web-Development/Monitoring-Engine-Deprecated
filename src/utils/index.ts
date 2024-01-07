@@ -1,3 +1,3 @@
-export * from "./exceptions";
-export * from "./testing";
-export * from "./getResponseTime";
+export * from './exceptions'
+export * from './testing'
+export * from './getResponseTime'

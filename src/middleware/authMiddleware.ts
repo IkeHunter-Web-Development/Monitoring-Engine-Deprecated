@@ -3,40 +3,50 @@
  * If unauthenticated, attempt authentication with auth service, if
  * unauthenticated redirect to external login.
  */
-import { NextFunction, Request, Response } from "express";
-import { NETWORK_TOKEN, NODE_ENV } from "src/config";
-import { Network, NetworkAuthResponse } from "src/data/network";
+import { type NextFunction, type Request, type Response } from 'express'
+import { NETWORK_TOKEN, NODE_ENV } from 'src/config'
+import { Network, type NetworkAuthResponse } from 'src/data/network'
 
-export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
-  /**====================*
+export const isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
+  /** ====================*
     @swagger Authenticate with network.
     #swagger.security = [{
         "bearerAuth": []
     }]
-   *=====================*/
-  if (NODE_ENV === "development") return next();
+   *===================== */
+  if (NODE_ENV === 'development') { next(); return }
 
   // TODO: Create secure authorization protocol for microservices
-  const networkToken = <string>req.headers["x-network-authorization"];
-  if (networkToken === NETWORK_TOKEN) return next();
+  const networkToken = req.headers['x-network-authorization'] as string
+  if (networkToken === NETWORK_TOKEN) { next(); return }
 
-  const userToken = <string>req.headers["authorization"]?.split(" ")[1];
+  const userToken = req.headers?.authorization?.split(' ')[1]
 
-  if (!userToken)
-    return res.status(401).json({
+  if (userToken == null) {
+    res.status(401).json({
       status: 401,
-      message: "User not logged in",
-    });
+      message: 'User not logged in'
+    })
+    return
+  }
 
-  const networkRes: NetworkAuthResponse = await Network.authenticate(userToken);
+  // const networkRes: NetworkAuthResponse = await Network.authenticate(userToken)
+  Network.authenticate(userToken).then((networkRes: NetworkAuthResponse) => {
+    if (networkRes.status !== 200 || networkRes.userId == null) {
+      return res.status(401).json({
+        status: 401,
+        message: 'Invalid network token'
+      })
+    }
 
-  if (networkRes.status !== 200 || !networkRes.userId)
-    return res.status(401).json({
-      status: 401,
-      message: "Invalid network token",
-    });
+    res.locals = { ...res.locals, token: userToken }
 
-  res.locals = { ...res.locals, token: userToken };
-
-  return next();
-};
+    next()
+  }).catch((err: Error) => {
+    console.error(err)
+    res.status(500).json({
+      status: 500,
+      message: 'Internal server error'
+    })
+  })
+}

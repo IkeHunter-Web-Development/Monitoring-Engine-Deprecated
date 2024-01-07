@@ -1,13 +1,13 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Types } from 'mongoose'
 
 export const MonitorResponseSchema = new mongoose.Schema({
   monitorId: {
     type: Types.ObjectId,
-    required: true,
+    required: true
   },
   responseTime: {
     type: Number,
-    required: true,
+    required: true
   },
   timestamp: {
     type: Number,
@@ -16,9 +16,9 @@ export const MonitorResponseSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 24 * 60 * 60 * 1000,
-  },
-});
+    expires: 24 * 60 * 60 * 1000
+  }
+})
 
-export const MonitorResponse = mongoose.model("MonitorResponse", MonitorResponseSchema);
-export type MonitorResponse = InstanceType<typeof MonitorResponse>;
+export const MonitorResponse = mongoose.model('MonitorResponse', MonitorResponseSchema)
+export type MonitorResponse = InstanceType<typeof MonitorResponse>

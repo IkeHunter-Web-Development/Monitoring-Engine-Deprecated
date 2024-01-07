@@ -1,42 +1,57 @@
-import { Stream, StreamTopic } from "src/lib";
+import { Stream, type StreamTopic } from 'src/lib'
 
-type NotificationProducerAction = "send-email" | "send-sms";
+type NotificationProducerAction = 'send-email' | 'send-sms'
 
 export class NotificationProducer {
-  static instance: NotificationProducer;
-  protected stream: Stream;
+  static instance: NotificationProducer
+  protected stream: Stream
 
   private constructor() {
-    this.stream = Stream.getInstance();
+    this.stream = Stream.getInstance()
   }
 
-  public static getInstance = () => {
-    if (!NotificationProducer.instance) {
-      NotificationProducer.instance = new NotificationProducer();
+  public static getInstance = (): NotificationProducer => {
+    if (NotificationProducer.instance != null) {
+      NotificationProducer.instance = new NotificationProducer()
     }
 
-    return NotificationProducer.instance;
-  };
+    return NotificationProducer.instance
+  }
 
-  public static sendEmailMessage = async (recipients: string[], subject: string, body: string) => {
-    const instance = this.getInstance();
-    const topic: StreamTopic = "notifications";
-    const action: NotificationProducerAction = "send-email";
+  public static sendEmailMessage = async (
+    recipients: string[],
+    subject: string,
+    body: string
+  ): Promise<void> => {
+    const instance = this.getInstance()
+    const topic: StreamTopic = 'notifications'
+    const action: NotificationProducerAction = 'send-email'
 
-    await instance.stream.send(topic, [{ action, data: {
-      recipients: recipients,
-      subject: subject,
-      body: body,
-    } }]);
-  };
-  public static sendSmsMessage = async (recipients: string[], body: string) => {
-    const instance = this.getInstance();
-    const topic: StreamTopic = "notifications";
-    const action: NotificationProducerAction = "send-sms";
+    await instance.stream.send(topic, [
+      {
+        action,
+        data: {
+          recipients,
+          subject,
+          body
+        }
+      }
+    ])
+  }
 
-    await instance.stream.send(topic, [{ action, data: {
-      recipients: recipients,
-      body: body,
-    } }]);
-  };
+  public static sendSmsMessage = async (recipients: string[], body: string): Promise<void> => {
+    const instance = this.getInstance()
+    const topic: StreamTopic = 'notifications'
+    const action: NotificationProducerAction = 'send-sms'
+
+    await instance.stream.send(topic, [
+      {
+        action,
+        data: {
+          recipients,
+          body
+        }
+      }
+    ])
+  }
 }

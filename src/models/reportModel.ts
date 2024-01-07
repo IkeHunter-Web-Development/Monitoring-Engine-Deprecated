@@ -1,61 +1,61 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose'
 
 export const ReportSchema = new mongoose.Schema(
   {
     monitorId: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: true
     },
     startDate: {
       type: Date,
-      required: true,
+      required: true
     },
     endDate: {
       type: Date,
-      required: true,
+      required: true
     },
     totalDays: {
       type: Number,
-      required: true,
+      required: true
     },
     totalUptimeMinutes: {
       type: Number,
-      required: true,
+      required: true
     },
     totalDowntimeMinutes: {
       type: Number,
-      required: true,
+      required: true
     },
     daysWithDowntime: {
       type: [Date],
-      required: true,
+      required: true
     },
     totalEvents: {
       type: Number,
-      required: true,
+      required: true
     },
     totalUptimeEvents: {
       type: Number,
-      required: true,
+      required: true
     },
     totalDowntimeEvents: {
       type: Number,
-      required: true,
+      required: true
     },
     averageResponseTime: {
       type: Number,
-      required: true,
+      required: true
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 24 * 60 * 60 * 1000,
-    },
+      expires: 24 * 60 * 60 * 1000
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
-);
+)
 
-export const Report = mongoose.model("Report", ReportSchema);
-export type Report = InstanceType<typeof Report>;
+export const Report = mongoose.model('Report', ReportSchema)
+export type Report = InstanceType<typeof Report>
