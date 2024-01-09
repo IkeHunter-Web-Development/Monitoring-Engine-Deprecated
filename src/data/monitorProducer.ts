@@ -1,5 +1,5 @@
 import { Stream, type StreamTopic } from 'src/lib'
-import { type Monitor } from 'src/models'
+import type { WebsiteMonitor } from 'src/models'
 
 type MonitorProducerAction = 'create' | 'delete'
 
@@ -7,7 +7,7 @@ export class MonitorProducer {
   static instance: MonitorProducer
   protected stream: Stream
 
-  private constructor () {
+  private constructor() {
     this.stream = Stream.getInstance()
   }
 
@@ -19,7 +19,10 @@ export class MonitorProducer {
     return MonitorProducer.instance
   }
 
-  public static sendMonitorMessage = async (action: MonitorProducerAction, data: Monitor): Promise<void> => {
+  public static sendMonitorMessage = async (
+    action: MonitorProducerAction,
+    data: WebsiteMonitor
+  ): Promise<void> => {
     const instance = this.getInstance()
     const topic: StreamTopic = 'monitors'
 

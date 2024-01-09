@@ -2,10 +2,10 @@
  * @fileoverview Tests for the Event model.
  */
 import type { IEvent } from 'src/models'
-import { Monitor, Event } from 'src/models'
+import { WebsiteMonitor, Event } from 'src/models'
 
 describe('Event model CRUD data', () => {
-  let monitor: Monitor
+  let monitor: WebsiteMonitor
   let eventData: IEvent
 
   /**
@@ -18,7 +18,7 @@ describe('Event model CRUD data', () => {
       title: 'Example'
     }
 
-    monitor = await Monitor.create(payload)
+    monitor = await WebsiteMonitor.create(payload)
 
     eventData = {
       projectId: '123',

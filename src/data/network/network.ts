@@ -1,20 +1,20 @@
-import { Monitor } from "src/models";
-import { request } from "./config";
-import { GATEWAY_URL } from "src/config";
-import { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from "./types/network.types";
-import { PROJECT_SERVICE, AUTH_SERVICE } from "./utils/endpoints";
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from 'axios'
+import { GATEWAY_URL } from 'src/config'
+import type { WebsiteMonitor } from 'src/models'
+import { request } from './config'
+import type { NetworkAuthResponse, NetworkProjectInfo, NetworkRequest } from './types/network.types'
+import { AUTH_SERVICE, PROJECT_SERVICE } from './utils/endpoints'
 // import { Stream } from "src/lib";
 // import { Consumer, KafkaClient } from "kafka-node";
 // import { MonitorProducer } from "src/data";
 // import { Stream } from "src/lib";
 
 export class Network {
-  private gatewayUrl: string;
-  private static instance = new Network();
+  private gatewayUrl: string
+  private static instance = new Network()
 
   constructor() {
-    this.gatewayUrl = GATEWAY_URL;
+    this.gatewayUrl = GATEWAY_URL
   }
 
   static async sendRequest(options: NetworkRequest): Promise<AxiosResponse | any> {
@@ -24,50 +24,50 @@ export class Network {
       method: options.method,
       params: options.params,
       data: options.data,
-      headers: options.headers,
+      headers: options.headers
     }).catch((err) => {
-      console.log("err: ", err);
-      return err;
-    });
+      console.log('err: ', err)
+      return err
+    })
     // console.log('res: ', res)
-    return res;
+    return res
   }
 
   // TODO: authenticate with auth engine
   static async authenticate(token: string): Promise<NetworkAuthResponse> {
     const config: NetworkRequest = {
       endpoint: AUTH_SERVICE.verify,
-      method: "GET",
+      method: 'GET',
       headers: {
-        Authorization: "Token " + token,
-      },
-    };
-    const res: AxiosResponse | any = await this.sendRequest(config);
+        Authorization: 'Token ' + token
+      }
+    }
+    const res: AxiosResponse | any = await this.sendRequest(config)
 
     return {
       status: res.status,
-      userId: res.data?.id,
-    };
+      userId: res.data?.id
+    }
   }
   // TODO: get project name, agency
-  static async getProjectInfo(token: string, monitor: Monitor): Promise<NetworkProjectInfo> {
+  static async getProjectInfo(token: string, monitor: WebsiteMonitor): Promise<NetworkProjectInfo> {
     const config: NetworkRequest = {
       // endpoint: PROJECT_SINGLE_URL(monitor.projectId),
       endpoint: PROJECT_SERVICE.getOne(monitor.projectId),
-      method: "GET",
+      method: 'GET',
       headers: {
-        Authorization: "Token " + token,
-      },
-    };
-    const res: AxiosResponse | any = await this.sendRequest(config);
+        Authorization: 'Token ' + token
+      }
+    }
+    const res: AxiosResponse | any = await this.sendRequest(config)
 
     // console.log('project res: ', res)
 
     return {
       status: res.status,
       projectTitle: res.data?.title,
-      companyName: res.data?.company,
-    };
+      companyName: res.data?.company
+    }
   }
   // static async scheduleMonitor(monitor: Monitor): Promise<boolean> {
   //   // return monitor && true;

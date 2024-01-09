@@ -1,21 +1,22 @@
 /**
  * @fileoverview Manager for the monitor model.
  */
+import type { Types } from 'mongoose'
 import { NODE_ENV } from 'src/config/constants'
-import { Event, Monitor, MonitorResponse } from 'src/models'
 import { MonitorProducer } from 'src/data'
+import { Event, MonitorResponse, WebsiteMonitor } from 'src/models'
 import { getResponseTime } from 'src/utils'
 import { validateMonitor } from 'src/validators'
 
 // export class MonitorService {
 
 export const MonitorService = {
-  notifyCreateMonitor: async (monitor: Monitor): Promise<void> => {
+  notifyCreateMonitor: async (monitor: WebsiteMonitor): Promise<void> => {
     if (NODE_ENV === 'development') return
     await MonitorProducer.sendMonitorMessage('create', monitor)
   },
 
-  notifyDeleteMonitor: async (monitor: Monitor): Promise<void> => {
+  notifyDeleteMonitor: async (monitor: WebsiteMonitor): Promise<void> => {
     if (NODE_ENV === 'development') return
     await MonitorProducer.sendMonitorMessage('delete', monitor)
   },
@@ -29,7 +30,7 @@ export const MonitorService = {
    * @param title The title of the monitor.
    * @returns The created monitor.
    */
-  createMonitor: async (data: any): Promise<Monitor> => {
+  createMonitor: async (data: any): Promise<WebsiteMonitor> => {
     const payload = validateMonitor(data)
 
     const initialResponseTime = await getResponseTime(String(data.url)).catch((error) => {
@@ -37,8 +38,8 @@ export const MonitorService = {
       throw error
     })
 
-    const monitor = await Monitor.create(payload)
-      .then(async (monitor: Monitor) => {
+    const monitor = await WebsiteMonitor.create(payload)
+      .then(async (monitor: WebsiteMonitor) => {
         await MonitorService.notifyCreateMonitor(monitor)
         return monitor
       })
@@ -63,7 +64,7 @@ export const MonitorService = {
    * @returns Boolean, whether deletion was successful.
    */
   deleteMonitor: async (id: string): Promise<boolean> => {
-    const monitor = await Monitor.findOne({ _id: id })
+    const monitor = await WebsiteMonitor.findOne({ _id: id })
     if (monitor === null) throw new Error('Monitor not found, cannot delete.')
 
     await MonitorService.notifyDeleteMonitor(monitor)
@@ -88,5 +89,22 @@ export const MonitorService = {
       })
 
     return await status
+  },
+
+  handleStatusChanged: async (
+    id: Types.ObjectId,
+    newStatus: MonitorStatus
+  ): Promise<Event | null> => {
+    const monitor = await WebsiteMonitor.findById(id)
+    if (monitor == null) return null
+
+    const newEvent = await Event.create({
+      projectId: monitor.projectId,
+      message: `Monitor status changed from ${monitor.status} to ${newStatus}`
+    })
+
+    await monitor.updateOne({ status: newStatus })
+
+    return newEvent
   }
 }

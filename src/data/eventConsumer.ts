@@ -1,7 +1,8 @@
 import { MonitorSocket } from 'src/config'
-import { type Event, Monitor } from 'src/models'
-import { MonitorResponse } from 'src/models/responseModel'
 import { Stream } from 'src/lib'
+import { WebsiteMonitor, type Event } from 'src/models'
+import { MonitorResponse } from 'src/models/websiteResponseModel'
+import { MonitorService } from 'src/services'
 
 const RESPONSE_INTERVAL_MIN = 30
 
@@ -47,27 +48,21 @@ export class EventConsumer {
     const { _monitorId, status, statusCode, message } = data
 
     if (_monitorId == null) return
+    
+    console.log('Received event:', status, statusCode, message)
 
-    const monitor = await Monitor.findById(_monitorId)
+    // const monitor = await Monitor.findById(_monitorId)
+    const monitor = await WebsiteMonitor.findById(_monitorId)
     if (monitor == null) return
     const monitorId = monitor._id.toString()
 
-    const event: Event | null = null
+    let event: Event | null = null
 
-    if (monitor.online && status === 'offline') {
-      console.log('monitor down:', monitor)
-      // TODO: Handle monitor down
-    } else if (!monitor.online && status === 'online') {
-      console.log('monitor back online:', monitor)
-      // TODO: Handle monitor online
-    } else if (monitor.status === 'pending') {
-      console.log('monitor pending:', monitor)
-      // TODO: Handle monitor pending
+    if (status !== monitor.status) {
+      console.log('monitor status changed:', status)
+      event = await MonitorService.handleStatusChanged(monitor._id, status)
+      if (event != null) MonitorSocket.pushClientEvent(monitorId, event)
     }
-
-    if (event != null) MonitorSocket.pushClientEvent(monitorId, event)
-
-    console.log('monitor udpated: ', monitor, statusCode, message)
   }
 
   private readonly handleAddResponse = async (data: any): Promise<void> => {
@@ -76,7 +71,7 @@ export class EventConsumer {
 
     if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return
 
-    const monitor: Monitor | null = await Monitor.findById(monitorId)
+    const monitor: WebsiteMonitor | null = await WebsiteMonitor.findById(monitorId)
     if (monitor == null) return
 
     await MonitorResponse.create({

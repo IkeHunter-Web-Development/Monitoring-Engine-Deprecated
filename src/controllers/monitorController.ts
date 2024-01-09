@@ -3,7 +3,7 @@
  */
 import { type Request, type Response } from 'express'
 import { MonitorService } from 'src/services'
-import { Monitor, type IMonitor } from 'src/models'
+import { WebsiteMonitor } from 'src/models'
 import { validateMonitor } from 'src/validators'
 import { responses } from './utils/responses'
 
@@ -65,11 +65,11 @@ const MonitorController = {
         }
        *======================= */
     const { id } = req.params ?? ''
-    const payload: IMonitor = validateMonitor(req.body)
+    const payload = validateMonitor(req.body)
 
     // return MonitorService.updateMonitor(id, req.body)
-    await Monitor.updateOne({ _id: id }, payload)
-      .then(async (monitor: Monitor | unknown) => {
+    await WebsiteMonitor.updateOne({ _id: id }, payload)
+      .then(async (monitor: WebsiteMonitor | unknown) => {
         return responses.ok(res, monitor)
       })
       .catch(async (err: any) => {
@@ -97,7 +97,7 @@ const MonitorController = {
        *=========================== */
     const { id } = req.params ?? ''
 
-    await Monitor.findById(id)
+    await WebsiteMonitor.findById(id)
       .then(async (monitor: any) => {
         if (monitor == null) {
           return responses.notFound(res, 'Monitor not found')
@@ -131,7 +131,7 @@ const MonitorController = {
         }
        *=========================== */
     const { id } = req.params ?? ''
-    const monitor = Monitor.findById(id)
+    const monitor = WebsiteMonitor.findById(id)
 
     if (monitor == null) return responses.notFound(res, 'Monitor not found')
 
@@ -164,7 +164,7 @@ const MonitorController = {
           schema: {$ref: "#/definitions/Error500"},
         }
        *=========================== */
-    await Monitor.find({})
+    await WebsiteMonitor.find({})
       .then(async (monitors: any) => {
         return responses.ok(res, monitors)
       })

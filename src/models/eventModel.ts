@@ -5,6 +5,7 @@ export interface IEvent {
   projectId: string
   message: string
   monitorId?: Types.ObjectId
+  incident?: Types.ObjectId
   timestamp?: Date
 }
 
@@ -25,6 +26,11 @@ const EventSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       required: false
     },
+    incident: {
+      type: Schema.Types.ObjectId,
+      ref: "Incident",
+      required: false
+    },
     timestamp: {
       type: Date,
       default: Date.now
@@ -36,6 +42,4 @@ const EventSchema = new mongoose.Schema(
 )
 
 export const Event = mongoose.model('Event', EventSchema)
-export type Event = InstanceType<typeof Event> & {
-  timestamp: Date
-}
+export type Event = InstanceType<typeof Event>

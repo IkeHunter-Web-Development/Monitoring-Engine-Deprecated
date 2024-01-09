@@ -1,96 +1,90 @@
-import mongoose from 'mongoose'
-import { UserSchema } from './userModel'
+import mongoose, { Schema } from 'mongoose'
+/**
+ * Reference:
+ * https://developer.statuspage.io/#operation/getPagesPageIdIncidents
+ */
 
-export interface IMonitor {
-  projectId: string
-  url: string
-  title: string
-  recipients?: Array<typeof UserSchema>
-  targetStatusCode?: number
-  currentStatusCode?: number
-  active?: boolean
-  status?: MonitorStatus
-  online?: boolean
-  type?: string
-  endpoints?: string[]
-  interval?: number
-  timeout?: number
-  retries?: number
-  coverImage?: string
+export enum MonitorStatus {
+  'stable',
+  'alert',
+  'emergency',
+  'pending'
 }
 
-// TODO: Recovery mode? send request every x seconds
-export const MonitorSchema = new mongoose.Schema(
-  {
-    /** REQUIRED */
-    projectId: {
-      type: String,
-      required: true
-    },
-    url: {
-      type: String,
-      required: true
-    },
-    title: {
-      type: String,
-      required: true
-    },
-
-    /** OPTIONAL */
-    recipients: [UserSchema],
-    targetStatusCode: {
-      type: Number,
-      default: 200
-    },
-    currentStatusCode: {
-      type: Number,
-      default: 200
-    },
-    active: {
-      type: Boolean,
-      default: true
-    },
-    status: {
-      type: String,
-      enum: [] as MonitorStatus[],
-      default: 'pending'
-    },
-
-    online: {
-      type: Boolean,
-      default: true
-    },
-    type: {
-      type: String,
-      enum: ['http'],
-      default: 'http'
-    },
-    endpoints: {
-      type: Array,
-      default: ['/']
-    },
-    interval: {
-      type: Number,
-      default: 60
-    },
-    // TODO: Implement these
-    timeout: {
-      type: Number,
-      default: 30
-    },
-    retries: {
-      type: Number,
-      default: 3
-    },
-    coverImage: {
-      type: String,
-      default: ''
-    }
+export const MonitorSchema = {
+  /** REQUIRED */
+  projectId: {
+    type: String,
+    required: true
   },
-  {
-    timestamps: true
-  }
-)
+  title: {
+    type: String,
+    required: true
+  },
 
-export const Monitor = mongoose.model('Monitor', MonitorSchema)
-export type Monitor = InstanceType<typeof Monitor>
+  /** OPTIONAL */
+  status: {
+    type: String,
+    enum: MonitorStatus,
+    default: 'pending'
+  },
+  interval: {
+    type: Number,
+    default: 60 // Seconds
+  },
+  icon: {
+    type: String,
+    required: false
+  },
+  active: {
+    type: Boolean,
+    required: false,
+    default: true
+  },
+  reminderIntervals: {
+    type: Number,
+    default: 10 // Minutes
+  }
+}
+
+export const WebsiteMonitorSchema = new Schema({
+  ...MonitorSchema,
+  /** Required */
+  url: {
+    type: String,
+    required: true
+  },
+
+  /** Optional */
+  checkType: {
+    type: String,
+    enum: ['http'],
+    default: 'http'
+  },
+  availability: {
+    type: String,
+    enum: ['online', 'degraded', 'offline', 'maintenance', 'pending'],
+    default: 'pending'
+  },
+  retries: {
+    type: Number,
+    default: 3
+  },
+  timeout: {
+    type: Number,
+    default: 30 // Seconds
+  },
+  responseTime: {
+    type: Number,
+    default: -1
+  }
+})
+
+export const WebsiteMonitor = mongoose.model('Monitor', WebsiteMonitorSchema)
+export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>
+
+// export const WebsiteMonitorSchema = MonitorSchema.discriminator('WebsiteMonitor', WebsiteMonitorSchemaBase)
+// export const WebsiteMonitor = mongoose.model('WebsiteMonitor', WebsiteMonitorSchema);
+
+// export const WebsiteMonitor = mongoose.model('WebsiteMonitor', WebsiteMonitorSchema)
+// export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>

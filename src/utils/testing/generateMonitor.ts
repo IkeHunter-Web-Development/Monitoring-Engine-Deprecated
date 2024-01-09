@@ -1,26 +1,26 @@
-import { Monitor } from "src/models";
+import { WebsiteMonitor } from 'src/models'
 
 export const sampleMonitor = {
-  projectId: "abc",
-  url: "https://example.com",
+  projectId: 'abc',
+  url: 'https://example.com',
   users: [],
   statusCode: 200,
   active: true,
-  title: "Example Live",
+  title: 'Example Live',
   online: true,
-  type: "http",
+  type: 'http',
   interval: 60,
   timeout: 1000,
-  retries: 3,
-};
-export const generateMonitor = async (): Promise<Monitor> => {
-  return await Monitor.create(sampleMonitor);
+  retries: 3
 }
-export const generateMonitors = async (count: number = 1): Promise<Monitor[]> => {
-  const monitors = [];
+export const generateMonitor = async (): Promise<WebsiteMonitor> => {
+  return await WebsiteMonitor.create(sampleMonitor)
+}
+export const generateMonitors = async (count: number = 1): Promise<WebsiteMonitor[]> => {
+  const monitors = []
   for (let i = 0; i < count; i++) {
-    const monitor: Monitor = await Monitor.create(sampleMonitor);
-    monitors.push(monitor);
+    const monitor: WebsiteMonitor = await WebsiteMonitor.create(sampleMonitor)
+    monitors.push(monitor)
   }
-  return monitors;
-};
+  return monitors
+}

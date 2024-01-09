@@ -1,6 +1,6 @@
-import { type IMonitor } from 'src/models'
+import { type WebsiteMonitor } from 'src/models'
 
-export const validateMonitor = (data: any): IMonitor => {
+export const validateMonitor = (data: any): Partial<WebsiteMonitor> => {
   const { projectId, url, title } = data
 
   // TODO: Create partial and full verification

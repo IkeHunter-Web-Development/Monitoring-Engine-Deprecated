@@ -4,7 +4,7 @@
 import httpMocks from 'node-mocks-http'
 import type { Request, Response } from 'express'
 import { getResJson } from 'src/utils'
-import { Monitor } from 'src/models'
+import { WebsiteMonitor } from 'src/models'
 import { MonitorController } from '../monitorController'
 
 const controller = MonitorController
@@ -33,7 +33,7 @@ describe('Monitor controller', () => {
    */
   it('should create a monitor', async () => {
     // const pre = await MonitorService.getMonitors()
-    const pre = await Monitor.find({})
+    const pre = await WebsiteMonitor.find({})
     expect(pre.length).toEqual(0) // Ensure there are no monitors before the test.
 
     req = httpMocks.createRequest({
@@ -45,7 +45,7 @@ describe('Monitor controller', () => {
     expect(res.statusCode).toEqual(201)
 
     // const monitors = await MonitorService.getMonitors()
-    const monitors = await Monitor.find({})
+    const monitors = await WebsiteMonitor.find({})
     expect(monitors.length).toEqual(1)
     expect(monitors[0].projectId).toEqual(defaultMonitor.projectId)
   })
@@ -55,7 +55,7 @@ describe('Monitor controller', () => {
    * and return a 200 status code.
    */
   it('should update a monitor', async () => {
-    const monitor = await Monitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(defaultMonitor)
 
     req = httpMocks.createRequest({
       method: 'PUT',
@@ -66,7 +66,7 @@ describe('Monitor controller', () => {
     await controller.updateMonitor(req, res as Response)
     expect(res.statusCode).toEqual(200)
 
-    const query = await Monitor.findOne({ _id: monitor._id })
+    const query = await WebsiteMonitor.findOne({ _id: monitor._id })
     expect(query).not.toBeNull()
     expect(query!.title).toEqual('Yahoo')
   })
@@ -76,7 +76,7 @@ describe('Monitor controller', () => {
    * and return a 200 status code.
    */
   it('should get a monitor', async () => {
-    const monitor = await Monitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(defaultMonitor)
 
     req = httpMocks.createRequest({
       params: { id: monitor._id.toString() }
@@ -94,7 +94,7 @@ describe('Monitor controller', () => {
    * and return a 200 status code.
    */
   it('should delete a monitor', async () => {
-    const monitor = await Monitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(defaultMonitor)
 
     const req = httpMocks.createRequest({
       method: 'DELETE',
@@ -104,7 +104,7 @@ describe('Monitor controller', () => {
 
     expect(res.statusCode).toEqual(200)
 
-    const query = await Monitor.findOne({ _id: monitor._id })
+    const query = await WebsiteMonitor.findOne({ _id: monitor._id })
     expect(query).toBeNull()
   })
 
@@ -113,15 +113,15 @@ describe('Monitor controller', () => {
    * and return a 200 status code.
    */
   it('should get all monitors', async () => {
-    const monitor = await Monitor.create({
+    const monitor = await WebsiteMonitor.create({
       ...defaultMonitor,
       projectId: '123'
     })
-    const monitor2 = await Monitor.create({
+    const monitor2 = await WebsiteMonitor.create({
       ...defaultMonitor,
       projectId: '456'
     })
-    const monitor3 = await Monitor.create({
+    const monitor3 = await WebsiteMonitor.create({
       ...defaultMonitor,
       projectId: '789'
     })
@@ -135,7 +135,7 @@ describe('Monitor controller', () => {
     expect(res.statusCode).toEqual(200)
     expect(body.length).toEqual(3)
 
-    const sorted: Monitor[] = body.sort((a: any, b: any) => {
+    const sorted: WebsiteMonitor[] = body.sort((a: any, b: any) => {
       return a.projectId - b.projectId
     })
 

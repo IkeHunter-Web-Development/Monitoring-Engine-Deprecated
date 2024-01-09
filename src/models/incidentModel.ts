@@ -19,11 +19,35 @@ const IncidentSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    impact: {
+      type: String,
+      enum: ['none', 'maintenance', 'minor', 'major', 'critical'],
+      required: true
+    },
+    status: {
+      type: String,
+      enum: [
+        /** Automated */
+        'active',
+        'pending',
+        'resolved',
+        /** Manual */
+        'investigating',
+        'identified',
+        /** Maintenance */
+        'inProgress',
+        'completed'
+      ],
+      required: true
+    },
 
     /** OPTIONAL */
-    timestamp: {
+    resolvedAt: {
       type: Date,
-      default: Date.now,
+      required: false
+    },
+    notes: {
+      type: String,
       required: false
     }
   },
