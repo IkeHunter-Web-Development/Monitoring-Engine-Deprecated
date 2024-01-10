@@ -2,8 +2,9 @@
  * @fileoverview API controller for the monitor objects.
  */
 import { type Request, type Response } from 'express'
-import { MonitorService } from 'src/services'
+import type { AuthLocals } from 'src/middleware'
 import { WebsiteMonitor } from 'src/models'
+import { createMonitor, deleteMonitor, getManyMonitorsDetails } from 'src/services'
 import { validateMonitor } from 'src/validators'
 import { responses } from './utils/responses'
 
@@ -28,7 +29,7 @@ const MonitorController = {
           schema: {$ref: "#/definitions/Error500"},
         }
        *======================== */
-    await MonitorService.createMonitor(req.body)
+    await createMonitor(req.body)
       .then(async (monitor: any) => {
         return responses.created(res, monitor)
       })
@@ -135,7 +136,7 @@ const MonitorController = {
 
     if (monitor == null) return responses.notFound(res, 'Monitor not found')
 
-    await MonitorService.deleteMonitor(id)
+    await deleteMonitor(id)
       .then((success) => {
         if (!success) {
           return responses.notFound(res, 'Monitor not found')
@@ -189,7 +190,31 @@ const MonitorController = {
           schema: {$ref: "#/definitions/Error500"},
         }
        *=========================== */
-    responses.notImplemented(res)
+    // responses.notImplemented(res)
+    // const projectIds = <AuthLocals>res.locals.projectIds
+    const { projectIds } = <AuthLocals>res.locals
+    const monitors: WebsiteMonitor[] = []
+
+    for (const projectId of projectIds) {
+      const foundMonitors: WebsiteMonitor[] = await WebsiteMonitor.find({ projectId: projectId })
+      monitors.push(...foundMonitors)
+    }
+
+    const detailedMonitors = await getManyMonitorsDetails(monitors)
+
+    // const detailedMonitors: WebsiteMonitor & { responses: WebsiteResponse; incidents: Incident } =
+    //   monitors.map(async (monitor) => {
+    //     const responses = await WebsiteResponse.find({ monitorId: monitor._id })
+    //     const incidents = await WebsiteResponse.find({ monitorId: monitor._id })
+
+    //     return {
+    //       ...monitor,
+    //       responses,
+    //       incidents
+    //     }
+    //   })
+
+    return responses.ok(res, detailedMonitors)
   }
 }
 

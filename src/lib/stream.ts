@@ -25,7 +25,7 @@ export class Stream {
   }
 
   public static getInstance = (): Stream => {
-    if (Stream.instance != null) {
+    if (!Stream.instance) {
       Stream.instance = new Stream()
     }
 

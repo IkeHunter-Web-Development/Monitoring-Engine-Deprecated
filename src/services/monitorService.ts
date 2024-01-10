@@ -4,107 +4,153 @@
 import type { Types } from 'mongoose'
 import { NODE_ENV } from 'src/config/constants'
 import { MonitorProducer } from 'src/data'
-import { Event, MonitorResponse, WebsiteMonitor } from 'src/models'
+import {
+  Event,
+  Incident,
+  MonitorStatus,
+  WebsiteAvailability,
+  WebsiteMonitor,
+  WebsiteResponse
+} from 'src/models'
 import { getResponseTime } from 'src/utils'
 import { validateMonitor } from 'src/validators'
 
 // export class MonitorService {
 
-export const MonitorService = {
-  notifyCreateMonitor: async (monitor: WebsiteMonitor): Promise<void> => {
-    if (NODE_ENV === 'development') return
-    await MonitorProducer.sendMonitorMessage('create', monitor)
-  },
+export type WebsiteMonitorDetails = Partial<WebsiteMonitor> & {
+  responses: WebsiteResponse[]
+  incidents: Incident[]
+}
 
-  notifyDeleteMonitor: async (monitor: WebsiteMonitor): Promise<void> => {
-    if (NODE_ENV === 'development') return
-    await MonitorProducer.sendMonitorMessage('delete', monitor)
-  },
+// export const MonitorService = {
+export const notifyCreateMonitor = async (monitor: WebsiteMonitor): Promise<void> => {
+  if (NODE_ENV === 'development') return
+  await MonitorProducer.sendMonitorMessage('create', monitor)
+}
 
-  /**
-   * Create a monitor.
-   *
-   * @param projectId The id of the project the monitor belongs to.
-   * @param url The url to monitor.
-   * @param recipients The users to notify when the monitor goes offline.
-   * @param title The title of the monitor.
-   * @returns The created monitor.
-   */
-  createMonitor: async (data: any): Promise<WebsiteMonitor> => {
-    const payload = validateMonitor(data)
+export const notifyDeleteMonitor = async (monitor: WebsiteMonitor): Promise<void> => {
+  if (NODE_ENV === 'development') return
+  await MonitorProducer.sendMonitorMessage('delete', monitor)
+}
 
-    const initialResponseTime = await getResponseTime(String(data.url)).catch((error) => {
-      console.log('URL failed initial check:', error)
-      throw error
+/**
+ * Create a monitor.
+ *
+ * @param projectId The id of the project the monitor belongs to.
+ * @param url The url to monitor.
+ * @param recipients The users to notify when the monitor goes offline.
+ * @param title The title of the monitor.
+ * @returns The created monitor.
+ */
+export const createMonitor = async (data: any): Promise<WebsiteMonitor> => {
+  const payload = validateMonitor(data)
+
+  const initialResponseTime = await getResponseTime(String(data.url)).catch((error) => {
+    console.log('URL failed initial check:', error)
+    throw error
+  })
+
+  const monitor = await WebsiteMonitor.create(payload)
+    .then(async (monitor: WebsiteMonitor) => {
+      await notifyCreateMonitor(monitor)
+      return monitor
+    })
+    .catch((err: any) => {
+      console.log(err)
+      throw err
     })
 
-    const monitor = await WebsiteMonitor.create(payload)
-      .then(async (monitor: WebsiteMonitor) => {
-        await MonitorService.notifyCreateMonitor(monitor)
-        return monitor
-      })
-      .catch((err: any) => {
-        console.log(err)
-        throw err
-      })
+  await WebsiteResponse.create({
+    monitorId: monitor._id,
+    responseTime: initialResponseTime,
+    timestamp: Date.now()
+  })
 
-    await MonitorResponse.create({
-      monitorId: monitor._id,
-      responseTime: initialResponseTime,
-      timestamp: Date.now()
+  return monitor
+}
+
+/**
+ * Delete a monitor.
+ *
+ * @param id The id of the monitor to delete.
+ * @returns Boolean, whether deletion was successful.
+ */
+export const deleteMonitor = async (id: string): Promise<boolean> => {
+  const monitor = await WebsiteMonitor.findOne({ _id: id })
+  if (monitor === null) throw new Error('Monitor not found, cannot delete.')
+
+  await notifyDeleteMonitor(monitor)
+
+  await Event.deleteMany({ monitorId: monitor._id })
+  await Event.create({
+    projectId: monitor.projectId,
+    online: true,
+    status: 'alert',
+    statusCode: 200,
+    message: `Monitor ${monitor.title} deleted.`
+  })
+
+  const status = monitor
+    .deleteOne()
+    .then(() => {
+      return true
+    })
+    .catch((err: any) => {
+      console.log(err)
+      throw err
     })
 
-    return monitor
-  },
+  return await status
+}
 
-  /**
-   * Delete a monitor.
-   *
-   * @param id The id of the monitor to delete.
-   * @returns Boolean, whether deletion was successful.
-   */
-  deleteMonitor: async (id: string): Promise<boolean> => {
-    const monitor = await WebsiteMonitor.findOne({ _id: id })
-    if (monitor === null) throw new Error('Monitor not found, cannot delete.')
+export const handleAvailabilityChanged = async (
+  id: Types.ObjectId,
+  newAvailability: WebsiteAvailability
+): Promise<Event | null> => {
+  const monitor = await WebsiteMonitor.findById(id)
+  if (monitor == null) return null
 
-    await MonitorService.notifyDeleteMonitor(monitor)
+  const newEvent = await Event.create({
+    projectId: monitor.projectId,
+    message: `Monitor availability changed from ${monitor.availability} to ${newAvailability}`
+  })
 
-    await Event.deleteMany({ monitorId: monitor._id })
-    await Event.create({
-      projectId: monitor.projectId,
-      online: true,
-      status: 'alert',
-      statusCode: 200,
-      message: `Monitor ${monitor.title} deleted.`
-    })
+  await monitor.updateOne({ availability: newAvailability })
+  let status: MonitorStatus
 
-    const status = monitor
-      .deleteOne()
-      .then(() => {
-        return true
-      })
-      .catch((err: any) => {
-        console.log(err)
-        throw err
-      })
+  console.log('new availability:', newAvailability)
 
-    return await status
-  },
-
-  handleStatusChanged: async (
-    id: Types.ObjectId,
-    newStatus: MonitorStatus
-  ): Promise<Event | null> => {
-    const monitor = await WebsiteMonitor.findById(id)
-    if (monitor == null) return null
-
-    const newEvent = await Event.create({
-      projectId: monitor.projectId,
-      message: `Monitor status changed from ${monitor.status} to ${newStatus}`
-    })
-
-    await monitor.updateOne({ status: newStatus })
-
-    return newEvent
+  switch (newAvailability) {
+    case WebsiteAvailability.online:
+      status = MonitorStatus.stable
+      break
+    case WebsiteAvailability.offline:
+      status = MonitorStatus.emergency
+      break
+    default:
+      status = MonitorStatus.pending
   }
+
+  await monitor.updateOne({ status: status })
+
+  return newEvent
+}
+
+export const getMonitorDetails = async (
+  monitor: WebsiteMonitor
+): Promise<WebsiteMonitorDetails> => {
+  const responses: WebsiteResponse[] = await WebsiteResponse.find({ monitorId: monitor._id })
+  const incidents: Incident[] = await Incident.find({ monitorId: monitor._id })
+
+  return {
+    ...monitor.toObject(),
+    responses,
+    incidents
+  }
+}
+
+export const getManyMonitorsDetails = async (
+  monitors: WebsiteMonitor[]
+): Promise<WebsiteMonitorDetails[]> => {
+  return Promise.all(monitors.map(async (monitor) => await getMonitorDetails(monitor)))
 }

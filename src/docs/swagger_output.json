@@ -81,7 +81,10 @@
     },
     "/api/monitor/details": {
       "get": {
-        "description": "",
+        "tags": [
+          "Monitor"
+        ],
+        "description": "Endpoint for getting details for all monitors.",
         "parameters": [
           {
             "name": "x-network-authorization",
@@ -90,11 +93,26 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorResponseDetailed"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            }
           }
         },
         "security": [
@@ -414,6 +432,16 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/api/monitor/events/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     }
   },

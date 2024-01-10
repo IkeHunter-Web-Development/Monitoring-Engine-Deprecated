@@ -4,11 +4,21 @@ import mongoose, { Schema } from 'mongoose'
  * https://developer.statuspage.io/#operation/getPagesPageIdIncidents
  */
 
+// Calculated by monitor service
 export enum MonitorStatus {
-  'stable',
-  'alert',
-  'emergency',
-  'pending'
+  stable = 'stable',
+  alert = 'alert',
+  emergency = 'emergency',
+  pending = 'pending'
+}
+
+// Info given by external services
+export enum WebsiteAvailability {
+  online = 'online',
+  degraded = 'degraded',
+  offline = 'offline',
+  maintenance = 'maintenance',
+  pending = 'pending'
 }
 
 export const MonitorSchema = {
@@ -25,8 +35,8 @@ export const MonitorSchema = {
   /** OPTIONAL */
   status: {
     type: String,
-    enum: MonitorStatus,
-    default: 'pending'
+    enum: Object.values(MonitorStatus),
+    default: MonitorStatus.pending
   },
   interval: {
     type: Number,
@@ -47,38 +57,44 @@ export const MonitorSchema = {
   }
 }
 
-export const WebsiteMonitorSchema = new Schema({
-  ...MonitorSchema,
-  /** Required */
-  url: {
-    type: String,
-    required: true
-  },
+export const WebsiteMonitorSchema = new Schema(
+  {
+    ...MonitorSchema,
+    /** Required */
+    url: {
+      type: String,
+      required: true
+    },
 
-  /** Optional */
-  checkType: {
-    type: String,
-    enum: ['http'],
-    default: 'http'
+    /** Optional */
+    checkType: {
+      type: String,
+      enum: ['http'],
+      default: 'http'
+    },
+    availability: {
+      type: String,
+      // enum: ['online', 'degraded', 'offline', 'maintenance', 'pending'],
+      enum: Object.values(WebsiteAvailability),
+      default: WebsiteAvailability.pending
+    },
+    retries: {
+      type: Number,
+      default: 3
+    },
+    timeout: {
+      type: Number,
+      default: 30 // Seconds
+    },
+    responseTime: {
+      type: Number,
+      default: -1
+    }
   },
-  availability: {
-    type: String,
-    enum: ['online', 'degraded', 'offline', 'maintenance', 'pending'],
-    default: 'pending'
-  },
-  retries: {
-    type: Number,
-    default: 3
-  },
-  timeout: {
-    type: Number,
-    default: 30 // Seconds
-  },
-  responseTime: {
-    type: Number,
-    default: -1
+  {
+    timestamps: true
   }
-})
+)
 
 export const WebsiteMonitor = mongoose.model('Monitor', WebsiteMonitorSchema)
 export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>

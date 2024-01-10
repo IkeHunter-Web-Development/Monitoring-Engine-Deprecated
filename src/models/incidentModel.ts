@@ -1,4 +1,12 @@
 import mongoose, { Schema } from 'mongoose'
+import type { MonitorStatus } from './monitorModel'
+
+// declare type IncidentStatus = 'open' | 'closed' | 'pending'
+export enum IncidentStatus {
+  open = 'open',
+  closed = 'closed',
+  pending = 'pending'
+}
 
 export interface IncidentInterface {
   monitorId: string

@@ -46,7 +46,8 @@ export class Network {
 
     return {
       status: res.status,
-      userId: res.data?.id
+      userId: res.data?.id,
+      projects: res.data?.projects?.map((project: { id: any; name: string }) => String(project.id))
     }
   }
   // TODO: get project name, agency
@@ -68,7 +69,10 @@ export class Network {
       projectTitle: res.data?.title,
       companyName: res.data?.company
     }
+
+    // static async getAuthorizedProjects()
   }
+
   // static async scheduleMonitor(monitor: Monitor): Promise<boolean> {
   //   // return monitor && true;
   //   const config: NetworkRequest = {

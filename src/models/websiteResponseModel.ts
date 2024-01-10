@@ -1,14 +1,9 @@
 import mongoose, { Types } from 'mongoose'
 
-export interface IMonitorResponse {
-  monitorId: Types.ObjectId
-  responseTime: number
-}
-
-export const MonitorResponseSchema = new mongoose.Schema({
+export const WebsiteResponseSchema = new mongoose.Schema({
   monitorId: {
     type: Types.ObjectId,
-    ref: "WebsiteMonitor",
+    ref: 'WebsiteMonitor',
     required: true
   },
   responseTime: {
@@ -22,5 +17,5 @@ export const MonitorResponseSchema = new mongoose.Schema({
   }
 })
 
-export const MonitorResponse = mongoose.model('MonitorResponse', MonitorResponseSchema)
-export type MonitorResponse = InstanceType<typeof MonitorResponse>
+export const WebsiteResponse = mongoose.model('MonitorResponse', WebsiteResponseSchema)
+export type WebsiteResponse = InstanceType<typeof WebsiteResponse>

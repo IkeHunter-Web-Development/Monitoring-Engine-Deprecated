@@ -12,7 +12,7 @@ export class MonitorProducer {
   }
 
   public static getInstance = (): MonitorProducer => {
-    if (MonitorProducer.instance == null) {
+    if (!MonitorProducer.instance) {
       MonitorProducer.instance = new MonitorProducer()
     }
 

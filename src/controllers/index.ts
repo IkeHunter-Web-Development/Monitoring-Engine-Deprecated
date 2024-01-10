@@ -1,1 +1,1 @@
-export * from './monitorController';
+export * from './monitorController'
