@@ -20,6 +20,7 @@ import { validateMonitor } from 'src/validators'
 export type WebsiteMonitorDetails = Partial<WebsiteMonitor> & {
   responses: WebsiteResponse[]
   incidents: Incident[]
+  // subscribers: Subscriber[]
 }
 
 // export const MonitorService = {
@@ -66,6 +67,12 @@ export const createMonitor = async (data: any): Promise<WebsiteMonitor> => {
     timestamp: Date.now()
   })
 
+  await Event.create({
+    projectId: monitor.projectId,
+    monitorId: monitor._id,
+    message: `Created new monitor: ${monitor.title}.`
+  })
+
   return monitor
 }
 
@@ -87,7 +94,7 @@ export const deleteMonitor = async (id: string): Promise<boolean> => {
     online: true,
     status: 'alert',
     statusCode: 200,
-    message: `Monitor ${monitor.title} deleted.`
+    message: `${monitor.title} deleted.`
   })
 
   const status = monitor
@@ -112,7 +119,8 @@ export const handleAvailabilityChanged = async (
 
   const newEvent = await Event.create({
     projectId: monitor.projectId,
-    message: `Monitor availability changed from ${monitor.availability} to ${newAvailability}`
+    monitorId: monitor._id,
+    message: `${monitor.title} availability changed from ${monitor.availability} to ${newAvailability}`
   })
 
   await monitor.updateOne({ availability: newAvailability })
@@ -141,11 +149,13 @@ export const getMonitorDetails = async (
 ): Promise<WebsiteMonitorDetails> => {
   const responses: WebsiteResponse[] = await WebsiteResponse.find({ monitorId: monitor._id })
   const incidents: Incident[] = await Incident.find({ monitorId: monitor._id })
+  // const subscribers: Subscriber[] = await Subscriber.find({ monitorId: monitor._id })
 
   return {
     ...monitor.toObject(),
     responses,
     incidents
+    // subscribers
   }
 }
 

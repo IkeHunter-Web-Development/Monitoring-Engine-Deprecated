@@ -2,7 +2,7 @@ import { MonitorSocket } from 'src/config'
 import { Stream } from 'src/lib'
 import { WebsiteMonitor, type Event } from 'src/models'
 import { WebsiteResponse } from 'src/models/websiteResponseModel'
-import { handleAvailabilityChanged } from 'src/services'
+import { MonitorService } from 'src/services'
 // import { MonitorService } from 'src/services'
 
 const RESPONSE_INTERVAL_MIN = 30
@@ -58,19 +58,23 @@ export class EventConsumer {
 
     if (availability !== monitor.availability) {
       console.log('monitor availability changed:', availability)
-      event = await handleAvailabilityChanged(monitor._id, availability)
+      event = await MonitorService.handleAvailabilityChanged(monitor._id, availability)
       if (event != null) MonitorSocket.pushClientEvent(monitorId, event)
     }
   }
 
   private readonly handleAddResponse = async (data: any): Promise<void> => {
     const { monitorId, responseTime, timestamp } = data
-    MonitorSocket.updateClientResponseTimes(String(monitorId), String(responseTime))
+    MonitorSocket.updateClientResponseTimes(String(monitorId), responseTime, timestamp)
 
+    const monitor = await WebsiteMonitor.findById(monitorId)
+    if (!monitor) return
+
+    await monitor.updateOne({
+      responseTime: responseTime,
+      lastCheck: timestamp
+    })
     if (new Date().getMinutes() % RESPONSE_INTERVAL_MIN !== 0) return
-
-    const monitor: WebsiteMonitor | null = await WebsiteMonitor.findById(monitorId)
-    if (monitor == null) return
 
     await WebsiteResponse.create({
       monitorId,

@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose'
+import { SubscriberSchema } from './subscriberModel'
 /**
  * Reference:
  * https://developer.statuspage.io/#operation/getPagesPageIdIncidents
@@ -54,7 +55,8 @@ export const MonitorSchema = {
   reminderIntervals: {
     type: Number,
     default: 10 // Minutes
-  }
+  },
+  subscribers: [SubscriberSchema]
 }
 
 export const WebsiteMonitorSchema = new Schema(
@@ -89,6 +91,10 @@ export const WebsiteMonitorSchema = new Schema(
     responseTime: {
       type: Number,
       default: -1
+    },
+    lastCheck: {
+      type: Date,
+      required: false
     }
   },
   {
@@ -98,9 +104,3 @@ export const WebsiteMonitorSchema = new Schema(
 
 export const WebsiteMonitor = mongoose.model('Monitor', WebsiteMonitorSchema)
 export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>
-
-// export const WebsiteMonitorSchema = MonitorSchema.discriminator('WebsiteMonitor', WebsiteMonitorSchemaBase)
-// export const WebsiteMonitor = mongoose.model('WebsiteMonitor', WebsiteMonitorSchema);
-
-// export const WebsiteMonitor = mongoose.model('WebsiteMonitor', WebsiteMonitorSchema)
-// export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>

@@ -4,7 +4,8 @@
 import { type Request, type Response } from 'express'
 import type { AuthLocals } from 'src/middleware'
 import { WebsiteMonitor } from 'src/models'
-import { createMonitor, deleteMonitor, getManyMonitorsDetails } from 'src/services'
+import { MonitorService } from 'src/services'
+
 import { validateMonitor } from 'src/validators'
 import { responses } from './utils/responses'
 
@@ -29,8 +30,11 @@ const MonitorController = {
           schema: {$ref: "#/definitions/Error500"},
         }
        *======================== */
-    await createMonitor(req.body)
-      .then(async (monitor: any) => {
+    const payload = validateMonitor(req.body)
+    console.log('payload:', payload)
+
+    await MonitorService.createMonitor(payload)
+      .then(async (monitor: WebsiteMonitor) => {
         return responses.created(res, monitor)
       })
       .catch(async (err: any) => {
@@ -65,8 +69,46 @@ const MonitorController = {
           schema: {$ref: "#/definitions/Error404"},
         }
        *======================= */
-    const { id } = req.params ?? ''
+    const { id } = req.params || ''
     const payload = validateMonitor(req.body)
+    console.log('payload:', payload)
+    // const validatedSubs = validateSubscribers(req.body.subscribers ?? [])
+    const monitor = await WebsiteMonitor.findById(id)
+
+    if (!monitor) return responses.notFound(res, 'Monitor not found.')
+
+    // const monitorSubs = (await Subscriber.find({ monitorId: id })) ?? []
+    // const subscribers: Subscriber[] = []
+
+    // for (const monitorSub of monitorSubs) {
+    //   const existsInValidated = validatedSubs.some((vs) => vs.id === monitorSub.id)
+
+    //   if (existsInValidated) {
+
+    //   }
+    // }
+    // const subsToDelete = monitorSubs.filter((sub) => !validatedSubs.some((vs) => vs.id === sub.id))
+    // const subsToAdd = validatedSubs.filter((sub) => !monitorSubs.some((ms) => ms.id === sub.id))
+    // const subsToUpdate = validatedSubs.filter((sub) => monitorSubs.some((ms) => ms.id === sub.id))
+
+    // console.log('reqSubscribers:', validatedSubs)
+    console.log('id:', id)
+
+    // for (const sub of validatedSubs) {
+    //   const foundSub: Subscriber | null = await Subscriber.findOne({
+    //     monitorId: id,
+    //     _id: String(sub.id)
+    //   }).catch(() => null)
+    //   console.log('found:', foundSub)
+
+    //   if (foundSub === null) {
+    //     console.log('not found:', sub)
+    //     const subscriber = await Subscriber.create({ ...sub, monitorId: monitor._id } as Subscriber)
+    //     subscribers.push(subscriber)
+    //   } else {
+    //     foundSub.updateOne({ ...sub } as Subscriber)
+    //   }
+    // }
 
     // return MonitorService.updateMonitor(id, req.body)
     await WebsiteMonitor.updateOne({ _id: id }, payload)
@@ -136,7 +178,7 @@ const MonitorController = {
 
     if (monitor == null) return responses.notFound(res, 'Monitor not found')
 
-    await deleteMonitor(id)
+    await MonitorService.deleteMonitor(id)
       .then((success) => {
         if (!success) {
           return responses.notFound(res, 'Monitor not found')
@@ -200,7 +242,7 @@ const MonitorController = {
       monitors.push(...foundMonitors)
     }
 
-    const detailedMonitors = await getManyMonitorsDetails(monitors)
+    const detailedMonitors = await MonitorService.getManyMonitorsDetails(monitors)
 
     // const detailedMonitors: WebsiteMonitor & { responses: WebsiteResponse; incidents: Incident } =
     //   monitors.map(async (monitor) => {

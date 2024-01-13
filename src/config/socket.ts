@@ -1,15 +1,15 @@
-import WebSocket, { WebSocketServer, type Server } from 'ws'
-import { v4 as uuidv4 } from 'uuid'
 import { type IncomingMessage } from 'http'
 import { type Event } from 'src/models'
+import { v4 as uuidv4 } from 'uuid'
+import WebSocket, { WebSocketServer, type Server } from 'ws'
 
 export class MonitorSocket {
   private readonly socket: Server<typeof WebSocket, typeof IncomingMessage>
   static instance: MonitorSocket
-  protected clients: Record<string, { socket: WebSocket, monitorIds: string[] }> = {}
+  protected clients: Record<string, { socket: WebSocket; monitorIds: string[] }> = {}
   public monitorClients: Record<string, string[]> = {}
 
-  private constructor (server: any) {
+  private constructor(server: any) {
     this.socket = new WebSocketServer({ server })
 
     this.socket.on('connection', (connection) => {
@@ -18,7 +18,9 @@ export class MonitorSocket {
       this.clients[userId] = { socket: connection, monitorIds: [] }
       console.log(`User ${userId} is connected to socket.`)
 
-      connection.on('message', (message) => { this.handleMessage(message, userId) })
+      connection.on('message', (message) => {
+        this.handleMessage(message, userId)
+      })
 
       connection.on('close', () => {
         this.handleConnectionClosed(userId)
@@ -95,7 +97,11 @@ export class MonitorSocket {
     return MonitorSocket.instance
   }
 
-  public static updateClientResponseTimes = (monitorId: string, responseTime: string): void => {
+  public static updateClientResponseTimes = (
+    monitorId: string,
+    responseTime: number,
+    timestamp: number
+  ): void => {
     const clients: string[] | undefined = this.instance.monitorClients[monitorId]
 
     if (clients !== undefined) {
@@ -105,7 +111,8 @@ export class MonitorSocket {
         if (client == null) return
         this.instance.broadcastMessage(client, 'set-responsetime', {
           monitorId,
-          responseTime
+          responseTime,
+          timestamp
         })
       })
     }

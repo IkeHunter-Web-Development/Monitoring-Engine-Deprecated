@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose'
 /**
  * @fileoverview User model.
  */
@@ -17,12 +16,16 @@ export const SubscriberSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  monitors: [
-    {
-      type: Schema.Types.ObjectId
-    }
-  ],
-  mode: {
+  // monitorId: {
+  //   type: Schema.Types.ObjectId,
+  //   required: true
+  // },
+  // monitors: [
+  //   {
+  //     type: Schema.Types.ObjectId
+  //   }
+  // ],
+  method: {
     type: String,
     enum: ['email', 'phone'],
     default: 'email'
@@ -33,4 +36,5 @@ export const SubscriberSchema = new mongoose.Schema({
   }
 })
 
-export const Subscriber = mongoose.model('Subscriber', SubscriberSchema)
+// export const Subscriber = mongoose.model('Subscriber', SubscriberSchema)
+// export type Subscriber = InstanceType<typeof Subscriber>
