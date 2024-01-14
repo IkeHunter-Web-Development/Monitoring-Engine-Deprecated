@@ -22,6 +22,14 @@ export class EventConsumer {
   }
 
   private readonly initializeConsumers = async (): Promise<void> => {
+    const monitors = await WebsiteMonitor.find({})
+
+    setInterval(() => {
+      // console.log('tick...')
+      // MonitorSocket.
+      MonitorSocket.updateClientResponseTimes(monitors[0], 100, Date.now())
+    }, 5000)
+
     this.stream?.subscribe('monitor-events', (res) => {
       // console.log('received:', res.message.value?.toString())
 
@@ -65,10 +73,11 @@ export class EventConsumer {
 
   private readonly handleAddResponse = async (data: any): Promise<void> => {
     const { monitorId, responseTime, timestamp } = data
-    MonitorSocket.updateClientResponseTimes(String(monitorId), responseTime, timestamp)
 
     const monitor = await WebsiteMonitor.findById(monitorId)
     if (!monitor) return
+    
+    MonitorSocket.updateClientResponseTimes(monitor, responseTime, timestamp)
 
     await monitor.updateOne({
       responseTime: responseTime,
