@@ -51,3 +51,16 @@ export const reportMonitorDown = async (monitor: WebsiteMonitor): Promise<void> 
 export const reportMonitorOnline = async (monitor: WebsiteMonitor): Promise<void> => {
   await notifyMonitorUp(monitor, 200)
 }
+
+// export const createIncident = async (monitor: WebsiteMonitor): Promise<void> => {
+//   // TODO: Get old, new availability
+//   /**
+//    * First iteration:
+//    * Online -> Offline:
+//    *  Impact: major
+//    *  Status: active
+//    *
+//    * Offline -> Online:
+//    *  Status: resolved
+//    */
+// }

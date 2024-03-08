@@ -28,4 +28,6 @@ export class MonitorProducer {
 
     await instance.stream.send(topic, [{ action, data }])
   }
+  
+  // TODO: Abstract types of messages sent, make sendmonitormessage private
 }

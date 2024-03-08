@@ -3,6 +3,11 @@ import { type Event } from 'src/models'
 // import WebSocket, { WebSocketServer, type Server } from 'ws'
 import { Server } from 'socket.io'
 
+/**
+ * Private messages:
+ * https://socket.io/get-started/private-messaging-part-2/
+ */
+
 export class MonitorSocket {
   // private readonly socket: Server<typeof WebSocket, typeof IncomingMessage>
   private readonly io: Server
@@ -53,7 +58,7 @@ export class MonitorSocket {
     responseTime: number,
     timestamp: number
   ): void => {
-    console.log('update response:', monitor.title)
+    // console.log('update response:', monitor.title)
     this.instance.io.in(String(monitor.projectId)).emit('new_responsetime', {
       monitorId: monitor._id,
       responseTime,

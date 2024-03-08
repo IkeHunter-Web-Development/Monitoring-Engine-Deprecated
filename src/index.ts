@@ -1,12 +1,12 @@
+import { HOST, MonitorSocket, PORT, setupDatabase } from 'src/config'
 import swaggerUi from 'swagger-ui-express'
-import { HOST, PORT, setupDatabase, MonitorSocket } from 'src/config'
 
-import { registerConsumers } from './data'
+import http from 'http'
 import 'src/config/socket'
+import { server } from './config/server'
+import { registerConsumers } from './data'
 import { initializeSwagger } from './docs/swagger'
 import { router } from './routes'
-import http from 'http'
-import { server } from './config/server'
 
 setupDatabase()
 registerConsumers()

@@ -114,6 +114,7 @@ export const handleAvailabilityChanged = async (
   id: Types.ObjectId,
   newAvailability: WebsiteAvailability
 ): Promise<Event | null> => {
+  // TODO: Create incident
   const monitor = await WebsiteMonitor.findById(id)
   if (monitor == null) return null
 
@@ -130,9 +131,11 @@ export const handleAvailabilityChanged = async (
 
   switch (newAvailability) {
     case WebsiteAvailability.online:
+      // TODO: End incident
       status = MonitorStatus.stable
       break
     case WebsiteAvailability.offline:
+      // TODO: Handle major outage
       status = MonitorStatus.emergency
       break
     default:
