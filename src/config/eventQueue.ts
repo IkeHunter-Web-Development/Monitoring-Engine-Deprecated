@@ -1,5 +1,5 @@
-import { EventConsumer } from '../router/eventConsumer'
+import { MonitorEventsConsumer } from 'src/queue'
 
 export const registerConsumers = (): void => {
-  EventConsumer.registerConsumer()
+  MonitorEventsConsumer.connect()
 }

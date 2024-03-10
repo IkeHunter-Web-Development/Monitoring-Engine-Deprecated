@@ -7,7 +7,7 @@ import {
   updateMonitor
 } from 'src/controllers'
 import { Responses } from 'src/utils'
-import { serializeMonitor, serializeMonitors } from '../serializers/monitorSerializer'
+import { serializeMonitor, serializeMonitors } from '../utils/serializers/monitorSerializer'
 
 export const createMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /**======================

@@ -1,6 +1,4 @@
-import { type IEvent } from 'src/models'
-
-export const validateEvent = (data: any): IEvent => {
+export const validateEvent = async (data: any): Promise<IEvent> => {
   const { projectId, message, monitorId, timestamp } = data
 
   if (projectId == null) throw new Error('projectId is required')

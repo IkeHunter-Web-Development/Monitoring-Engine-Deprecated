@@ -1,7 +1,7 @@
 import type { WebsiteMonitor } from 'src/models'
 import { NotImplementedError } from 'src/utils'
 
-export const registerWebsiteResponse = async (monitor: WebsiteMonitor, response: IResponse) => {
+export const registerWebsiteResponse = async (response: IResponse) => {
   throw new NotImplementedError('Register website response')
 }
 

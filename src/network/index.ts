@@ -1,2 +1,1 @@
-export * from './api'
-export * from './producers/monitorProducer'
+export { Network } from './network'

@@ -1,18 +1,18 @@
 // import { Consumer, KafkaClient, Producer } from "kafka-node";
-import { Kafka, type Consumer, type KafkaMessage, type Producer, logLevel } from 'kafkajs'
+import { Kafka, logLevel, type Consumer, type KafkaMessage, type Producer } from 'kafkajs'
 import { KAFKA_HOST, KAFKA_PORT } from 'src/config'
 
-export type StreamTopic = 'monitors' | 'notifications' | 'monitor-events'
-interface StreamMessage {
+export type EventQueueTopic = 'monitors' | 'notifications' | 'monitor-events'
+interface EventQueueMessage {
   action: string
   data: any
 }
 
-export class Stream {
+export class EventQueue {
   client: Kafka | null
   producer: Producer | null
   consumer: Consumer | null
-  static instance: Stream
+  static instance: EventQueue
 
   private constructor() {
     this.client = new Kafka({
@@ -30,15 +30,18 @@ export class Stream {
     this.consumer = this.client.consumer({ groupId: 'monitor-engine' })
   }
 
-  public static getInstance = (): Stream => {
-    if (!Stream.instance) {
-      Stream.instance = new Stream()
+  public static getInstance = (): EventQueue => {
+    if (!EventQueue.instance) {
+      EventQueue.instance = new EventQueue()
     }
 
-    return Stream.instance
+    return EventQueue.instance
   }
 
-  public send = async (topic: StreamTopic, messages: StreamMessage[]): Promise<void> => {
+  public send = async (
+    topic: EventQueueTopic | string,
+    messages: EventQueueMessage[]
+  ): Promise<void> => {
     await this.producer?.connect()
     await this.producer?.send({
       topic,
@@ -50,7 +53,7 @@ export class Stream {
   }
 
   public subscribe = async (
-    topic: StreamTopic,
+    topic: EventQueueTopic | string,
     onMessage: (data: { topic: string; partition: number; message: KafkaMessage }) => void
   ): Promise<void> => {
     await this.consumer?.connect().catch((error) => {

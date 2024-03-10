@@ -1,14 +1,14 @@
 import type { WebsiteMonitor } from 'src/models'
+import { generateMonitor } from 'src/utils/testing'
+import { request } from '../config'
+import { Network } from '../network'
+import type { NetworkAuthResponse } from '../types/network.types'
 import {
-  Network,
   projectInfoNotFoundResponse,
   projectInfoSuccessResponse,
-  request,
   verifyUserInvalidResponse,
   verifyUserSuccessResponse
-} from 'src/network/api'
-import { generateMonitor } from 'src/utils/testing'
-import type { NetworkAuthResponse } from '../types/network.types'
+} from '../utils/responses'
 
 jest.mock('../config.ts')
 const mockRequest = request as any

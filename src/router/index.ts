@@ -1,4 +1,3 @@
-import { docsMiddleware } from '../middleware/docsMiddleware'
 /**
  * Network ingress/egress router
  *
@@ -9,10 +8,11 @@ import { docsMiddleware } from '../middleware/docsMiddleware'
  */
 import { Router } from 'express'
 
+import { docsMiddleware } from '../middleware/docsMiddleware'
 import * as CoreController from '../views'
 import { eventRoutes } from './eventRoutes'
-import { monitorRoutes } from './monitorRoutes' // absolute import for swagger
 import { incidentRoutes } from './incidentRoutes'
+import { monitorRoutes } from './monitorRoutes' // absolute import for swagger
 
 const router = Router()
 router.get('/', CoreController.healthCheck)
@@ -21,7 +21,3 @@ router.use('/api/monitor', docsMiddleware, eventRoutes)
 router.use('/api/incident', docsMiddleware, incidentRoutes)
 
 export { router }
-
-export * from './monitorRoutes'
-
-
