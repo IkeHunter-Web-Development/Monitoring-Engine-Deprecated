@@ -7,18 +7,18 @@
  * fields with metrics and obtained data.
  */
 interface IEvent {
-  id: string
+  projectId: string
   message: string
-  incidentId?: string
-  timestamp: number // Date, ms
+  monitorId?: string
+  timestamp?: number // Date, ms
 }
 interface IEventMeta extends IEvent {
-  projectId: string
-  monitorId?: string
+  id: string
+  incidentId?: string
   createdAt: number // Date, ms
 }
 interface IResponse {
-  id: string
+  monitorId: string
   responseTime: number // ms
   createdAt: number // Date, ms
 }
@@ -64,4 +64,18 @@ declare interface IWebsiteMonitor extends IMonitor {
 declare interface IWebsiteMonitorMeta extends IMonitorMeta, IWebsiteMonitor {
   availability: WebsiteAvailability
   responseTime: number // ms
+}
+
+declare interface IIncident {
+  monitorId: string
+  impact: IncidentImpact
+  status: IncidentStatus
+  cause: string
+  displayName?: string
+  notes?: string
+}
+declare interface IIncidentMeta extends IIncident {
+  createdAt: number
+  updatedAt: number
+  resolvedAt: number
 }

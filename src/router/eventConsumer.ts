@@ -30,7 +30,6 @@ export class EventConsumer {
     //   MonitorSocket.updateClientResponseTimes(monitors[0], 100, Date.now())
     // }, 5000)
 
-
     this.stream?.subscribe('monitor-events', (res) => {
       // console.log('received:', res.message.value?.toString())
 
@@ -68,7 +67,7 @@ export class EventConsumer {
     if (availability !== monitor.availability) {
       console.log('monitor availability changed:', availability)
       event = await MonitorService.handleAvailabilityChanged(monitor._id, availability)
-      if (event != null) MonitorSocket.pushClientEvent(monitorId, event) 
+      if (event != null) MonitorSocket.pushClientEvent(monitorId, event)
     }
   }
 

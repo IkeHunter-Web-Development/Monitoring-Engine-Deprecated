@@ -10,7 +10,19 @@ export {
   createMonitor,
   deleteMonitor,
   getMonitor,
+  getMonitorEvents,
   getMonitors,
-  updateMonitor,
-  getMonitorEvents
-} from './monitorController'
+  updateMonitor
+} from './monitorResources'
+
+export { registerMonitorEvent, registerWebsiteResponse } from './monitorActions'
+
+export {
+  createIncident,
+  deleteIncident,
+  getIncident,
+  getIncidents,
+  updateIncident
+} from './incidentResources'
+
+export { endIncident, startIncident } from './incidentActions'

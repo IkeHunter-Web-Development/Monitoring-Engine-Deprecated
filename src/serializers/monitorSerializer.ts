@@ -1,5 +1,5 @@
 import { getMonitorEvents } from 'src/controllers'
-import { getMonitorResponses } from 'src/controllers/monitorController'
+import { getMonitorResponses } from 'src/controllers/monitorResources'
 import type { WebsiteMonitor } from 'src/models'
 
 export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsiteMonitorMeta> => {

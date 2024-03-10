@@ -1,3 +1,4 @@
+import type { WebsiteMonitor } from 'src/models'
 import {
   Network,
   projectInfoNotFoundResponse,
@@ -5,8 +6,7 @@ import {
   request,
   verifyUserInvalidResponse,
   verifyUserSuccessResponse
-} from 'src/data/network'
-import type { WebsiteMonitor } from 'src/models'
+} from 'src/network/api'
 import { generateMonitor } from 'src/utils/testing'
 import type { NetworkAuthResponse } from '../types/network.types'
 

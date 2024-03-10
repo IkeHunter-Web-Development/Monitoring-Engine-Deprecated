@@ -4,11 +4,12 @@ import 'dotenv/config'
 import { HOST, PORT } from 'src/config'
 import { ResponseCodes } from 'src/utils/responses/codes'
 import { formatJsonResponse } from 'src/utils/responses/responses'
+import { IncidentDoc, IncidentMetaDoc } from './api/incident.doc'
 import { MonitorDoc, MonitorMetaDoc } from './api/monitor.doc'
 
 const host = HOST !== '0.0.0.0' ? HOST : 'localhost'
 const outputFile = 'src/docs/swagger_output.json'
-const endpointsFiles = ['src/routes/index.ts']
+const endpointsFiles = ['src/router/index.ts']
 
 swaggerAutogen({ openapi: '3.0.0' })
 const doc = {
@@ -33,12 +34,16 @@ const doc = {
       name: 'Monitor',
       description: 'Endpoints for monitoring websites'
     },
+    // {
+    //   name: 'Events',
+    //   description: 'Endpoints for viewing events'
+    // },
     {
-      name: 'Events',
-      description: 'Endpoints for viewing events'
+      name: 'Incidents',
+      description: 'Managing incidents via the REST Api'
     },
     {
-      name: 'Main',
+      name: 'General',
       description: 'Endpoints for general API functionality'
     }
   ],
@@ -54,7 +59,9 @@ const doc = {
 
   definitions: {
     MonitorDoc: MonitorDoc,
-    MonitorMetaDoc: MonitorMetaDoc
+    MonitorMetaDoc: MonitorMetaDoc,
+    IncidentDoc: IncidentDoc,
+    IncidentMetaDoc: IncidentMetaDoc
   } as any
 }
 

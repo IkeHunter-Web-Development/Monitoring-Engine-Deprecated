@@ -5,7 +5,7 @@
  */
 import { type NextFunction, type Request, type Response } from 'express'
 import { NETWORK_TOKEN, NODE_ENV } from 'src/config'
-import { Network, type NetworkAuthResponse } from 'src/data/network'
+import { Network, type NetworkAuthResponse } from 'src/network/api'
 import { Responses } from 'src/utils'
 
 export type AuthLocals = {

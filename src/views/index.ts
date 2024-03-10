@@ -9,5 +9,15 @@ import { Responses } from 'src/utils'
  * services, validators, models, or other views.
  */
 export const healthCheck = (req: Request, res: Response) => {
+  /** ==========================*
+    @swagger Health Check
+    #swagger.summary = 'Health Check'
+    #swagger.tags = ['General']
+    #swagger.description = 'Root route to check if the system is online.'
+    #swagger.responses[200] = {
+      schema: { $ref: "#/definitions/Success200" },
+      description: "Monitor Engine is operational."
+    }
+   *=========================== */
   return Responses.ok(res, 'Monitor Engine is operational.', true)
 }

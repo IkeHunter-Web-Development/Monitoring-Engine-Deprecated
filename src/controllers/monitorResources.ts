@@ -1,3 +1,4 @@
+import type { Types } from 'mongoose'
 import type { Event, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import { NotImplementedError } from 'src/utils'
 
@@ -7,16 +8,16 @@ export const createMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMonit
 export const getMonitors = async (): Promise<WebsiteMonitor[]> => {
   throw new NotImplementedError('Get monitors controller')
 }
-export const getMonitor = async (id: string): Promise<WebsiteMonitor> => {
+export const getMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
   throw new NotImplementedError('Get monitor controller')
 }
 export const updateMonitor = async (
-  id: string,
+  id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
   throw new NotImplementedError('Update monitor controller')
 }
-export const deleteMonitor = async (id: string): Promise<WebsiteMonitor> => {
+export const deleteMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
   throw new NotImplementedError('Delete monitor controller')
 }
 

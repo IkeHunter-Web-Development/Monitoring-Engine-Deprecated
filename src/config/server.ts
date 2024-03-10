@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import responseTime from 'response-time'
-import { router } from 'src/routes'
+import { router } from 'src/router'
 import { errorHandler } from '../middleware/errorHandler'
 
 const server = express()
