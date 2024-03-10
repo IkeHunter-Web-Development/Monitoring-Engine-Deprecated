@@ -3,6 +3,9 @@
  */
 import mongoose from 'mongoose'
 
+const notificationMethodOptions: NotificationMethod[] = ['email', 'phone']
+const defaultNotificationMethod: NotificationMethod = 'email'
+
 export const SubscriberSchema = new mongoose.Schema({
   displayName: {
     type: String,
@@ -26,9 +29,11 @@ export const SubscriberSchema = new mongoose.Schema({
   //   }
   // ],
   method: {
+    // TODO: use global enum
     type: String,
-    enum: ['email', 'phone'],
-    default: 'email'
+    // enum: ['email', 'phone'],
+    enum: notificationMethodOptions,
+    default: defaultNotificationMethod
   },
   userId: {
     type: String,

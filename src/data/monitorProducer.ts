@@ -26,8 +26,10 @@ export class MonitorProducer {
     const instance = this.getInstance()
     const topic: StreamTopic = 'monitors'
 
-    await instance.stream.send(topic, [{ action, data }])
+    await instance.stream.send(topic, [{ action, data }]).catch((error) => {
+      console.log('Error sending monitor message:', error)
+    })
   }
-  
+
   // TODO: Abstract types of messages sent, make sendmonitormessage private
 }

@@ -40,6 +40,7 @@
     "request": "^2.88.2",
     "rimraff": "^0.0.1-security",
     "socket.io": "^4.7.4",
+    "tsoa": "^6.1.0",
     "uuid": "^9.0.1",
     "winston": "^3.10.0",
     "ws": "^8.16.0"

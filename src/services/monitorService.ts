@@ -4,16 +4,9 @@
 import type { Types } from 'mongoose'
 import { NODE_ENV } from 'src/config/constants'
 import { MonitorProducer } from 'src/data'
-import {
-  Event,
-  Incident,
-  MonitorStatus,
-  WebsiteAvailability,
-  WebsiteMonitor,
-  WebsiteResponse
-} from 'src/models'
+import { Event, Incident, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import { getResponseTime } from 'src/utils'
-import { validateMonitor } from 'src/validators'
+import { validateMonitor } from 'src/utils/validators'
 
 // export class MonitorService {
 
@@ -130,16 +123,16 @@ export const handleAvailabilityChanged = async (
   console.log('new availability:', newAvailability)
 
   switch (newAvailability) {
-    case WebsiteAvailability.online:
+    case 'online':
       // TODO: End incident
-      status = MonitorStatus.stable
+      status = 'stable'
       break
-    case WebsiteAvailability.offline:
+    case 'offline':
       // TODO: Handle major outage
-      status = MonitorStatus.emergency
+      status = 'emergency'
       break
     default:
-      status = MonitorStatus.pending
+      status = 'pending'
   }
 
   await monitor.updateOne({ status: status })

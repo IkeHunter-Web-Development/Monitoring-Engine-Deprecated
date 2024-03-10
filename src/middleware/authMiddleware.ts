@@ -6,6 +6,7 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { NETWORK_TOKEN, NODE_ENV } from 'src/config'
 import { Network, type NetworkAuthResponse } from 'src/data/network'
+import { Responses } from 'src/utils'
 
 export type AuthLocals = {
   token: string
@@ -18,6 +19,14 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
     #swagger.security = [{
         "bearerAuth": []
     }]
+    #swagger.responses[401] = {
+      schema: {$ref: "#/definitions/Error401"},
+      description: "Unauthorized"
+    }
+    #swagger.responses[511] = {
+      schema: {$ref: "#/definitions/Error511"},
+      description: "Network authentication required"
+    }
    *===================== */
   if (NODE_ENV === 'development') return next()
 
@@ -31,11 +40,12 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
   const userToken = req.headers?.authorization?.split(' ')[1]
 
   if (userToken == null) {
-    res.status(401).json({
-      status: 401,
-      message: 'User not logged in'
-    })
-    return
+    return Responses.unauthorized(res, 'User not logged in')
+    // res.status(401).json({
+    //   status: 401,
+    //   message: 'User not logged in'
+    // })
+    // return
   }
 
   await Network.authenticate(userToken)
@@ -57,10 +67,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
       next()
     })
     .catch((err: Error) => {
-      console.error(err)
-      res.status(500).json({
-        status: 500,
-        message: 'Internal server error'
-      })
+      return Responses.networkAuthenticationRequired(res, err.message)
     })
 }

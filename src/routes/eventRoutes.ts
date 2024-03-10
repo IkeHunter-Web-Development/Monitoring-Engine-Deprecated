@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { EventController } from 'src/controllers/eventController'
+// import { EventController } from 'src/controllers/eventController'
+import * as EventController from '../views/eventViews'
 import { isAuthenticated } from 'src/middleware'
 
 const router = Router()
 
-router.get('/events/', isAuthenticated, EventController.getEventsForProject)
+router.get('/events/', isAuthenticated, EventController.getEvents)
 
 export const eventRoutes = router

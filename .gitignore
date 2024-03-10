@@ -2,6 +2,8 @@ credentials.json
 reports.json
 build
 credentials_*.json
+_depricated/
+
 # Logs
 logs
 *.log

@@ -1,8 +1,10 @@
 import swaggerAutogen from 'swagger-autogen'
-import { eventResponse, eventBody, registerEventBody } from './api/event.doc'
-import { monitorBody, monitorResponse, monitorResponseDetailed } from './api/monitor.doc'
-import { HOST, PORT } from 'src/config'
+
 import 'dotenv/config'
+import { HOST, PORT } from 'src/config'
+import { ResponseCodes } from 'src/utils/responses/codes'
+import { formatJsonResponse } from 'src/utils/responses/responses'
+import { MonitorDoc, MonitorMetaDoc } from './api/monitor.doc'
 
 const host = HOST !== '0.0.0.0' ? HOST : 'localhost'
 const outputFile = 'src/docs/swagger_output.json'
@@ -51,32 +53,25 @@ const doc = {
   },
 
   definitions: {
-    MonitorBody: { ...monitorBody },
-    EventBody: { ...eventBody },
-    RegisterEventBody: { ...registerEventBody },
-    MonitorResponse: { ...monitorResponse },
-    EventResponse: { ...eventResponse },
-    MonitorResponseDetailed: { ...monitorResponseDetailed },
+    MonitorDoc: MonitorDoc,
+    MonitorMetaDoc: MonitorMetaDoc
+  } as any
+}
 
-    Error500: {
-      status: 500,
-      message: 'Error message...'
-    },
-    Error404: {
-      status: 404,
-      message: 'Error message...'
+const generateResponseDocs = () => {
+  const codes = ResponseCodes
+
+  for (const codeStr of Object.keys(codes)) {
+    const code = parseInt(codeStr)
+    if (code > 299) {
+      doc.definitions[`Error${code}`] = formatJsonResponse(code)
+    } else {
+      doc.definitions[`Success${code}`] = formatJsonResponse(code)
     }
   }
 }
 
-// export const initializeSwagger = async () => {
-//   return new Promise((resolve, reject) => {
-//     swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-//       resolve()
-//     })
-//   });
-// }
-
 export const initializeSwagger = async () => {
+  generateResponseDocs()
   return await swaggerAutogen()(outputFile, endpointsFiles, doc)
 }

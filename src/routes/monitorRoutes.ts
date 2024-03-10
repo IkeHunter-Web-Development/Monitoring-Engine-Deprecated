@@ -1,16 +1,16 @@
 import { Router } from 'express'
-import { MonitorController } from '../controllers/monitorController' // absolute import for swagger
 import { isAuthenticated } from '../middleware/authMiddleware'
+import * as MonitorController from '../views/monitorViews' // absolute import for swagger
 
 const router = Router()
 
-router.get('/details', isAuthenticated, MonitorController.getDetailedMonitors)
+// router.get('/details', isAuthenticated, MonitorController.getDetailedMonitors)
 
-router.get('/monitors/', isAuthenticated, MonitorController.getMonitors)
-router.get('/monitors/:id', isAuthenticated, MonitorController.getMonitor)
-router.post('/monitors/', isAuthenticated, MonitorController.createMonitor)
-router.put('/monitors/:id', isAuthenticated, MonitorController.updateMonitor)
-router.patch('/monitors/:id', isAuthenticated, MonitorController.updateMonitor)
-router.delete('/monitors/:id', isAuthenticated, MonitorController.deleteMonitor)
+router.get('/monitors/', MonitorController.getMonitorsView)
+router.get('/monitors/:id', isAuthenticated, MonitorController.getMonitorView)
+router.post('/monitors/', isAuthenticated, MonitorController.createMonitorView)
+router.put('/monitors/:id', isAuthenticated, MonitorController.updateMonitorView)
+router.patch('/monitors/:id', isAuthenticated, MonitorController.updateMonitorView)
+router.delete('/monitors/:id', isAuthenticated, MonitorController.deleteMonitorView)
 
 export const monitorRoutes = router

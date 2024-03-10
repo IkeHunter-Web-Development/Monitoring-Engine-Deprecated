@@ -30,6 +30,7 @@ export class EventConsumer {
     //   MonitorSocket.updateClientResponseTimes(monitors[0], 100, Date.now())
     // }, 5000)
 
+
     this.stream?.subscribe('monitor-events', (res) => {
       // console.log('received:', res.message.value?.toString())
 

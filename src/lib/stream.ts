@@ -1,5 +1,5 @@
 // import { Consumer, KafkaClient, Producer } from "kafka-node";
-import { Kafka, type Producer, type Consumer, type KafkaMessage } from 'kafkajs'
+import { Kafka, type Consumer, type KafkaMessage, type Producer, logLevel } from 'kafkajs'
 import { KAFKA_HOST, KAFKA_PORT } from 'src/config'
 
 export type StreamTopic = 'monitors' | 'notifications' | 'monitor-events'
@@ -17,7 +17,13 @@ export class Stream {
   private constructor() {
     this.client = new Kafka({
       clientId: 'monitor-engine',
-      brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`]
+      brokers: [`${KAFKA_HOST}:${KAFKA_PORT}`],
+      retry: {
+        retries: 3,
+        restartOnFailure: async () => false,
+        maxRetryTime: 5000
+      },
+      logLevel: logLevel.NOTHING
     })
 
     this.producer = this.client.producer()
@@ -47,12 +53,23 @@ export class Stream {
     topic: StreamTopic,
     onMessage: (data: { topic: string; partition: number; message: KafkaMessage }) => void
   ): Promise<void> => {
-    await this.consumer?.connect()
-    await this.consumer?.subscribe({ topic })
-    await this.consumer?.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        onMessage({ topic, partition, message })
-      }
+    await this.consumer?.connect().catch((error) => {
+      console.log('Error connecting to consumer:', error)
+      return null
     })
+    await this.consumer?.subscribe({ topic }).catch((error) => {
+      console.log('Error subscribing to consumer:', error)
+      return null
+    })
+    await this.consumer
+      ?.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          onMessage({ topic, partition, message })
+        }
+      })
+      .catch((error) => {
+        console.log('Error listening for messages on consumer:', error)
+        return null
+      })
   }
 }

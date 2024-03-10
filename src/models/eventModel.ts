@@ -26,7 +26,7 @@ const EventSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       required: false
     },
-    incident: {
+    incidentId: {
       type: Schema.Types.ObjectId,
       ref: 'Incident',
       required: false

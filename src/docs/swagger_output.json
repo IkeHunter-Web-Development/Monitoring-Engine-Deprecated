@@ -48,78 +48,27 @@
   "paths": {
     "/": {
       "get": {
-        "tags": [
-          "Main"
-        ],
-        "description": "Endpoint for checking the health of the API.",
+        "description": "",
         "responses": {
-          "200": {
+          "400": {
             "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "number",
-                  "example": 200
-                },
-                "service": {
-                  "type": "string",
-                  "example": "Monitor Engine"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Systems online"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/Error400"
             },
-            "description": "OK"
+            "description": "Bad request"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not found"
+          },
+          "501": {
+            "schema": {
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
           }
         }
-      }
-    },
-    "/api/monitor/details": {
-      "get": {
-        "tags": [
-          "Monitor"
-        ],
-        "description": "Endpoint for getting details for all monitors.",
-        "parameters": [
-          {
-            "name": "x-network-authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/MonitorResponseDetailed"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/Error500"
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
       }
     },
     "/api/monitor/monitors/": {
@@ -127,47 +76,40 @@
         "tags": [
           "Monitor"
         ],
+        "summary": "Get monitors",
         "description": "Endpoint for getting all monitors.",
-        "parameters": [
-          {
-            "name": "x-network-authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "Success",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/MonitorResponse"
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
+              "$ref": "#/definitions/MonitorMetaDoc"
+            },
+            "description": "Monitor updated"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error",
+          "400": {
             "schema": {
-              "$ref": "#/definitions/Error500"
-            }
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not found"
+          },
+          "501": {
+            "schema": {
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
           }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
           "Monitor"
         ],
+        "summary": "Create new monitor",
         "description": "Endpoint for creating a monitor.",
         "parameters": [
           {
@@ -181,25 +123,46 @@
             "description": "Monitor object",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MonitorBody"
+              "$ref": "#/definitions/MonitorDoc"
             }
           }
         ],
         "responses": {
           "201": {
             "schema": {
-              "$ref": "#/definitions/MonitorResponse"
+              "$ref": "#/definitions/MonitorMetaDoc"
             },
             "description": "Monitor created"
           },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error",
+          "400": {
             "schema": {
-              "$ref": "#/definitions/Error500"
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error401"
             }
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not found"
+          },
+          "501": {
+            "schema": {
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
+          },
+          "511": {
+            "schema": {
+              "$ref": "#/definitions/Error511"
+            },
+            "description": "Network authentication required"
           }
         },
         "security": [
@@ -214,6 +177,7 @@
         "tags": [
           "Monitor"
         ],
+        "summary": "Get single monitor",
         "description": "Endpoint for getting a single monitor.",
         "parameters": [
           {
@@ -232,24 +196,45 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/MonitorResponse"
+              "$ref": "#/definitions/MonitorMetaDoc"
             },
             "description": "Monitor updated"
           },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error401"
+            }
           },
           "404": {
             "schema": {
               "$ref": "#/definitions/Error404"
             },
-            "description": "Not Found"
+            "description": "Not found"
           },
           "500": {
-            "description": "Internal Server Error",
             "schema": {
               "$ref": "#/definitions/Error500"
-            }
+            },
+            "description": "Internal Server Error"
+          },
+          "501": {
+            "schema": {
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
+          },
+          "511": {
+            "schema": {
+              "$ref": "#/definitions/Error511"
+            },
+            "description": "Network authentication required"
           }
         },
         "security": [
@@ -262,6 +247,7 @@
         "tags": [
           "Monitor"
         ],
+        "summary": "Update monitor",
         "description": "Endpoint for updating a monitor.",
         "parameters": [
           {
@@ -282,31 +268,46 @@
             "description": "Monitor object",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MonitorBody"
+              "$ref": "#/definitions/MonitorDoc"
             }
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/MonitorResponse"
+              "$ref": "#/definitions/MonitorMetaDoc"
             },
             "description": "Monitor updated"
           },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error401"
+            }
           },
           "404": {
             "schema": {
               "$ref": "#/definitions/Error404"
             },
-            "description": "Not Found"
+            "description": "Not found"
           },
-          "500": {
-            "description": "Internal Server Error",
+          "501": {
             "schema": {
-              "$ref": "#/definitions/Error500"
-            }
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
+          },
+          "511": {
+            "schema": {
+              "$ref": "#/definitions/Error511"
+            },
+            "description": "Network authentication required"
           }
         },
         "security": [
@@ -319,6 +320,7 @@
         "tags": [
           "Monitor"
         ],
+        "summary": "Update monitor",
         "description": "Endpoint for updating a monitor.",
         "parameters": [
           {
@@ -339,31 +341,46 @@
             "description": "Monitor object",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MonitorBody"
+              "$ref": "#/definitions/MonitorDoc"
             }
           }
         ],
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/MonitorResponse"
+              "$ref": "#/definitions/MonitorMetaDoc"
             },
             "description": "Monitor updated"
           },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error401"
+            }
           },
           "404": {
             "schema": {
               "$ref": "#/definitions/Error404"
             },
-            "description": "Not Found"
+            "description": "Not found"
           },
-          "500": {
-            "description": "Internal Server Error",
+          "501": {
             "schema": {
-              "$ref": "#/definitions/Error500"
-            }
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
+          },
+          "511": {
+            "schema": {
+              "$ref": "#/definitions/Error511"
+            },
+            "description": "Network authentication required"
           }
         },
         "security": [
@@ -376,6 +393,7 @@
         "tags": [
           "Monitor"
         ],
+        "summary": "Delete monitor",
         "description": "Endpoint for deleting a single monitor.",
         "parameters": [
           {
@@ -389,42 +407,54 @@
             "name": "x-network-authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "Monitor deleted successfully",
             "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "number",
-                  "example": 200
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Monitor deleted"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
+              "$ref": "#/definitions/MonitorMetaDoc"
             }
           },
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error401"
+            }
           },
           "404": {
             "schema": {
               "$ref": "#/definitions/Error404"
             },
-            "description": "Not Found"
+            "description": "Not found"
           },
-          "500": {
-            "description": "Internal Server Error",
+          "501": {
             "schema": {
-              "$ref": "#/definitions/Error500"
-            }
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
+          },
+          "511": {
+            "schema": {
+              "$ref": "#/definitions/Error511"
+            },
+            "description": "Network authentication required"
           }
         },
         "security": [
@@ -438,374 +468,270 @@
       "get": {
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "400": {
+            "schema": {
+              "$ref": "#/definitions/Error400"
+            },
+            "description": "Bad request"
+          },
+          "404": {
+            "schema": {
+              "$ref": "#/definitions/Error404"
+            },
+            "description": "Not found"
+          },
+          "501": {
+            "schema": {
+              "$ref": "#/definitions/Error501"
+            },
+            "description": "Not implemented"
           }
         }
       }
     }
   },
   "definitions": {
-    "MonitorBody": {
+    "MonitorDoc": {
       "type": "object",
       "properties": {
-        "project": {
-          "type": "string",
-          "example": "0"
-        },
         "url": {
-          "type": "string",
-          "example": "http://www.example.com"
-        },
-        "users": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "John Doe"
-              },
-              "email": {
-                "type": "string",
-                "example": "user@example.com"
-              }
-            }
-          }
-        },
-        "statusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "active": {
-          "type": "boolean",
-          "example": true
-        },
-        "title": {
-          "type": "string",
-          "example": "Example"
-        }
-      }
-    },
-    "EventBody": {
-      "type": "object",
-      "properties": {
-        "monitorId": {
-          "type": "string",
-          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
-        },
-        "statusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "online": {
-          "type": "boolean",
-          "example": true
-        },
-        "timestamp": {
-          "type": "string",
-          "example": "2020-10-30T15:31:15.000Z"
-        },
-        "message": {
-          "type": "string",
-          "example": "Example log message."
-        },
-        "responseTime": {
-          "type": "number",
-          "example": 200
-        }
-      }
-    },
-    "RegisterEventBody": {
-      "type": "object",
-      "properties": {
-        "monitorId": {
-          "type": "string",
-          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
-        },
-        "statusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "status": {
-          "type": "string",
-          "example": "online"
-        },
-        "message": {
-          "type": "string",
-          "example": "Test event"
-        }
-      }
-    },
-    "MonitorResponse": {
-      "type": "object",
-      "properties": {
-        "projectId": {
-          "type": "string",
-          "example": "0"
-        },
-        "url": {
-          "type": "string",
-          "example": "http://www.example.com"
-        },
-        "users": {
-          "type": "array",
-          "example": [],
-          "items": {}
-        },
-        "statusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "active": {
-          "type": "boolean",
-          "example": true
-        },
-        "title": {
-          "type": "string",
-          "example": "Example"
-        },
-        "online": {
-          "type": "boolean",
-          "example": true
-        },
-        "_id": {
-          "type": "string",
-          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
-        },
-        "__v": {
-          "type": "number",
-          "example": 0
-        }
-      }
-    },
-    "EventResponse": {
-      "type": "object",
-      "properties": {
-        "monitorId": {
-          "type": "string",
-          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
-        },
-        "statusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "online": {
-          "type": "boolean",
-          "example": true
-        },
-        "timestamp": {
-          "type": "string",
-          "example": "2020-10-30T15:31:15.000Z"
-        },
-        "message": {
-          "type": "string",
-          "example": "Example log message."
-        },
-        "responseTime": {
-          "type": "number",
-          "example": 200
-        },
-        "_id": {
-          "type": "string",
-          "example": "5f9b0b0b9b9b9b9b9b9b9b9b"
-        },
-        "__v": {
-          "type": "number",
-          "example": 0
-        }
-      }
-    },
-    "MonitorResponseDetailed": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "example": "657e38cd7e817f716788e286"
-        },
-        "project": {
-          "type": "string",
-          "example": "Example Project"
-        },
-        "company": {
-          "type": "string",
-          "example": "IkeHunter Web Development"
-        },
-        "url": {
-          "type": "string",
-          "example": "https://ikehunter.com/test/"
-        },
-        "recipients": {
-          "type": "array",
-          "example": [],
-          "items": {}
-        },
-        "status": {
           "type": "string",
           "example": ""
         },
-        "targetStatusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "currentStatusCode": {
-          "type": "number",
-          "example": 200
-        },
-        "active": {
-          "type": "boolean",
-          "example": true
-        },
-        "title": {
-          "type": "string",
-          "example": "IkeHunter live 2"
-        },
-        "type": {
+        "checkType": {
           "type": "string",
           "example": "http"
         },
-        "dateAdded": {
-          "type": "string",
-          "example": "2023-12-16T23:54:53.025Z"
-        },
-        "responseTime": {
+        "retries": {
           "type": "number",
-          "example": -1
+          "example": 0
         },
         "timeout": {
           "type": "number",
-          "example": 30
+          "example": 0
         },
-        "retries": {
-          "type": "number",
-          "example": 3
-        },
-        "coverImage": {
+        "projectId": {
           "type": "string",
           "example": ""
         },
-        "events": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "_id": {
-                "type": "string",
-                "example": "657e4bb98a890b85d551182c"
-              },
-              "monitorId": {
-                "type": "string",
-                "example": "657e38cd7e817f716788e286"
-              },
-              "statusCode": {
-                "type": "number",
-                "example": 200
-              },
-              "online": {
-                "type": "boolean",
-                "example": true
-              },
-              "timestamp": {
-                "type": "string",
-                "example": "2023-12-17T01:15:37.188Z"
-              },
-              "message": {
-                "type": "string",
-                "example": "Example log message."
-              },
-              "responseTime": {
-                "type": "number",
-                "example": 200
-              },
-              "__v": {
-                "type": "number",
-                "example": 0
-              }
-            }
-          }
+        "title": {
+          "type": "string",
+          "example": ""
         },
-        "report": {
-          "type": "object",
-          "properties": {
-            "startDate": {
-              "type": "string",
-              "example": "2023-12-17T01:07:54.312Z"
-            },
-            "endDate": {
-              "type": "string",
-              "example": "2023-12-17T01:15:37.188Z"
-            },
-            "totalDays": {
-              "type": "number",
-              "example": 2
-            },
-            "totalUptimeMinutes": {
-              "type": "number",
-              "example": 7.7146
-            },
-            "totalDowntimeMinutes": {
-              "type": "number",
-              "example": 0
-            },
-            "daysWithDowntime": {
-              "type": "array",
-              "example": [],
-              "items": {}
-            },
-            "totalEvents": {
-              "type": "number",
-              "example": 2
-            },
-            "totalUptimeEvents": {
-              "type": "number",
-              "example": 2
-            },
-            "totalDowntimeEvents": {
-              "type": "number",
-              "example": 0
-            },
-            "averageResponseTime": {
-              "type": "number",
-              "example": 200
-            },
-            "_id": {
-              "type": "string",
-              "example": "657e4c01ebafc9f07bc1d93e"
-            },
-            "__v": {
-              "type": "number",
-              "example": 0
-            }
-          }
+        "interval": {
+          "type": "number",
+          "example": 0
         },
-        "responses": {
+        "icon": {
+          "type": "string",
+          "example": ""
+        },
+        "active": {
+          "type": "boolean",
+          "example": false
+        },
+        "reminderIntervals": {
+          "type": "number",
+          "example": 0
+        },
+        "subscribers": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "responseTime": {
-                "type": "number",
-                "example": 0
-              },
-              "timestamp": {
-                "type": "string",
-                "example": "2023-12-17T01:16:49.845Z"
-              }
-            }
-          }
+          "example": [],
+          "items": {}
         }
       }
     },
-    "Error500": {
+    "MonitorMetaDoc": {
+      "type": "object",
+      "properties": {
+        "availability": {
+          "type": "string",
+          "example": "pending"
+        },
+        "responseTime": {
+          "type": "number",
+          "example": 0
+        },
+        "id": {
+          "type": "string",
+          "example": ""
+        },
+        "uuid": {
+          "type": "string",
+          "example": ""
+        },
+        "status": {
+          "type": "string",
+          "example": "stable"
+        },
+        "lastCheck": {
+          "type": "number",
+          "example": 0
+        },
+        "createdAt": {
+          "type": "number",
+          "example": 0
+        },
+        "updatedAt": {
+          "type": "number",
+          "example": 0
+        },
+        "events": {
+          "type": "array",
+          "example": [],
+          "items": {}
+        },
+        "responses": {
+          "type": "array",
+          "example": [],
+          "items": {}
+        },
+        "projectId": {
+          "type": "string",
+          "example": ""
+        },
+        "title": {
+          "type": "string",
+          "example": ""
+        },
+        "interval": {
+          "type": "number",
+          "example": 0
+        },
+        "icon": {
+          "type": "string",
+          "example": ""
+        },
+        "active": {
+          "type": "boolean",
+          "example": false
+        },
+        "reminderIntervals": {
+          "type": "number",
+          "example": 0
+        },
+        "subscribers": {
+          "type": "array",
+          "example": [],
+          "items": {}
+        },
+        "url": {
+          "type": "string",
+          "example": ""
+        },
+        "checkType": {
+          "type": "string",
+          "example": "http"
+        },
+        "retries": {
+          "type": "number",
+          "example": 0
+        },
+        "timeout": {
+          "type": "number",
+          "example": 0
+        }
+      }
+    },
+    "Success200": {
       "type": "object",
       "properties": {
         "status": {
           "type": "number",
-          "example": 500
+          "example": 200
+        },
+        "type": {
+          "type": "string",
+          "example": "Ok"
         },
         "message": {
           "type": "string",
-          "example": "Error message..."
+          "example": "undefined"
+        }
+      }
+    },
+    "Success201": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 201
+        },
+        "type": {
+          "type": "string",
+          "example": "Created"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Success204": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 204
+        },
+        "type": {
+          "type": "string",
+          "example": "No Content"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error400": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 400
+        },
+        "type": {
+          "type": "string",
+          "example": "Bad Request"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error401": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 401
+        },
+        "type": {
+          "type": "string",
+          "example": "Unauthorized"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error403": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 403
+        },
+        "type": {
+          "type": "string",
+          "example": "Forbidden"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
         }
       }
     },
@@ -816,9 +742,166 @@
           "type": "number",
           "example": 404
         },
+        "type": {
+          "type": "string",
+          "example": "Not Found"
+        },
         "message": {
           "type": "string",
-          "example": "Error message..."
+          "example": "undefined"
+        }
+      }
+    },
+    "Error405": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 405
+        },
+        "type": {
+          "type": "string",
+          "example": "Method Not Allowed"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error409": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 409
+        },
+        "type": {
+          "type": "string",
+          "example": "Conflict"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error410": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 410
+        },
+        "type": {
+          "type": "string",
+          "example": "Gone"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error500": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 500
+        },
+        "type": {
+          "type": "string",
+          "example": "Internal Server Error"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error501": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 501
+        },
+        "type": {
+          "type": "string",
+          "example": "Not Implemented"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error502": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 502
+        },
+        "type": {
+          "type": "string",
+          "example": "Bad Gateway"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error503": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 503
+        },
+        "type": {
+          "type": "string",
+          "example": "Service Unavailable"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error504": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 504
+        },
+        "type": {
+          "type": "string",
+          "example": "Gateway Timeout"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
+        }
+      }
+    },
+    "Error511": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "number",
+          "example": 511
+        },
+        "type": {
+          "type": "string",
+          "example": "Network Authentication Required"
+        },
+        "message": {
+          "type": "string",
+          "example": "undefined"
         }
       }
     }

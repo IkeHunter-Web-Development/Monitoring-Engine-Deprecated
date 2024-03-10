@@ -1,28 +1,31 @@
 import mongoose, { Schema } from 'mongoose'
+
 import { SubscriberSchema } from './subscriberModel'
+// import { MonitorStatus, WebsiteAvailability } from 'src/types/enums'
 /**
  * Reference:
  * https://developer.statuspage.io/#operation/getPagesPageIdIncidents
  */
 
 // Calculated by monitor service
-export enum MonitorStatus {
-  stable = 'stable',
-  alert = 'alert',
-  emergency = 'emergency',
-  pending = 'pending'
-}
 
-// Info given by external services
-export enum WebsiteAvailability {
-  online = 'online',
-  degraded = 'degraded',
-  offline = 'offline',
-  maintenance = 'maintenance',
-  pending = 'pending'
-}
+const statusOptions: MonitorStatus[] = ['alert', 'emergency', 'pending', 'stable']
+const statusDefault: MonitorStatus = 'pending'
+
+const availabilityOptions: WebsiteAvailability[] = [
+  'degraded',
+  'maintenance',
+  'offline',
+  'online',
+  'online',
+  'pending'
+]
+const availabilityDefault: WebsiteAvailability = 'pending'
 
 export const MonitorSchema = {
+  /** DEFAULT */
+  // TODO: uuid
+
   /** REQUIRED */
   projectId: {
     type: String,
@@ -36,8 +39,10 @@ export const MonitorSchema = {
   /** OPTIONAL */
   status: {
     type: String,
-    enum: Object.values(MonitorStatus),
-    default: MonitorStatus.pending
+    enum: statusOptions,
+    default: statusDefault
+    // enum: Object.values(MonitorStatus),
+    // default: MonitorStatus.pending
   },
   interval: {
     type: Number,
@@ -55,6 +60,10 @@ export const MonitorSchema = {
   reminderIntervals: {
     type: Number,
     default: 10 // Minutes
+  },
+  lastCheck: {
+    type: Date,
+    required: false
   },
   subscribers: [SubscriberSchema]
 }
@@ -77,8 +86,8 @@ export const WebsiteMonitorSchema = new Schema(
     availability: {
       type: String,
       // enum: ['online', 'degraded', 'offline', 'maintenance', 'pending'],
-      enum: Object.values(WebsiteAvailability),
-      default: WebsiteAvailability.pending
+      enum: availabilityOptions,
+      default: availabilityDefault
     },
     retries: {
       type: Number,
@@ -91,11 +100,11 @@ export const WebsiteMonitorSchema = new Schema(
     responseTime: {
       type: Number,
       default: -1
-    },
-    lastCheck: {
-      type: Date,
-      required: false
     }
+    // lastCheck: {
+    //   type: Date,
+    //   required: false
+    // }
   },
   {
     timestamps: true

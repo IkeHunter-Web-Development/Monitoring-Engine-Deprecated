@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose'
-import type { MonitorStatus } from './monitorModel'
 
 // declare type IncidentStatus = 'open' | 'closed' | 'pending'
 export enum IncidentStatus {
