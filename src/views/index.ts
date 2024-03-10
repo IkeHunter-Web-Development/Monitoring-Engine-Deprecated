@@ -1,3 +1,6 @@
+import type { Request, Response } from 'express'
+import { Responses } from 'src/utils'
+
 /**
  * REST Api Views
  *
@@ -5,4 +8,6 @@
  * will call any necessary controller. Views cannot directly access
  * services, validators, models, or other views.
  */
-export const healthCheck = () => {}
+export const healthCheck = (req: Request, res: Response) => {
+  return Responses.ok(res, 'Monitor Engine is operational.', true)
+}
