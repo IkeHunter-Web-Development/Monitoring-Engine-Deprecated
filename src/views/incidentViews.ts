@@ -2,13 +2,10 @@ import type { NextFunction, Request, Response } from 'express'
 import {
   createIncident,
   deleteIncident,
-  endIncident,
   getIncident,
   getIncidents,
-  startIncident,
   updateIncident
 } from 'src/controllers'
-import { getActiveIncidents } from 'src/controllers/incidentResources'
 import { Responses, serializeIncident, serializeIncidents } from 'src/utils'
 
 export const createIncidentView = async (req: Request, res: Response, next: NextFunction) => {

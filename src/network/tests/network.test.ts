@@ -1,6 +1,5 @@
-import { httpRequest } from '../config'
 import type { WebsiteMonitor } from 'src/models'
-import { generateMonitor } from 'src/utils/testing'
+import { httpRequest } from '../config'
 import { getNetworkAuth, getProjectInfo, sendRequest } from '../network'
 import type { NetworkAuthResponse } from '../types/networkTypes'
 import {
@@ -9,6 +8,7 @@ import {
   verifyUserInvalidResponse,
   verifyUserSuccessResponse
 } from '../utils/responses'
+import { generateMonitor } from 'src/utils'
 
 // mockJest()
 jest.mock('../config.ts')

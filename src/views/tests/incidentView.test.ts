@@ -87,4 +87,3 @@ describe('Incident view tests', () => {
     expect(incidents.length).toEqual(0)
   })
 })
-
