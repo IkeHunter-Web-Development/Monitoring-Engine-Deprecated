@@ -1,7 +1,9 @@
 import type { NextFunction, Request, Response } from 'express'
-import { NotImplementedError } from 'src/utils'
+import { searchEvents } from 'src/controllers/eventActions'
+import { Responses } from 'src/utils'
+import { serializeEvents } from 'src/utils/serializers/eventSerializer'
 
-export const queryEventsView = (req: Request, res: Response, next: NextFunction) => {
+export const queryEventsView = async (req: Request, res: Response, next: NextFunction) => {
   /**====================*
     @swagger Query Events
     #swagger.summary = 'Query Events'
@@ -23,7 +25,15 @@ export const queryEventsView = (req: Request, res: Response, next: NextFunction)
     }
    *=====================*/
   try {
-    throw new NotImplementedError('Query events view')
+    const { monitorId, projectId } = req.query
+
+    const events = await searchEvents({
+      monitorId: monitorId?.toString(),
+      projectId: projectId?.toString()
+    })
+    const serialized = await serializeEvents(events)
+
+    return Responses.ok(res, serialized)
   } catch (error) {
     next(error)
   }

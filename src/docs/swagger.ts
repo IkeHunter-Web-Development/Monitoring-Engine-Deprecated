@@ -74,9 +74,9 @@ const generateResponseDocs = () => {
   for (const codeStr of Object.keys(codes)) {
     const code = parseInt(codeStr)
     if (code > 299) {
-      doc.definitions[`Error${code}`] = formatJsonResponse(code)
+      doc.definitions[`Error${code}`] = formatJsonResponse(code, 'Example message')
     } else {
-      doc.definitions[`Success${code}`] = formatJsonResponse(code)
+      doc.definitions[`Success${code}`] = formatJsonResponse(code, 'Example message')
     }
   }
 }

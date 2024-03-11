@@ -1,5 +1,5 @@
 /**
- * @fileoverview Tests for monitor api routes.
+ * @fileoverview Tests for monitor api views.
  */
 import type { Request, Response } from 'express'
 import httpMocks from 'node-mocks-http'
@@ -14,7 +14,7 @@ const defaultMonitor = {
   title: 'Google'
 }
 
-describe('Monitor controller', () => {
+describe('Monitor view', () => {
   let req: Request
   let res: Response
   let next: jest.Mock<any, any, any>
