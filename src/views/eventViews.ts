@@ -4,26 +4,27 @@ import { Responses } from 'src/utils'
 import { serializeEvents } from 'src/utils/serializers/eventSerializer'
 
 export const queryEventsView = async (req: Request, res: Response, next: NextFunction) => {
-  /**====================*
-    @swagger Query Events
-    #swagger.summary = 'Query Events'
-    #swagger.tags = ['Events']
-    #swagger.description = ''
-    #swagger.parameters['monitorId'] = {
-      in: "query",
-      description: "Monitor id to search events",
-      type: "string"
-    }
-    #swagger.parameters['projectId'] = {
-      in: "query",
-      description: "Project id to search events",
-      type: "string"
-    }
-    #swagger.responses[200] = {
-      schema: { $ref: "#/definitions/EventMetaDoc" },
-      description: ""
-    }
-   *=====================*/
+  /* ====================== *
+  #swagger.summary = 'Query Events'
+  #swagger.tags = ['Events']
+  #swagger.description = 'Search events by project id or monitor id.'
+  
+  #swagger.parameters['monitorId'] = {
+    in: "query",
+    description: "Monitor id to search events",
+    type: "string"
+  }
+  #swagger.parameters['projectId'] = {
+    in: "query",
+    description: "Project id to search events",
+    type: "string"
+  }
+  
+  #swagger.responses[200] = { 
+    "description": "Events Found",
+    "schema": { $ref: "#/definitions/IncidentMetaDoc" }  
+  }
+  ** ====================== */
   try {
     const { monitorId, projectId } = req.query
 

@@ -6,8 +6,7 @@ import {
   getMonitors,
   updateMonitor
 } from 'src/controllers'
-import { Responses } from 'src/utils'
-import { serializeMonitor, serializeMonitors } from '../utils/serializers/monitorSerializer'
+import { Responses, serializeMonitor, serializeMonitors } from 'src/utils'
 
 export const createMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /**======================
@@ -122,9 +121,9 @@ export const updateMonitorView = async (req: Request, res: Response, next: NextF
     }
     *======================= */
   try {
-    const { body, query } = req
+    const { body, params } = req
 
-    let id = query.id
+    let id = params.id
     id = id?.toString() || ''
 
     const input: Partial<IWebsiteMonitor> = {
@@ -162,7 +161,7 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
     }
     *=========================== */
   try {
-    let { id } = req.query
+    let { id } = req.params
     id = id?.toString() || ''
 
     const monitor = await deleteMonitor(id)

@@ -427,16 +427,6 @@
             "name": "x-network-authorization",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "schema",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -490,7 +480,7 @@
           "Events"
         ],
         "summary": "Query Events",
-        "description": "",
+        "description": "Search events by project id or monitor id.",
         "parameters": [
           {
             "name": "monitorId",
@@ -503,24 +493,14 @@
             "in": "query",
             "description": "Project id to search events",
             "type": "string"
-          },
-          {
-            "name": "schema",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
           "200": {
+            "description": "Events Found",
             "schema": {
-              "$ref": "#/definitions/EventMetaDoc"
-            },
-            "description": "OK"
+              "$ref": "#/definitions/IncidentMetaDoc"
+            }
           },
           "400": {
             "schema": {
@@ -751,240 +731,6 @@
           "Incidents"
         ],
         "summary": "Delete Incident",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      }
-    },
-    "/api/incident/active": {
-      "post": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "Start an active incident",
-        "description": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "Get all active incidents",
-        "description": "",
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      }
-    },
-    "/api/incident/active/{id}": {
-      "get": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "Get an active incident",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "Update an active incident",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "Update an active incident",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
-            },
-            "description": "OK"
-          },
-          "400": {
-            "schema": {
-              "$ref": "#/definitions/Error400"
-            },
-            "description": "Bad request"
-          },
-          "404": {
-            "schema": {
-              "$ref": "#/definitions/Error404"
-            },
-            "description": "Not found"
-          },
-          "501": {
-            "schema": {
-              "$ref": "#/definitions/Error501"
-            },
-            "description": "Not implemented"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Incidents"
-        ],
-        "summary": "End an active incident",
         "description": "",
         "parameters": [
           {

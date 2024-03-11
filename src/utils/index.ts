@@ -1,6 +1,8 @@
+export * from './examples'
 export * from './exceptions'
+export * from './getResJson'
 export * from './getResponseTime'
-export * from './testing'
+export * from './serializers'
 export * from './validators'
 
 import * as responses from './responses/responses'

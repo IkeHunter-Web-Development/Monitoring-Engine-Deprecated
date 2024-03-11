@@ -4,15 +4,8 @@
 import type { Request, Response } from 'express'
 import httpMocks from 'node-mocks-http'
 import { WebsiteMonitor } from 'src/models'
-import { getResJson } from 'src/utils'
+import { getResJson, monitorExample } from 'src/utils'
 import * as view from '../monitorViews'
-
-const defaultMonitor = {
-  projectId: '123abc',
-  url: 'https://www.google.com',
-  users: [],
-  title: 'Google'
-}
 
 describe('Monitor view', () => {
   let req: Request
@@ -38,7 +31,7 @@ describe('Monitor view', () => {
 
     req = httpMocks.createRequest({
       method: 'POST',
-      body: defaultMonitor
+      body: monitorExample
     })
 
     await view.createMonitorView(req, res, next)
@@ -47,7 +40,7 @@ describe('Monitor view', () => {
     // const monitors = await MonitorService.getMonitors()
     const monitors = await WebsiteMonitor.find({})
     expect(monitors.length).toEqual(1)
-    expect(monitors[0].projectId).toEqual(defaultMonitor.projectId)
+    expect(monitors[0].projectId).toEqual(monitorExample.projectId)
   })
 
   /**
@@ -55,7 +48,7 @@ describe('Monitor view', () => {
    * and return a 200 status code.
    */
   it('should update a monitor', async () => {
-    const monitor = await WebsiteMonitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(monitorExample)
 
     req = httpMocks.createRequest({
       method: 'PUT',
@@ -76,7 +69,7 @@ describe('Monitor view', () => {
    * and return a 200 status code.
    */
   it('should get a monitor', async () => {
-    const monitor = await WebsiteMonitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(monitorExample)
 
     req = httpMocks.createRequest({
       params: { id: monitor._id.toString() }
@@ -94,7 +87,7 @@ describe('Monitor view', () => {
    * and return a 200 status code.
    */
   it('should delete a monitor', async () => {
-    const monitor = await WebsiteMonitor.create(defaultMonitor)
+    const monitor = await WebsiteMonitor.create(monitorExample)
 
     const req = httpMocks.createRequest({
       method: 'DELETE',
@@ -114,15 +107,15 @@ describe('Monitor view', () => {
    */
   it('should get all monitors', async () => {
     const monitor = await WebsiteMonitor.create({
-      ...defaultMonitor,
+      ...monitorExample,
       projectId: '123'
     })
     const monitor2 = await WebsiteMonitor.create({
-      ...defaultMonitor,
+      ...monitorExample,
       projectId: '456'
     })
     const monitor3 = await WebsiteMonitor.create({
-      ...defaultMonitor,
+      ...monitorExample,
       projectId: '789'
     })
 
