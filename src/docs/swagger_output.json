@@ -15,6 +15,10 @@
   "basePath": "/",
   "tags": [
     {
+      "name": "General",
+      "description": "Endpoints for general API functionality"
+    },
+    {
       "name": "Monitor",
       "description": "Endpoints for monitoring websites"
     },
@@ -23,8 +27,8 @@
       "description": "Managing incidents via the REST Api"
     },
     {
-      "name": "General",
-      "description": "Endpoints for general API functionality"
+      "name": "Events",
+      "description": "Endpoints for viewing events"
     }
   ],
   "schemes": [
@@ -480,10 +484,34 @@
         ]
       }
     },
-    "/api/monitor/events/": {
+    "/api/monitor/events": {
       "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Query Events",
         "description": "",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "query",
+            "description": "Monitor id to search events",
+            "type": "string"
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project id to search events",
+            "type": "string"
+          }
+        ],
         "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/EventMetaDoc"
+            },
+            "description": "OK"
+          },
           "400": {
             "schema": {
               "$ref": "#/definitions/Error400"
@@ -1177,6 +1205,40 @@
           "example": "pending"
         },
         "cause": {
+          "type": "string",
+          "example": ""
+        }
+      }
+    },
+    "EventDoc": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "example": ""
+        },
+        "message": {
+          "type": "string",
+          "example": ""
+        }
+      }
+    },
+    "EventMetaDoc": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": ""
+        },
+        "createdAt": {
+          "type": "number",
+          "example": 0
+        },
+        "projectId": {
+          "type": "string",
+          "example": ""
+        },
+        "message": {
           "type": "string",
           "example": ""
         }

@@ -4,6 +4,7 @@ import 'dotenv/config'
 import { HOST, PORT } from 'src/config'
 import { ResponseCodes } from 'src/utils/responses/codes'
 import { formatJsonResponse } from 'src/utils/responses/responses'
+import { EventDoc, EventMetaDoc } from './api/event.doc'
 import { IncidentDoc, IncidentMetaDoc } from './api/incident.doc'
 import { MonitorDoc, MonitorMetaDoc } from './api/monitor.doc'
 
@@ -31,20 +32,20 @@ const doc = {
 
   tags: [
     {
+      name: 'General',
+      description: 'Endpoints for general API functionality'
+    },
+    {
       name: 'Monitor',
       description: 'Endpoints for monitoring websites'
     },
-    // {
-    //   name: 'Events',
-    //   description: 'Endpoints for viewing events'
-    // },
     {
       name: 'Incidents',
       description: 'Managing incidents via the REST Api'
     },
     {
-      name: 'General',
-      description: 'Endpoints for general API functionality'
+      name: 'Events',
+      description: 'Endpoints for viewing events'
     }
   ],
 
@@ -61,7 +62,9 @@ const doc = {
     MonitorDoc: MonitorDoc,
     MonitorMetaDoc: MonitorMetaDoc,
     IncidentDoc: IncidentDoc,
-    IncidentMetaDoc: IncidentMetaDoc
+    IncidentMetaDoc: IncidentMetaDoc,
+    EventDoc: EventDoc,
+    EventMetaDoc: EventMetaDoc
   } as any
 }
 

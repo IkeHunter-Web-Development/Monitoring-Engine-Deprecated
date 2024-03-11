@@ -5,6 +5,6 @@ import { isAuthenticated } from 'src/middleware'
 
 const router = Router()
 
-router.get('/events/', isAuthenticated, EventController.getEvents)
+router.get('/events', isAuthenticated, EventController.queryEventsView)
 
 export const eventRoutes = router
