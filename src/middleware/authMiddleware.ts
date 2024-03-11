@@ -5,7 +5,7 @@
  */
 import { type NextFunction, type Request, type Response } from 'express'
 import { NETWORK_TOKEN, NODE_ENV } from 'src/config'
-import { Network, type NetworkAuthResponse } from 'src/network/api'
+import { getNetworkAuth, type NetworkAuthResponse } from 'src/network'
 import { Responses } from 'src/utils'
 
 export type AuthLocals = {
@@ -41,14 +41,9 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
   if (userToken == null) {
     return Responses.unauthorized(res, 'User not logged in')
-    // res.status(401).json({
-    //   status: 401,
-    //   message: 'User not logged in'
-    // })
-    // return
   }
 
-  await Network.authenticate(userToken)
+  await getNetworkAuth(userToken)
     .then((networkRes: NetworkAuthResponse) => {
       if (networkRes.status !== 200 || networkRes.userId == null) {
         return res.status(401).json({

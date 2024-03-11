@@ -13,4 +13,4 @@
  * appropriate controller.
  */
 
-export * as MonitorService from './_depricated/monitorService'
+export * as MonitorService from './monitorService'

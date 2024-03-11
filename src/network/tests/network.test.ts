@@ -1,8 +1,8 @@
+import { httpRequest } from '../config'
 import type { WebsiteMonitor } from 'src/models'
 import { generateMonitor } from 'src/utils/testing'
-import { request } from '../config'
-import { Network } from '../network'
-import type { NetworkAuthResponse } from '../types/network.types'
+import { getNetworkAuth, getProjectInfo, sendRequest } from '../network'
+import type { NetworkAuthResponse } from '../types/networkTypes'
 import {
   projectInfoNotFoundResponse,
   projectInfoSuccessResponse,
@@ -10,13 +10,15 @@ import {
   verifyUserSuccessResponse
 } from '../utils/responses'
 
+// mockJest()
 jest.mock('../config.ts')
-const mockRequest = request as any
+
+const mockRequest = httpRequest as any
 
 describe('Network manager tests', () => {
   test('making api request', async () => {
     mockRequest.mockResolvedValue({ message: 'success' })
-    Network.sendRequest({ endpoint: '/api/test', method: 'GET' }).then((res) => {
+    sendRequest({ endpoint: '/api/test', method: 'GET' }).then((res) => {
       expect(res).toStrictEqual({ message: 'success' })
     })
   })
@@ -25,7 +27,7 @@ describe('Network manager tests', () => {
     mockRequest.mockResolvedValue(verifyUserSuccessResponse)
 
     const token = 'auth-service-token'
-    const res: NetworkAuthResponse = await Network.authenticate(token)
+    const res: NetworkAuthResponse = await getNetworkAuth(token)
 
     expect(res.userId).toEqual(verifyUserSuccessResponse.data.id)
   })
@@ -34,7 +36,7 @@ describe('Network manager tests', () => {
     mockRequest.mockResolvedValue(verifyUserInvalidResponse)
 
     const token = 'invalid-token'
-    const res: NetworkAuthResponse = await Network.authenticate(token)
+    const res: NetworkAuthResponse = await getNetworkAuth(token)
 
     expect(res.status).toEqual(verifyUserInvalidResponse.status)
     expect(res.userId).toBeUndefined()
@@ -45,7 +47,7 @@ describe('Network manager tests', () => {
     const monitor: WebsiteMonitor = await generateMonitor()
 
     const token = 'valid-token'
-    const res = await Network.getProjectInfo(token, monitor)
+    const res = await getProjectInfo(token, monitor.projectId)
 
     expect(res.projectTitle).toEqual(projectInfoSuccessResponse.data.title)
     expect(res.companyName).toEqual(projectInfoSuccessResponse.data.company)
@@ -57,7 +59,7 @@ describe('Network manager tests', () => {
     const monitor: WebsiteMonitor = await generateMonitor()
 
     const token = 'valid-token'
-    const res = await Network.getProjectInfo(token, monitor)
+    const res = await getProjectInfo(token, monitor.projectId)
 
     expect(res.projectTitle).toBeUndefined()
     expect(res.companyName).toBeUndefined()

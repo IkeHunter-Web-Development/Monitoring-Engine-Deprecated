@@ -1,7 +1,8 @@
 import http from 'http'
 import swaggerUi from 'swagger-ui-express'
 
-import { HOST, MonitorSocket, PORT, registerConsumers, setupDatabase } from 'src/config'
+import { HOST, MonitorSocket, PORT, setupDatabase } from 'src/config'
+import { registerConsumers } from './config/eventQueue'
 import { server } from './config/server'
 import { initializeSwagger } from './docs/swagger'
 import { router } from './router'
