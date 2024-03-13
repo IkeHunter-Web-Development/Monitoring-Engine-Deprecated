@@ -28,7 +28,7 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
    *======================*/
   try {
     const { body } = req
-    const input: IWebsiteMonitor = {
+    const input: IWebsiteMonitor = { 
       projectId: body.projectId,
       title: body.title,
       interval: body.interval,

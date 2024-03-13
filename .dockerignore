@@ -5,3 +5,4 @@
 !package-lock.json
 !tsconfig.json
 !jest.config.ts
+!jesthtmlreporter.config.json

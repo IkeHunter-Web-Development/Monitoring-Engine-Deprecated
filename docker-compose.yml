@@ -9,7 +9,10 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
+      - ./coverage:/app/coverage
       - ./logs:/app/logs
+      - ./.git:/app/.git
+      - ./test-report:/app/test-report
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -41,6 +44,24 @@ services:
     volumes:
       - mongo-data-dsm:/data/db
     command: mongod --quiet --logpath /dev/null --bind_ip_all
+  
+  coverage:
+    image: nginx
+    ports:
+      - "8001:80"
+    volumes:
+      - ./coverage:/usr/share/nginx/html
+    logging:
+      driver: "none"
+  
+  report:
+    image: nginx
+    ports:
+      - "8002:80"
+    volumes:
+      - ./test-report:/usr/share/nginx/html
+    logging:
+      driver: "none"
     
 volumes:
   mongo-data-dsm:

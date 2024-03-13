@@ -1,29 +1,48 @@
 import type { Types } from 'mongoose'
-import type { Event, WebsiteMonitor, WebsiteResponse } from 'src/models'
-import { NotImplementedError } from 'src/utils'
+import { Event, WebsiteMonitor, WebsiteResponse } from 'src/models'
+import { MonitorNotFoundError } from 'src/utils'
 
 export const createMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
-  throw new NotImplementedError('Create monitor controller')
+  const monitor = await WebsiteMonitor.create(data)
+  return monitor
 }
 export const getMonitors = async (): Promise<WebsiteMonitor[]> => {
-  throw new NotImplementedError('Get monitors controller')
+  const monitors = await WebsiteMonitor.find({})
+
+  return monitors
 }
 export const getMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
-  throw new NotImplementedError('Get monitor controller')
+  const monitor = await WebsiteMonitor.findById(id)
+
+  if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}`)
+
+  return monitor
 }
 export const updateMonitor = async (
   id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
-  throw new NotImplementedError('Update monitor controller')
+  const monitor = await getMonitor(id)
+  await monitor.updateOne(data)
+
+  const newMonitor = await getMonitor(id) 
+
+  return newMonitor
 }
 export const deleteMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
-  throw new NotImplementedError('Delete monitor controller')
+  const monitor = await getMonitor(id)
+
+  await monitor.deleteOne()
+  return monitor
 }
 
 export const getMonitorEvents = async (monitor: WebsiteMonitor): Promise<Event[]> => {
-  throw new NotImplementedError('Get monitor events')
+  const events = await Event.find({ monitorId: monitor._id })
+
+  return events
 }
 export const getMonitorResponses = async (monitor: WebsiteMonitor): Promise<WebsiteResponse[]> => {
-  throw new NotImplementedError('Get monitor responses')
+  const responses = await WebsiteResponse.find({ monitorId: monitor._id })
+
+  return responses
 }

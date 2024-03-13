@@ -3,6 +3,7 @@ reports.json
 build
 credentials_*.json
 _depricated/
+test-report/
 
 # Logs
 logs

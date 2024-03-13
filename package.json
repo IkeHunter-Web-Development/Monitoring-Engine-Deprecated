@@ -5,8 +5,8 @@
   "main": "build/index",
   "types": "build/index",
   "scripts": {
-    "test": "npm run build && jest --testTimeout=5000 --no-cache --detectOpenHandles --forceExit",
-    "test:watch": "npm run build && jest --watch --testTimeout=5000 --detectOpenHandles --forceExit --verbose",
+    "test": "npm run build && jest --testTimeout=5000 --no-cache --detectOpenHandles --forceExit --coverage",
+    "test:watch": "npm run build && jest --testTimeout=5000 --forceExit --watchAll --silent --noStackTrace --coverage",
     "test:verbose": "npm run build && jest --testTimeout=5000 --detectOpenHandles --forceExit --verbose",
     "start": "npm run build && node ./build/index.js",
     "tsc": "tsc",
@@ -74,6 +74,7 @@
     "eslint-plugin-prettier": "^5.1.2",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
+    "jest-html-reporter": "^3.10.2",
     "jest-runner-tsc": "^1.6.0",
     "mongodb-memory-server": "^9.0.0",
     "node-mocks-http": "^1.13.0",

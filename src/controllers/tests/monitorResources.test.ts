@@ -2,12 +2,12 @@ import { WebsiteMonitor } from 'src/models'
 import { createMonitor, deleteMonitor, getMonitor, updateMonitor } from '../monitorResources'
 
 const monitorPayload: IWebsiteMonitor = {
-  url: '',
+  url: 'https://example.com',
   checkType: 'http',
   retries: 0,
   timeout: 0,
-  projectId: '',
-  title: '',
+  projectId: 'asdlkfjasdlifu23l423908',
+  title: 'Some Monitor',
   interval: 0,
   icon: '',
   active: false,
