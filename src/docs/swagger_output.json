@@ -106,6 +106,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -171,6 +177,12 @@
               "$ref": "#/definitions/Error404"
             },
             "description": "Not found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           },
           "501": {
             "schema": {
@@ -317,6 +329,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -390,6 +408,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -454,6 +478,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -514,6 +544,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -560,6 +596,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -592,6 +634,12 @@
               "$ref": "#/definitions/Error404"
             },
             "description": "Not found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           },
           "501": {
             "schema": {
@@ -636,6 +684,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -676,6 +730,12 @@
               "$ref": "#/definitions/Error404"
             },
             "description": "Not found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           },
           "501": {
             "schema": {
@@ -718,6 +778,12 @@
             },
             "description": "Not found"
           },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
+          },
           "501": {
             "schema": {
               "$ref": "#/definitions/Error501"
@@ -758,6 +824,12 @@
               "$ref": "#/definitions/Error404"
             },
             "description": "Not found"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/Error500"
+            },
+            "description": "Internal Server Error"
           },
           "501": {
             "schema": {

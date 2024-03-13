@@ -6,7 +6,7 @@ import {
   getIncidents,
   updateIncident
 } from 'src/controllers'
-import { Responses, serializeIncident, serializeIncidents } from 'src/utils'
+import { Responses, sendError, serializeIncident, serializeIncidents } from 'src/utils'
 
 export const createIncidentView = async (req: Request, res: Response, next: NextFunction) => {
   /**====================*
@@ -42,7 +42,7 @@ export const createIncidentView = async (req: Request, res: Response, next: Next
 
     return Responses.created(res, serialized)
   } catch (error) {
-    next(error)
+    return sendError(error, res, next)
   }
 }
 export const getIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -64,7 +64,7 @@ export const getIncidentView = async (req: Request, res: Response, next: NextFun
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    next(error)
+    return sendError(error, res, next)
   }
 }
 export const getIncidentsView = async (req: Request, res: Response, next: NextFunction) => {
@@ -84,7 +84,7 @@ export const getIncidentsView = async (req: Request, res: Response, next: NextFu
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    next(error)
+    return sendError(error, res, next)
   }
 }
 export const updateIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -118,7 +118,7 @@ export const updateIncidentView = async (req: Request, res: Response, next: Next
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    next(error)
+    return sendError(error, res, next)
   }
 }
 export const deleteIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -141,7 +141,7 @@ export const deleteIncidentView = async (req: Request, res: Response, next: Next
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    next(error)
+    return sendError(error, res, next)
   }
 }
 

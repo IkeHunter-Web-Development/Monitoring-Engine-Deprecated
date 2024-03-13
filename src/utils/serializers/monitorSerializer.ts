@@ -29,21 +29,21 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
     id: monitor._id.toString(),
     uuid: 'TODO',
     status: monitor.status,
-    lastCheck: monitor.lastCheck.getTime(),
-    createdAt: monitor.createdAt.getTime(),
-    updatedAt: monitor.updatedAt.getTime(),
+    lastCheck: monitor.lastCheck?.getTime(),
+    createdAt: monitor.createdAt?.getTime(),
+    updatedAt: monitor.updatedAt?.getTime(),
     events: events.map((event) => ({
       id: event._id.toString(),
       projectId: event.projectId,
       message: event.message,
       incidentId: event.incidentId?.toString(),
-      timestamp: event.timestamp.getTime()
+      timestamp: event.timestamp?.getTime()
     })),
     responses: responses.map((res) => ({
       id: res._id.toString(),
       monitorId: res.monitorId.toString(),
       responseTime: res.responseTime,
-      createdAt: res.createdAt.getTime()
+      createdAt: res.createdAt?.getTime()
     })),
     availability: monitor.availability,
     responseTime: monitor.responseTime

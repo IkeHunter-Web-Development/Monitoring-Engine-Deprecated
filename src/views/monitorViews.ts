@@ -6,7 +6,7 @@ import {
   getMonitors,
   updateMonitor
 } from 'src/controllers'
-import { Responses, serializeMonitor, serializeMonitors } from 'src/utils'
+import { Responses, sendError, serializeMonitor, serializeMonitors } from 'src/utils'
 
 export const createMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /**======================
@@ -28,7 +28,7 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
    *======================*/
   try {
     const { body } = req
-    const input: IWebsiteMonitor = { 
+    const input: IWebsiteMonitor = {
       projectId: body.projectId,
       title: body.title,
       interval: body.interval,
@@ -47,7 +47,7 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
 
     return Responses.created(res, serialized)
   } catch (error) {
-    return next(error)
+    return sendError(error, res, next)
   }
 }
 
@@ -68,7 +68,7 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    return next(error)
+    return sendError(error, res, next)
   }
 }
 export const getMonitorView = async (req: Request, res: Response, next: NextFunction) => {
@@ -97,7 +97,7 @@ export const getMonitorView = async (req: Request, res: Response, next: NextFunc
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    return next(error)
+    return sendError(error, res, next)
   }
 }
 
@@ -145,7 +145,7 @@ export const updateMonitorView = async (req: Request, res: Response, next: NextF
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    return next(error)
+    return sendError(error, res, next)
   }
 }
 export const deleteMonitorView = async (req: Request, res: Response, next: NextFunction) => {
@@ -169,6 +169,6 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
 
     return Responses.ok(res, serialized)
   } catch (error) {
-    return next(error)
+    return sendError(error, res, next)
   }
 }

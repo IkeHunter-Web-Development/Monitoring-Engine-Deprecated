@@ -11,6 +11,10 @@ export const docsMiddleware = (req: Request, res: Response, next: NextFunction) 
       schema: {$ref: "#/definitions/Error404"},
       description: "Not found"
     }
+    #swagger.responses[500] = {
+      schema: {$ref: "#/definitions/Error500"},
+      description: "Internal Server Error"
+    }
     #swagger.responses[501] = {
       schema: {$ref: "#/definitions/Error501"},
       description: "Not implemented"

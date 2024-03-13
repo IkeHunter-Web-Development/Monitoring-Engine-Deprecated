@@ -79,7 +79,7 @@ describe('Monitor view', () => {
 
     // const body = (res as any)._getJSONData();
     const body = getResJson(res)
-    expect(body._id).toEqual(monitor._id.toString())
+    expect(body.id).toEqual(monitor._id.toString())
   })
 
   /**
