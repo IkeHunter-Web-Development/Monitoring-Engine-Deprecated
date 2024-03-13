@@ -7,7 +7,7 @@
  * fields with metrics and obtained data.
  */
 interface IEvent {
-  projectId?: string
+  projectId: string
   message: string
   monitorId?: string
   timestamp?: number // Date, ms

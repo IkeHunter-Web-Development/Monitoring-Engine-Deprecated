@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 
 export const incidentExample: IIncident = {
-  monitorId: Types.ObjectId.toString(),
+  monitorId: new Types.ObjectId().toString(),
   impact: 'none',
   status: 'active',
   cause: 'Example cause',

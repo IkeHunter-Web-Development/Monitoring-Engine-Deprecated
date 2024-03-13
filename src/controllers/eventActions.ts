@@ -1,9 +1,15 @@
-import type { Event } from 'src/models'
-import { NotImplementedError } from 'src/utils'
+import type { Types } from 'mongoose'
+import { Event } from 'src/models'
 
 export const searchEvents = async (params: {
-  monitorId?: string
+  monitorId?: string | Types.ObjectId
   projectId?: string
 }): Promise<Event[]> => {
-  throw new NotImplementedError('Search events')
+  const { monitorId, projectId } = params
+  if (!monitorId && !projectId) return []
+
+  const monitorEvents = monitorId ? await Event.find({ monitorId }) : []
+  const projectEvents = projectId ? await Event.find({ projectId }) : []
+
+  return [...monitorEvents, ...projectEvents]
 }

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 
 export const responseExample: IResponse = {
-  monitorId: Types.ObjectId.toString(),
+  monitorId: new Types.ObjectId().toString(),
   responseTime: 500
 }

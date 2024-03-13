@@ -25,7 +25,7 @@ export const updateMonitor = async (
   const monitor = await getMonitor(id)
   await monitor.updateOne(data)
 
-  const newMonitor = await getMonitor(id) 
+  const newMonitor = await getMonitor(id)
 
   return newMonitor
 }
