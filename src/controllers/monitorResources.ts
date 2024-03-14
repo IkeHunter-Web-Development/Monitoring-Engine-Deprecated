@@ -22,12 +22,10 @@ export const updateMonitor = async (
   id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
-  const monitor = await getMonitor(id)
-  await monitor.updateOne(data)
+  const monitor = await WebsiteMonitor.findOneAndUpdate({ _id: id }, data, { new: true })
+  if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}.`)
 
-  const newMonitor = await getMonitor(id)
-
-  return newMonitor
+  return monitor
 }
 export const deleteMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
   const monitor = await getMonitor(id)

@@ -22,10 +22,6 @@ const IncidentSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       required: true
     },
-    message: {
-      type: String,
-      required: true
-    },
     impact: {
       type: String,
       enum: ['none', 'maintenance', 'minor', 'major', 'critical'],
@@ -47,10 +43,18 @@ const IncidentSchema = new mongoose.Schema(
       ],
       required: true
     },
+    cause: {
+      type: String,
+      required: true
+    },
 
     /** OPTIONAL */
     resolvedAt: {
       type: Date,
+      required: false
+    },
+    displayName: {
+      type: String,
       required: false
     },
     notes: {

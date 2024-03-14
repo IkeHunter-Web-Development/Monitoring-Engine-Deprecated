@@ -38,7 +38,7 @@ export const createIncidentView = async (req: Request, res: Response, next: Next
     }
 
     const incident = await createIncident(payload)
-    const serialized = await serializeIncident(incident)
+    const serialized = serializeIncident(incident)
 
     return Responses.created(res, serialized)
   } catch (error) {
@@ -60,7 +60,7 @@ export const getIncidentView = async (req: Request, res: Response, next: NextFun
     const { id } = req.params || ''
 
     const incident = await getIncident(id)
-    const serialized = await serializeIncident(incident)
+    const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)
   } catch (error) {
@@ -80,7 +80,7 @@ export const getIncidentsView = async (req: Request, res: Response, next: NextFu
    *=====================*/
   try {
     const incidents = await getIncidents()
-    const serialized = await serializeIncidents(incidents)
+    const serialized = serializeIncidents(incidents)
 
     return Responses.ok(res, serialized)
   } catch (error) {
@@ -114,7 +114,7 @@ export const updateIncidentView = async (req: Request, res: Response, next: Next
     }
 
     const incident = await updateIncident(id, payload)
-    const serialized = await serializeIncident(incident)
+    const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)
   } catch (error) {
@@ -137,7 +137,7 @@ export const deleteIncidentView = async (req: Request, res: Response, next: Next
     id = id?.toString() || ''
 
     const incident = await deleteIncident(id)
-    const serialized = await serializeIncident(incident)
+    const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)
   } catch (error) {

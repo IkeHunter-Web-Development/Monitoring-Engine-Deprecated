@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 export const IncidentDoc: IIncident = {
   monitorId: '',
   impact: 'maintenance',
@@ -6,6 +8,7 @@ export const IncidentDoc: IIncident = {
 }
 
 export const IncidentMetaDoc: IIncidentMeta = {
+  id: new Types.ObjectId().toString(),
   createdAt: 0,
   updatedAt: 0,
   resolvedAt: 0,

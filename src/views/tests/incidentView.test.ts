@@ -29,7 +29,7 @@ describe('Incident view tests', () => {
 
     const incidents = await Incident.find({})
     expect(incidents.length).toEqual(1)
-    expect(incidents[0].monitorId).toEqual(incidentExample.monitorId)
+    expect(incidents[0].monitorId.toString()).toEqual(incidentExample.monitorId.toString())
   })
   it('should get incident', async () => {
     const incident = await Incident.create(incidentExample)
@@ -62,6 +62,7 @@ describe('Incident view tests', () => {
 
     req = httpMocks.createRequest({
       method: 'PATCH',
+      params: { id: incident._id },
       body: {
         impact: newImpact
       }
@@ -74,10 +75,10 @@ describe('Incident view tests', () => {
     expect(updatedIncident?.impact).toEqual(newImpact)
   })
   it('should delete incident', async () => {
-    await Incident.create(incidentExample)
+    const incident = await Incident.create(incidentExample)
     req = httpMocks.createRequest({
       method: 'DELETE',
-      body: incidentExample
+      params: { id: incident._id }
     })
 
     await views.deleteIncidentView(req, res, next)

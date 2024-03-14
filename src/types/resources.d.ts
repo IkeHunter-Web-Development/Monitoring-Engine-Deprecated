@@ -77,7 +77,8 @@ declare interface IIncident {
   notes?: string
 }
 declare interface IIncidentMeta extends IIncident {
+  id: string
   createdAt: number
-  updatedAt: number
-  resolvedAt: number
+  updatedAt?: number
+  resolvedAt?: number
 }

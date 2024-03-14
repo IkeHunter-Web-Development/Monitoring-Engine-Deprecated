@@ -1,17 +1,78 @@
+import { Incident, WebsiteMonitor } from 'src/models'
+import { generateIncidents, incidentExample, monitorExample } from 'src/utils'
+import {
+  createIncident,
+  deleteIncident,
+  getIncident,
+  getIncidents,
+  updateIncident
+} from '../incidentResources'
+
+describe('Incident resource creation controller tests', () => {
+  it('should create incident', async () => {
+    const monitor = await WebsiteMonitor.create(monitorExample)
+    const payload: IIncident = {
+      monitorId: monitor._id.toString(),
+      impact: 'maintenance',
+      status: 'pending',
+      cause: 'Example cause'
+    }
+
+    const incident = await createIncident(payload)
+
+    expect(incident.monitorId).toEqual(monitor._id)
+    expect(incident.impact).toEqual(payload.impact)
+    expect(incident.status).toEqual(payload.status)
+
+    const query = await Incident.find({ monitorId: monitor._id })
+    expect(query.length).toEqual(1)
+  })
+})
+
 describe('Incident resource controller tests', () => {
-  it('should create incident', () => {
-    expect(true).toEqual(false)
+  // let monitor: WebsiteMonitor
+  // let incident: Incident
+
+  beforeEach(async () => {
+    const monitor = await WebsiteMonitor.create(monitorExample)
+    await Incident.create({ ...incidentExample, monitorId: monitor._id })
+
+    const dbQuery = await Incident.find({})
+    expect(dbQuery.length).toEqual(1)
   })
-  it('should get incident', () => {
-    expect(true).toEqual(false)
+
+  it('should get incident', async () => {
+    const dbIncidents = await Incident.find({})
+    const dbIncident = dbIncidents[0]
+    const incidentResult = await getIncident(dbIncident._id)
+
+    expect(incidentResult._id).toEqual(dbIncident._id)
+
+    const newIncidents = await Incident.find({})
+    expect(newIncidents.length).toEqual(dbIncidents.length)
   })
-  it('should get multiple incidents', () => {
-    expect(true).toEqual(false)
+  it('should get multiple incidents', async () => {
+    await generateIncidents(3)
+    const dbIncidents = await Incident.find({})
+    const incidents = await getIncidents()
+
+    expect(incidents.length).toEqual(dbIncidents.length)
   })
-  it('should update incident', () => {
-    expect(true).toEqual(false)
+  it('should update incident', async () => {
+    const dbIncident = (await Incident.find({}))[0]
+    const payload: Partial<IIncident> = {
+      notes: dbIncident.notes + ' updated'
+    }
+
+    const updatedIncident = await updateIncident(dbIncident._id, payload)
+
+    expect(updatedIncident.notes).toEqual(payload.notes)
   })
-  it('should delete incident', () => {
-    expect(true).toEqual(false)
+  it('should delete incident', async () => {
+    const dbIncident = (await Incident.find({}))[0]
+    await deleteIncident(dbIncident._id)
+
+    const dbQuery = await Incident.find({})
+    expect(dbQuery.length).toEqual(0)
   })
 })

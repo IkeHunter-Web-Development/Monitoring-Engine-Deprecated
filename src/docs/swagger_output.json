@@ -1008,6 +1008,10 @@
     "IncidentMetaDoc": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "example": "65f27e5091887b0ffa435926"
+        },
         "createdAt": {
           "type": "number",
           "example": 0
