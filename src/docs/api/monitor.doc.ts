@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 export const MonitorDoc: IWebsiteMonitor = {
   url: '',
   checkType: 'http',
@@ -12,28 +14,105 @@ export const MonitorDoc: IWebsiteMonitor = {
   subscribers: []
 }
 
+const monitorId = new Types.ObjectId().toString()
+const projectId = new Types.ObjectId().toString()
 export const MonitorMetaDoc: IWebsiteMonitorMeta = {
-  availability: 'pending',
-  responseTime: 0,
-  id: '',
-  uuid: '',
-  status: 'stable',
-  lastCheck: 0,
-  createdAt: 0,
-  updatedAt: 0,
-  events: [],
-  responses: [],
-  projectId: '',
-  title: '',
-  interval: 0,
+  id: monitorId,
+  projectId: projectId,
+  title: 'Example Monitor',
+  url: 'https://example.com',
+  uuid: new Types.ObjectId().toString(),
   icon: '',
-  active: false,
-  reminderIntervals: 0,
-  subscribers: [],
-  url: '',
+
+  availability: 'pending',
+  status: 'stable',
   checkType: 'http',
-  retries: 0,
-  timeout: 0
+  active: false,
+
+  responseTime: 300,
+  interval: 60,
+  lastCheck: 15,
+  reminderIntervals: 10,
+  retries: 3,
+  timeout: 15,
+
+  updatedAt: Date.now() - 1 * (1000 * 60 * 60 * 24),
+  createdAt: Date.now() - 3 * (1000 * 60 * 60 * 24),
+
+  subscribers: [
+    {
+      id: new Types.ObjectId().toString(),
+      monitorId: monitorId,
+      displayName: 'John Doe',
+      email: 'john@example.com',
+      phone: '772-555-1234',
+      method: 'email',
+      userId: new Types.ObjectId().toString()
+    },
+    {
+      id: new Types.ObjectId().toString(),
+      monitorId: monitorId,
+      displayName: 'Alex Smith',
+      email: 'alex@example.com',
+      phone: '772-555-5678',
+      method: 'phone'
+    }
+  ],
+  events: [
+    {
+      id: new Types.ObjectId().toString(),
+      projectId: projectId,
+      message: 'Monitor created',
+      monitorId: monitorId,
+      timestamp: Date.now() - 3 * (1000 * 60 * 60 * 24),
+      createdAt: Date.now() - 3 * (1000 * 60 * 60 * 24)
+    },
+    {
+      id: new Types.ObjectId().toString(),
+      projectId: projectId,
+      message: 'Monitor updated',
+      monitorId: monitorId,
+      timestamp: Date.now() - 1 * (1000 * 60 * 60 * 24),
+      createdAt: Date.now() - 1 * (1000 * 60 * 60 * 24),
+      incidentId: new Types.ObjectId().toString()
+    }
+  ],
+  responses: [
+    {
+      id: new Types.ObjectId().toString(),
+      monitorId: monitorId,
+      responseTime: 300,
+      createdAt: Date.now() - 1 * (1000 * 60 * 60)
+    },
+    {
+      id: new Types.ObjectId().toString(),
+      monitorId: monitorId,
+      responseTime: 300,
+      createdAt: Date.now() - 2 * (1000 * 60 * 60)
+    },
+    {
+      id: new Types.ObjectId().toString(),
+      monitorId: monitorId,
+      responseTime: 300,
+      createdAt: Date.now() - 3 * (1000 * 60 * 60)
+    }
+  ],
+  incidents: [
+    {
+      id: 'string',
+      monitorId: 'string',
+      impact: 'major',
+      status: 'resolved',
+      cause: 'Example cause',
+
+      displayName: 'Major incident',
+      notes: 'string',
+
+      createdAt: Date.now() - 2 * (1000 * 60 * 60 * 24),
+      updatedAt: Date.now() - 1 * (1000 * 60 * 60 * 24),
+      resolvedAt: Date.now() - 1 * (1000 * 60 * 60 * 24)
+    }
+  ]
 }
 
 // export const monitorBody = {

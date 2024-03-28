@@ -111,5 +111,5 @@ export const WebsiteMonitorSchema = new Schema(
   }
 )
 
-export const WebsiteMonitor = mongoose.model('Monitor', WebsiteMonitorSchema)
+export const WebsiteMonitor = mongoose.model('WebsiteMonitor', WebsiteMonitorSchema)
 export type WebsiteMonitor = InstanceType<typeof WebsiteMonitor>

@@ -1,10 +1,16 @@
 import { getMonitorEvents } from 'src/controllers'
-import { getMonitorResponses } from 'src/controllers/monitorResources'
+import {
+  getMonitorIncidents,
+  getMonitorResponses,
+  getMonitorSubscribers
+} from 'src/controllers/monitorResources'
 import type { WebsiteMonitor } from 'src/models'
 
 export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsiteMonitorMeta> => {
   const events = await getMonitorEvents(monitor)
   const responses = await getMonitorResponses(monitor)
+  const subscribers = await getMonitorSubscribers(monitor)
+  const incidents = await getMonitorIncidents(monitor)
 
   return {
     projectId: monitor.projectId,
@@ -13,8 +19,9 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
     icon: monitor.icon,
     active: monitor.active,
     reminderIntervals: monitor.reminderIntervals,
-    subscribers: monitor.subscribers.map((sub) => ({
-      id: sub._id?.toString(),
+    subscribers: subscribers.map((sub) => ({
+      id: sub._id.toString(),
+      monitorId: sub.monitorId.toString(),
       displayName: sub.displayName || '',
       email: sub.email,
       phone: sub.phone,
@@ -37,13 +44,26 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
       projectId: event.projectId,
       message: event.message,
       incidentId: event.incidentId?.toString(),
-      timestamp: event.timestamp?.getTime()
+      timestamp: event.timestamp?.getTime(),
+      createdAt: event.createdAt.getTime()
     })),
     responses: responses.map((res) => ({
       id: res._id.toString(),
       monitorId: res.monitorId.toString(),
       responseTime: res.responseTime,
       createdAt: res.createdAt?.getTime()
+    })),
+    incidents: incidents.map((incident) => ({
+      id: incident._id.toString(),
+      monitorId: incident.monitorId.toString(),
+      impact: incident.impact,
+      status: incident.status,
+      cause: incident.cause,
+      displayName: incident.displayName,
+      notes: incident.notes,
+      createdAt: incident.createdAt.getTime(),
+      updatedAt: incident.updatedAt.getTime(),
+      resolvedAt: incident.resolvedAt?.getTime()
     })),
     availability: monitor.availability,
     responseTime: monitor.responseTime

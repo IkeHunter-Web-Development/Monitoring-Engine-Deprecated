@@ -84,9 +84,15 @@
         "responses": {
           "200": {
             "schema": {
-              "$ref": "#/definitions/MonitorMetaDoc"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MonitorMetaDoc"
+              },
+              "xml": {
+                "name": "main"
+              }
             },
-            "description": "Monitor updated"
+            "description": "Monitors"
           },
           "400": {
             "schema": {
@@ -895,92 +901,217 @@
     "MonitorMetaDoc": {
       "type": "object",
       "properties": {
-        "availability": {
-          "type": "string",
-          "example": "pending"
-        },
-        "responseTime": {
-          "type": "number",
-          "example": 0
-        },
         "id": {
           "type": "string",
-          "example": ""
-        },
-        "uuid": {
-          "type": "string",
-          "example": ""
-        },
-        "status": {
-          "type": "string",
-          "example": "stable"
-        },
-        "lastCheck": {
-          "type": "number",
-          "example": 0
-        },
-        "createdAt": {
-          "type": "number",
-          "example": 0
-        },
-        "updatedAt": {
-          "type": "number",
-          "example": 0
-        },
-        "events": {
-          "type": "array",
-          "example": [],
-          "items": {}
-        },
-        "responses": {
-          "type": "array",
-          "example": [],
-          "items": {}
+          "example": "65f4e9d9256b0ae964cbef55"
         },
         "projectId": {
           "type": "string",
-          "example": ""
+          "example": "65f4e9d9256b0ae964cbef56"
         },
         "title": {
           "type": "string",
-          "example": ""
+          "example": "Example Monitor"
         },
-        "interval": {
-          "type": "number",
-          "example": 0
+        "url": {
+          "type": "string",
+          "example": "https://example.com"
+        },
+        "uuid": {
+          "type": "string",
+          "example": "65f4e9d9256b0ae964cbef57"
         },
         "icon": {
           "type": "string",
           "example": ""
         },
-        "active": {
-          "type": "boolean",
-          "example": false
-        },
-        "reminderIntervals": {
-          "type": "number",
-          "example": 0
-        },
-        "subscribers": {
-          "type": "array",
-          "example": [],
-          "items": {}
-        },
-        "url": {
+        "availability": {
           "type": "string",
-          "example": ""
+          "example": "pending"
+        },
+        "status": {
+          "type": "string",
+          "example": "stable"
         },
         "checkType": {
           "type": "string",
           "example": "http"
         },
+        "active": {
+          "type": "boolean",
+          "example": false
+        },
+        "responseTime": {
+          "type": "number",
+          "example": 300
+        },
+        "interval": {
+          "type": "number",
+          "example": 60
+        },
+        "lastCheck": {
+          "type": "number",
+          "example": 15
+        },
+        "reminderIntervals": {
+          "type": "number",
+          "example": 10
+        },
         "retries": {
           "type": "number",
-          "example": 0
+          "example": 3
         },
         "timeout": {
           "type": "number",
-          "example": 0
+          "example": 15
+        },
+        "updatedAt": {
+          "type": "number",
+          "example": 1710463065464
+        },
+        "createdAt": {
+          "type": "number",
+          "example": 1710290265464
+        },
+        "subscribers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef5a"
+              },
+              "monitorId": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef55"
+              },
+              "displayName": {
+                "type": "string",
+                "example": "Alex Smith"
+              },
+              "email": {
+                "type": "string",
+                "example": "alex@example.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "772-555-5678"
+              },
+              "method": {
+                "type": "string",
+                "example": "phone"
+              }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef5c"
+              },
+              "projectId": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef56"
+              },
+              "message": {
+                "type": "string",
+                "example": "Monitor updated"
+              },
+              "monitorId": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef55"
+              },
+              "timestamp": {
+                "type": "number",
+                "example": 1710463065464
+              },
+              "createdAt": {
+                "type": "number",
+                "example": 1710463065464
+              },
+              "incidentId": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef5d"
+              }
+            }
+          }
+        },
+        "responses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef60"
+              },
+              "monitorId": {
+                "type": "string",
+                "example": "65f4e9d9256b0ae964cbef55"
+              },
+              "responseTime": {
+                "type": "number",
+                "example": 300
+              },
+              "createdAt": {
+                "type": "number",
+                "example": 1710538665464
+              }
+            }
+          }
+        },
+        "incidents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "string"
+              },
+              "monitorId": {
+                "type": "string",
+                "example": "string"
+              },
+              "impact": {
+                "type": "string",
+                "example": "major"
+              },
+              "status": {
+                "type": "string",
+                "example": "resolved"
+              },
+              "cause": {
+                "type": "string",
+                "example": "Example cause"
+              },
+              "displayName": {
+                "type": "string",
+                "example": "Major incident"
+              },
+              "notes": {
+                "type": "string",
+                "example": "string"
+              },
+              "createdAt": {
+                "type": "number",
+                "example": 1710376665464
+              },
+              "updatedAt": {
+                "type": "number",
+                "example": 1710463065464
+              },
+              "resolvedAt": {
+                "type": "number",
+                "example": 1710463065464
+              }
+            }
+          }
         }
       }
     },
@@ -1010,7 +1141,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "65f27e5091887b0ffa435926"
+          "example": "65f4e9d9256b0ae964cbef54"
         },
         "createdAt": {
           "type": "number",

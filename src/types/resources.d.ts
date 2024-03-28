@@ -14,18 +14,18 @@ interface IEvent {
 }
 interface IEventMeta extends IEvent {
   id: string
-  incidentId?: string
   createdAt: number // Date, ms
+  incidentId?: string
 }
 interface IResponse {
   monitorId: string
   responseTime: number // ms
 }
 interface IResponseMeta extends IResponse {
+  id: string
   createdAt: number // Date, ms
 }
 interface ISubscriber {
-  id?: string
   displayName?: string
   email?: string
   phone?: string
@@ -43,7 +43,7 @@ declare interface IMonitor {
   icon: string // Link to bucket
   active: boolean
   reminderIntervals: number
-  subscribers: Array<ISubscriber>
+  subscribers: Array<ISubscriberMeta>
 }
 declare interface IMonitorMeta extends IMonitor {
   id: string
@@ -52,15 +52,16 @@ declare interface IMonitorMeta extends IMonitor {
   lastCheck: number // Date, ms
   createdAt: number // Date, ms
   updatedAt: number // Date, ms
-  events: Array<IEvent>
-  responses: Array<IResponse>
+  events: Array<IEventMeta>
+  responses: Array<IResponseMeta>
+  incidents: Array<IIncidentMeta>
 }
 
 declare interface IWebsiteMonitor extends IMonitor {
   url: string
   checkType: 'http'
   retries: number
-  timeout: number
+  timeout: number // s
 }
 
 declare interface IWebsiteMonitorMeta extends IMonitorMeta, IWebsiteMonitor {

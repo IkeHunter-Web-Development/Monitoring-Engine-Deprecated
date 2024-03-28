@@ -1,7 +1,7 @@
 /**
  * @fileoverview User model.
  */
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const notificationMethodOptions: NotificationMethod[] = ['email', 'phone']
 const defaultNotificationMethod: NotificationMethod = 'email'
@@ -19,10 +19,11 @@ export const SubscriberSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  // monitorId: {
-  //   type: Schema.Types.ObjectId,
-  //   required: true
-  // },
+  monitorId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'WebsiteMonitor'
+  },
   // monitors: [
   //   {
   //     type: Schema.Types.ObjectId
@@ -41,5 +42,5 @@ export const SubscriberSchema = new mongoose.Schema({
   }
 })
 
-// export const Subscriber = mongoose.model('Subscriber', SubscriberSchema)
-// export type Subscriber = InstanceType<typeof Subscriber>
+export const Subscriber = mongoose.model('Subscriber', SubscriberSchema)
+export type Subscriber = InstanceType<typeof Subscriber>

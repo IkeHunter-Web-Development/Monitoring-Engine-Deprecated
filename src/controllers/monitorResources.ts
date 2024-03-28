@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose'
-import { Event, WebsiteMonitor, WebsiteResponse } from 'src/models'
+import { Event, Incident, Subscriber, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import { MonitorNotFoundError } from 'src/utils'
 
 export const createMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
@@ -43,4 +43,14 @@ export const getMonitorResponses = async (monitor: WebsiteMonitor): Promise<Webs
   const responses = await WebsiteResponse.find({ monitorId: monitor._id })
 
   return responses
+}
+export const getMonitorSubscribers = async (monitor: WebsiteMonitor): Promise<Subscriber[]> => {
+  const subscribers = await Subscriber.find({ monitorId: monitor._id })
+
+  return subscribers
+}
+export const getMonitorIncidents = async (monitor: WebsiteMonitor): Promise<Incident[]> => {
+  const incidents = await Incident.find({ monitorId: monitor._id })
+
+  return incidents
 }

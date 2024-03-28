@@ -58,8 +58,8 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
     #swagger.tags = ['Monitor']
     #swagger.description = 'Endpoint for getting all monitors.'
     #swagger.responses[200] = {
-      schema: { $ref: "#/definitions/MonitorMetaDoc" },
-      description: "Monitor updated"
+      schema: [{ $ref: "#/definitions/MonitorMetaDoc" }],
+      description: "Monitors"
     }
    *=========================== */
   try {
