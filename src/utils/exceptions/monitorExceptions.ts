@@ -6,8 +6,8 @@ export class MonitorNotFoundError extends Error {
 }
 
 export class InvalidMonitorFieldError extends Error {
-  constructor(field: string) {
-    super(`Received an invalid monitor field: ${field}`)
+  constructor(message: string) {
+    super(`Received an invalid monitor field: ${message}`)
     this.name = 'InvalidMonitorFieldError'
   }
 }

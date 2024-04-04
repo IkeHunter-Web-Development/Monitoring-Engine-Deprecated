@@ -19,7 +19,7 @@ interface IEventMeta extends IEvent {
 }
 interface IResponse {
   monitorId: string
-  responseTime: number // ms
+  responseTime: number // ms, 0 < n < 120000ms
 }
 interface IResponseMeta extends IResponse {
   id: string
@@ -75,7 +75,7 @@ declare interface IIncident {
   monitorId: string
   impact: IncidentImpact
   status: IncidentStatus
-  cause: string
+  cause: string // less than 128 characters
   displayName?: string
   notes?: string
 }

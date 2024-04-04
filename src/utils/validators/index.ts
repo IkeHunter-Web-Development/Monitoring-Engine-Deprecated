@@ -1,5 +1,8 @@
 export { validateEvent } from './validateEvent'
-export { validateIncident, validatePartialIncident } from './validateIncident'
+export {
+  validateFullIncident as validateIncident,
+  validateIncidentInput as validatePartialIncident
+} from './validateIncident'
 export {
   validateFullMonitor as validateMonitorInput,
   validateMonitorInput as validatePartialMonitorInput

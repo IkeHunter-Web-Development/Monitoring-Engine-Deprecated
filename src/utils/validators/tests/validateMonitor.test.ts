@@ -42,7 +42,7 @@ describe('Monitor valid fields tests', () => {
   })
 })
 
-describe('Monitor valid fields tests', () => {
+describe('Monitor invalid fields tests', () => {
   let monitor: IWebsiteMonitor
 
   beforeEach(() => {

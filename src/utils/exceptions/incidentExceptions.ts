@@ -4,3 +4,9 @@ export class IncidentNotFoundError extends Error {
     this.name = 'IncidentNotFoundError'
   }
 }
+
+export class InvalidIncidentFieldError extends Error {
+  constructor(message: string) {
+    super(`Received an invalid incident field: ${message}`)
+  }
+}
