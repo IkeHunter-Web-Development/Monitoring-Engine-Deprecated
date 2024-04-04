@@ -1,8 +1,10 @@
 import type { Types } from 'mongoose'
 import { Incident } from 'src/models'
-import { IncidentNotFoundError } from 'src/utils'
+import { IncidentNotFoundError, validateIncident, validatePartialIncident } from 'src/utils'
 
 export const createIncident = async (data: IIncident): Promise<Incident> => {
+  validateIncident(data)
+
   const incident = await Incident.create(data)
   return incident
 }
@@ -27,6 +29,7 @@ export const updateIncident = async (
   data: Partial<IIncident>
 ): Promise<Incident> => {
   if (id === '') throw new IncidentNotFoundError('Id required to find incident.')
+  validatePartialIncident(data)
 
   const incident = await Incident.findOneAndUpdate({ _id: id }, data, { new: true })
   if (!incident) throw new IncidentNotFoundError(`Incident not found with id ${id}.`)

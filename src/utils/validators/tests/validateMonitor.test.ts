@@ -1,14 +1,75 @@
-describe('Monitor validator tests', () => {
-  test('correct min monitor fields', () => {
-    expect(true).toBeFalsy()
+import { InvalidMonitorFieldError } from 'src/utils/exceptions'
+import { validateFullMonitor } from '../validateMonitor'
+
+const VALID_MONITOR: IWebsiteMonitor = {
+  url: 'https://example.com',
+  projectId: '50',
+  title: 'Example Monitor',
+  interval: 3,
+  icon: 'https://example-cdn.com/assets/icon.png',
+  active: true,
+  reminderIntervals: 10,
+  subscribers: [
+    {
+      displayName: 'John Doe',
+      email: 'john@example.com',
+      phone: '888-555-1234',
+      method: 'email',
+      userId: '80'
+    }
+  ],
+  checkType: 'http',
+  retries: 3,
+  timeout: 200
+}
+
+describe('Monitor valid fields tests', () => {
+  it('should accept correct min monitor fields', () => {
+    const monitor: IWebsiteMonitor = {
+      url: VALID_MONITOR.url,
+      projectId: VALID_MONITOR.projectId,
+      title: VALID_MONITOR.title
+    }
+
+    const isValid = validateFullMonitor(monitor)
+    expect(isValid).toBeTruthy()
   })
-  test('correct max monitor fields', () => {
-    expect(true).toBeFalsy()
+  it('should accept correct max monitor fields', () => {
+    const monitor: IWebsiteMonitor = { ...VALID_MONITOR }
+
+    const isValid = validateFullMonitor(monitor)
+    expect(isValid).toBeTruthy()
   })
-  test('incorrect min monitor fields', () => {
-    expect(true).toBeFalsy()
+})
+
+describe('Monitor valid fields tests', () => {
+  let monitor: IWebsiteMonitor
+
+  beforeEach(() => {
+    monitor = { ...VALID_MONITOR }
   })
-  test('incorrect max monitor fields', () => {
-    expect(true).toBeFalsy()
+
+  it('should reject invalid url', () => {
+    monitor.url = 'Not a url'
+
+    expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
+  })
+
+  it('should reject invalid title', () => {
+    monitor.title = 'm8il6T9eKcRyb82WYTbJKbx6tJqYHVT9rBnRJnNsVJo5M6929j9nUXkXXHGJf' // 61 chars
+
+    expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
+  })
+
+  it('should reject invalid interval', () => {
+    monitor.interval = '5s' as any
+
+    expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
+  })
+
+  it('should reject invalid icon url', () => {
+    monitor.icon = 'Not a url'
+
+    expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
   })
 })

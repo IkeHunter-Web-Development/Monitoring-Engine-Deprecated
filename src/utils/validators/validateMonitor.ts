@@ -1,46 +1,34 @@
-import { SubscriberSchema, WebsiteMonitor } from 'src/models'
+import { InvalidMonitorFieldError } from '../exceptions'
 
-export const validateMonitor = (data: any): Partial<WebsiteMonitor> => {
-  const validObject = WebsiteMonitor.schema.obj
-  const validFields = Object.keys(validObject)
+const isValidUrl = (url: string) => {
+  const re = /https:\/\/.*\.[a-z]{2,4}\/?/i
 
-  const dataKeys = Object.keys(data).filter((key) => validFields.includes(key))
+  return re.test(url)
+}
 
-  const validMonitorPartial: Partial<WebsiteMonitor> = dataKeys.reduce(
-    (monitor: Partial<WebsiteMonitor>, key: string) => {
-      let payload = data[key]
+const isStringSize = (target: string, size: number) => {
+  return target.length <= size
+}
 
-      if (key === 'subscribers') {
-        type SubType = Partial<WebsiteMonitor['subscribers']>
-        const subscribers = data[key]
-        const parsedSubscribers: SubType[] = []
+const isNumber = (target: any) => {
+  return !isNaN(target)
+}
 
-        for (const subscriber of subscribers) {
-          const validSubFields = Object.keys(SubscriberSchema.obj)
+export const validateFullMonitor = (monitor: IWebsiteMonitor) => {
+  if (!monitor.projectId || !monitor.title || !monitor.url)
+    throw new InvalidMonitorFieldError('Missing required field')
 
-          const availableKeys = Object.keys(subscriber).filter((key) =>
-            validSubFields.includes(key)
-          )
+  return validateMonitorInput(monitor)
+}
+export const validateMonitorInput = (monitor: Partial<IWebsiteMonitor>) => {
+  if (monitor.url && !isValidUrl(monitor.url))
+    throw new InvalidMonitorFieldError('URL field must be a valid url.')
+  if (monitor.title && !isStringSize(monitor.title, 60))
+    throw new InvalidMonitorFieldError('Title must be shorter than 60 characters.')
+  if (monitor.interval && !isNumber(monitor.interval))
+    throw new InvalidMonitorFieldError('Interval must be a number.')
+  if (monitor.icon && !isValidUrl(monitor.icon))
+    throw new InvalidMonitorFieldError('Icon field must be a valid url')
 
-          const parsedSubscriber = availableKeys.reduce((sub: SubType, key) => {
-            return {
-              ...sub,
-              [key]: subscriber[key]
-            }
-          }, {} as SubType)
-          if (parsedSubscriber) parsedSubscribers.push(parsedSubscriber)
-        }
-
-        payload = parsedSubscribers
-      }
-
-      return {
-        ...monitor,
-        [key]: payload
-      }
-    },
-    {} as Partial<WebsiteMonitor>
-  )
-
-  return validMonitorPartial
+  return true
 }

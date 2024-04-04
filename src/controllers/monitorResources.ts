@@ -1,8 +1,9 @@
 import type { Types } from 'mongoose'
 import { Event, Incident, Subscriber, WebsiteMonitor, WebsiteResponse } from 'src/models'
-import { MonitorNotFoundError } from 'src/utils'
+import { MonitorNotFoundError, validateMonitorInput, validatePartialMonitorInput } from 'src/utils'
 
 export const createMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
+  validateMonitorInput(data)
   const monitor = await WebsiteMonitor.create(data)
   return monitor
 }
@@ -22,6 +23,7 @@ export const updateMonitor = async (
   id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
+  validatePartialMonitorInput(data)
   const monitor = await WebsiteMonitor.findOneAndUpdate({ _id: id }, data, { new: true })
   if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}.`)
 

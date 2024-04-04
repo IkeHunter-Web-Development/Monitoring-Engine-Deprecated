@@ -29,7 +29,7 @@ interface ISubscriber {
   displayName?: string
   email?: string
   phone?: string
-  method: NotificationMethod
+  method?: NotificationMethod
   userId?: string
 }
 interface ISubscriberMeta extends ISubscriber {
@@ -39,11 +39,11 @@ interface ISubscriberMeta extends ISubscriber {
 declare interface IMonitor {
   projectId: string
   title: string
-  interval: number
-  icon: string // Link to bucket
-  active: boolean
-  reminderIntervals: number
-  subscribers: Array<ISubscriberMeta>
+  interval?: number
+  icon?: string // Link to bucket
+  active?: boolean
+  reminderIntervals?: number
+  subscribers?: Array<ISubscriber>
 }
 declare interface IMonitorMeta extends IMonitor {
   id: string
@@ -55,18 +55,20 @@ declare interface IMonitorMeta extends IMonitor {
   events: Array<IEventMeta>
   responses: Array<IResponseMeta>
   incidents: Array<IIncidentMeta>
+  subscribers?: Array<ISubscriberMeta>
 }
 
 declare interface IWebsiteMonitor extends IMonitor {
   url: string
-  checkType: 'http'
-  retries: number
-  timeout: number // s
+  checkType?: 'http'
+  retries?: number
+  timeout?: number // s
 }
 
 declare interface IWebsiteMonitorMeta extends IMonitorMeta, IWebsiteMonitor {
   availability: WebsiteAvailability
   responseTime: number // ms
+  subscribers: Array<ISubscriberMeta>
 }
 
 declare interface IIncident {
