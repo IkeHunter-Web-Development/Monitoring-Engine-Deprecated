@@ -1,4 +1,4 @@
-export { validateEvent } from './validateEvent'
+export { validateFullEvent as validateEvent } from './validateEvent'
 export {
   validateFullIncident as validateIncident,
   validateIncidentInput as validatePartialIncident
