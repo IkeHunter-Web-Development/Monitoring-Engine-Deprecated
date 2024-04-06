@@ -12,5 +12,3 @@
  * be deferred to a service. Otherwise, it can be done in the
  * appropriate controller.
  */
-
-export * as MonitorService from './monitorService'

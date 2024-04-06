@@ -11,3 +11,14 @@ export const isStringSize = (target: string, size: number) => {
 export const isNumeric = (target: any) => {
   return !isNaN(target)
 }
+
+export const isValidDate = (data: any): boolean => {
+  return !isNaN(new Date(data).getTime())
+}
+
+export const isDateInRange = (date: any, min: Date, max: Date): boolean => {
+  if (!isValidDate(date)) return false
+  date = new Date(date)
+
+  return date > min && date < max
+}

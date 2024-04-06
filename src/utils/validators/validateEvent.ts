@@ -1,19 +1,10 @@
 import { isValidObjectId } from 'mongoose'
 import { InvalidMonitorEventFieldError } from '../exceptions'
+import { isDateInRange, isValidDate } from './validators'
 
 const MAX_EVENT_MESSAGE_LENGTH = 255
 const TIMESTAMP_MIN_YEARS_AGO = 1
 const TIMESTAMP_MAX_HOURS_FUTURE = 1
-
-const isValidDate = (data: any): boolean => {
-  return !isNaN(new Date(data).getTime())
-}
-const isDateInRange = (date: any, min: Date, max: Date): boolean => {
-  if (!isValidDate(date)) return false
-  date = new Date(date)
-
-  return date.getTime() > min.getTime() && date.getTime() < max.getTime()
-}
 
 export const validateFullEvent = (data: any): IEvent => {
   if (!data.projectId || !data.message)
