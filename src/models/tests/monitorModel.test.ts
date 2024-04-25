@@ -8,7 +8,7 @@ describe('Monitor model CRUD data', () => {
   const monitorData: Partial<WebsiteMonitor> = {
     projectId: '123',
     url: 'https://example.com',
-    title: 'Example'
+    name: 'Example'
   }
 
   it('should create a monitor', async () => {
@@ -18,13 +18,13 @@ describe('Monitor model CRUD data', () => {
 
   it('should update a monitor', async () => {
     const monitor = await WebsiteMonitor.create(monitorData)
-    const newTitle = 'Updated'
+    const newname = 'Updated'
 
-    await WebsiteMonitor.updateOne({ _id: monitor._id }, { title: newTitle })
+    await WebsiteMonitor.updateOne({ _id: monitor._id }, { name: newname })
 
     const updatedMonitor = await WebsiteMonitor.findOne({ _id: monitor._id })
     expect(updatedMonitor).toBeDefined()
-    expect(updatedMonitor!.title).toEqual(newTitle)
+    expect(updatedMonitor!.name).toEqual(newname)
   })
 
   it('should get a monitor', async () => {

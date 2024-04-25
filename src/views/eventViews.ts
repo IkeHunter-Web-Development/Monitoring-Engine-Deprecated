@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
-import { searchEvents } from 'src/controllers/eventActions'
+import { eventSearch } from 'src/controllers/eventActions'
 import { Responses, sendError } from 'src/utils'
 import { serializeEvents } from 'src/utils/serializers/eventSerializer'
 
@@ -28,7 +28,7 @@ export const queryEventsView = async (req: Request, res: Response, next: NextFun
   try {
     const { monitorId, projectId } = req.query
 
-    const events = await searchEvents({
+    const events = await eventSearch({
       monitorId: monitorId?.toString(),
       projectId: projectId?.toString()
     })

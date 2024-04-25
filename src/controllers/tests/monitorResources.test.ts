@@ -1,5 +1,10 @@
 import { WebsiteMonitor } from 'src/models'
-import { createMonitor, deleteMonitor, getMonitor, updateMonitor } from '../monitorResources'
+import {
+  webMonitorCreate,
+  webMonitorDelete,
+  webMonitorGetOne,
+  webMonitorUpdate
+} from '../monitorResources'
 
 const monitorPayload: IWebsiteMonitor = {
   url: 'https://example.com',
@@ -7,7 +12,7 @@ const monitorPayload: IWebsiteMonitor = {
   retries: 0,
   timeout: 0,
   projectId: 'asdlkfjasdlifu23l423908',
-  title: 'Some Monitor',
+  name: 'Some Monitor',
   interval: 0,
   icon: '',
   active: false,
@@ -20,8 +25,8 @@ describe('Monitor controller creation tests', () => {
     const initialMonitors = await WebsiteMonitor.find({})
     expect(initialMonitors.length).toEqual(0)
 
-    const monitor = await createMonitor(monitorPayload)
-    expect(monitor.title).toEqual(monitorPayload.title)
+    const monitor = await webMonitorCreate(monitorPayload)
+    expect(monitor.name).toEqual(monitorPayload.name)
   })
 })
 
@@ -36,29 +41,29 @@ describe('Monitor controller tests', () => {
     const dbMonitor = await WebsiteMonitor.find({})
     const id = dbMonitor[0]?._id
 
-    const monitor = await getMonitor(id)
+    const monitor = await webMonitorGetOne(id)
 
     expect(monitor._id).toEqual(id)
-    expect(monitor.title).toEqual(monitorPayload.title)
+    expect(monitor.name).toEqual(monitorPayload.name)
   })
   it('should update monitor', async () => {
     const dbMonitor = await WebsiteMonitor.find({})
     const id = dbMonitor[0]?._id
 
     const updatePaylod = {
-      title: 'Updated title'
+      name: 'Updated name'
     }
 
-    const updatedMonitor = await updateMonitor(id, updatePaylod)
+    const updatedMonitor = await webMonitorUpdate(id, updatePaylod)
 
-    expect(updatedMonitor.title).toEqual(updatePaylod.title)
+    expect(updatedMonitor.name).toEqual(updatePaylod.name)
     expect(updatedMonitor.url).toEqual(monitorPayload.url)
   })
   it('should delete monitor', async () => {
     const dbMonitor = await WebsiteMonitor.find({})
     const id = dbMonitor[0]?._id
 
-    const deletedMonitor = await deleteMonitor(id)
+    const deletedMonitor = await webMonitorDelete(id)
     expect(deletedMonitor._id).toEqual(id)
 
     const dbMonitors = await WebsiteMonitor.find({})

@@ -1,4 +1,5 @@
 import http from 'http'
+import 'module-alias/register'
 import swaggerUi from 'swagger-ui-express'
 
 import { HOST, MonitorSocket, PORT, setupDatabase } from 'src/config'
@@ -8,6 +9,7 @@ import { initializeSwagger } from './docs/swagger'
 import { router } from './router'
 
 import 'src/config/socket'
+import { processCliArgs } from './scripts'
 
 setupDatabase()
 registerConsumers()
@@ -22,7 +24,11 @@ initializeSwagger().then(async () => {
   router.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }))
 })
 
-/** Start server */
-app.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`)
-})
+if (process.argv.length > 2) {
+  processCliArgs(process.argv)
+} else {
+  /** Start server */
+  app.listen(PORT, HOST, () => {
+    console.log(`Server running at http://${HOST}:${PORT}`)
+  })
+}

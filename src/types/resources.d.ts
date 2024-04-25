@@ -19,7 +19,7 @@ interface IEventMeta extends IEvent {
 }
 interface IResponse {
   monitorId: string
-  responseTime: number // ms, 0 < n < 120000ms
+  responseTime: number // ms, 0 < n < 120000ms. -1 = failed
 }
 interface IResponseMeta extends IResponse {
   id: string
@@ -38,7 +38,7 @@ interface ISubscriberMeta extends ISubscriber {
 }
 declare interface IMonitor {
   projectId: string
-  title: string
+  name: string
   interval?: number
   icon?: string // Link to bucket
   active?: boolean
@@ -55,7 +55,7 @@ declare interface IMonitorMeta extends IMonitor {
   events: Array<IEventMeta>
   responses: Array<IResponseMeta>
   incidents: Array<IIncidentMeta>
-  subscribers?: Array<ISubscriberMeta>
+  subscribers?: Array<ISubscriber>
 }
 
 declare interface IWebsiteMonitor extends IMonitor {

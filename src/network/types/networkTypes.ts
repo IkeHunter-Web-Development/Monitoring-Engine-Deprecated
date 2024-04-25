@@ -11,7 +11,7 @@ export declare type NetworkAuthResponse = NetworkResponse & {
 }
 
 export declare type NetworkProjectInfo = NetworkResponse & {
-  projectTitle: string
+  projectname: string
   companyName?: string
 }
 

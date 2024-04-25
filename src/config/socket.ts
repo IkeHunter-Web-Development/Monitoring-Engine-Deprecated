@@ -28,7 +28,7 @@ export class MonitorSocket {
 
     this.io.on('connection', (socket) => {
       socket.once('join_projects', (data: { projects: string[] }) => {
-        const { projects } = data 
+        const { projects } = data
         console.log('projects:', projects)
         projects.forEach((projectId) => {
           socket.join(String(projectId))
@@ -58,7 +58,7 @@ export class MonitorSocket {
     responseTime: number,
     timestamp: number
   ): void => {
-    // console.log('update response:', monitor.title)
+    // console.log('update response:', monitor.name)
     this.instance.io.in(String(monitor.projectId)).emit('new_responsetime', {
       monitorId: monitor._id,
       responseTime,

@@ -13,6 +13,7 @@ services:
       - ./logs:/app/logs
       - ./.git:/app/.git
       - ./test-report:/app/test-report
+      - ./generated-data:/app/generated-data
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0

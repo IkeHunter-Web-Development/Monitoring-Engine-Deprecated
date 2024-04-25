@@ -1,6 +1,6 @@
 import { Event, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import { eventExample, monitorExample, responseExample } from 'src/utils'
-import { registerMonitorEvent, registerWebsiteResponse } from '../monitorActions'
+import { webMonitorRegisterEvent, webMonitorRegisterResponse } from '../monitorActions'
 
 describe('Monitor action controller tests', () => {
   it('should register website response', async () => {
@@ -10,7 +10,7 @@ describe('Monitor action controller tests', () => {
       monitorId: monitor._id.toString()
     }
 
-    await registerWebsiteResponse(response)
+    await webMonitorRegisterResponse(response)
 
     const dbquery = await WebsiteResponse.find({ monitorId: monitor._id })
     expect(dbquery.length).toEqual(1)
@@ -20,7 +20,7 @@ describe('Monitor action controller tests', () => {
   it('should register monitor event', async () => {
     const monitor = await WebsiteMonitor.create(monitorExample)
 
-    await registerMonitorEvent(monitor, eventExample)
+    await webMonitorRegisterEvent(monitor, eventExample)
 
     const events = await Event.find({ monitorId: monitor._id })
     expect(events.length).toEqual(1)

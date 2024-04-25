@@ -31,7 +31,7 @@ export const MonitorSchema = {
     type: String,
     required: true
   },
-  title: {
+  name: {
     type: String,
     required: true
   },

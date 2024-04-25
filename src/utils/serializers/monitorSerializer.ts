@@ -1,20 +1,19 @@
-import { getMonitorEvents } from 'src/controllers'
 import {
-  getMonitorIncidents,
-  getMonitorResponses,
-  getMonitorSubscribers
-} from 'src/controllers/monitorResources'
+  webMonitorGetEvents,
+  webMonitorGetIncidents,
+  webMonitorGetResponses
+} from 'src/controllers'
 import type { WebsiteMonitor } from 'src/models'
 
 export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsiteMonitorMeta> => {
-  const events = await getMonitorEvents(monitor)
-  const responses = await getMonitorResponses(monitor)
-  const subscribers = await getMonitorSubscribers(monitor)
-  const incidents = await getMonitorIncidents(monitor)
+  const events = await webMonitorGetEvents(monitor)
+  const responses = await webMonitorGetResponses(monitor)
+  const subscribers = monitor.subscribers
+  const incidents = await webMonitorGetIncidents(monitor)
 
   return {
     projectId: monitor.projectId,
-    title: monitor.title,
+    name: monitor.name,
     interval: monitor.interval,
     icon: monitor.icon,
     active: monitor.active,

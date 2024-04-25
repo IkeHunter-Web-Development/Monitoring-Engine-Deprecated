@@ -13,7 +13,11 @@
     "dev": "ts-node-dev --respawn --pretty --transpile-only --ignore-watch swagger_output.json -r tsconfig-paths/register src/index.ts",
     "build": "rimraf ./build && tsc",
     "lint": "npx eslint src/**/*.ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "manage": "npm run build && node ./build/src/index.js"
+  },
+  "_moduleAliases": {
+    "src": "./build/src"
   },
   "author": "Isaac Hunter",
   "license": "ISC",
@@ -25,12 +29,11 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fetch": "^1.1.0",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "kafka-node": "^5.0.0",
     "kafkajs": "^2.2.4",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.3",
     "mongodb": "^5.0.0",
     "mongoose": "^7.3.4",
     "multer": "^1.4.5-lts.1",
@@ -38,7 +41,7 @@
     "nodemailer": "^6.9.3",
     "redix": "^1.0.22",
     "request": "^2.88.2",
-    "rimraff": "^0.0.1-security",
+    "rimraf": "^5.0.5",
     "socket.io": "^4.7.4",
     "tsoa": "^6.1.0",
     "uuid": "^9.0.1",
@@ -52,6 +55,7 @@
     "@types/jest": "^29.5.5",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/lodash": "^4.14.199",
+    "@types/module-alias": "^2.0.4",
     "@types/multer": "^1.4.8",
     "@types/node": "^20.8.2",
     "@types/node-cron": "^3.0.9",

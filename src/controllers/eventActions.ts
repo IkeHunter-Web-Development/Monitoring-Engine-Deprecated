@@ -1,7 +1,7 @@
 import type { Types } from 'mongoose'
 import { Event } from 'src/models'
 
-export const searchEvents = async (params: {
+export const eventSearch = async (params: {
   monitorId?: string | Types.ObjectId
   projectId?: string
 }): Promise<Event[]> => {

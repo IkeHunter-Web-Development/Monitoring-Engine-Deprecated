@@ -5,7 +5,7 @@ import type { Request, Response } from 'express'
 import httpMocks from 'node-mocks-http'
 import { Incident } from 'src/models'
 import { getResJson, incidentExample } from 'src/utils'
-import { generateIncidents } from 'src/utils/examples/generateIncidents'
+import { createTestIncidents } from 'src/utils/mock/generators/generateIncidents'
 import * as views from '../incidentViews'
 
 describe('Incident view tests', () => {
@@ -44,7 +44,7 @@ describe('Incident view tests', () => {
     expect(body.id).toEqual(incident._id.toString())
   })
   it('should get multiple incidents', async () => {
-    const incidents = await generateIncidents(5)
+    const incidents = await createTestIncidents(5)
     req = httpMocks.createRequest({
       method: 'GET',
       body: incidentExample

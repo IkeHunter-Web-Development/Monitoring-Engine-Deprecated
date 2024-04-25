@@ -52,7 +52,7 @@ describe('Monitor view', () => {
 
     req = httpMocks.createRequest({
       method: 'PUT',
-      body: { title: 'Yahoo' },
+      body: { name: 'Yahoo' },
       params: { id: monitor._id.toString() }
     })
 
@@ -61,7 +61,7 @@ describe('Monitor view', () => {
 
     const query = await WebsiteMonitor.findOne({ _id: monitor._id })
     expect(query).not.toBeNull()
-    expect(query!.title).toEqual('Yahoo')
+    expect(query!.name).toEqual('Yahoo')
   })
 
   /**

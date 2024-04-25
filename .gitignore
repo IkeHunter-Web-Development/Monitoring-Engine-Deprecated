@@ -4,6 +4,7 @@ build
 credentials_*.json
 _depricated/
 test-report/
+generated-data/
 
 # Logs
 logs

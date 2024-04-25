@@ -6,7 +6,7 @@ export const MonitorDoc: IWebsiteMonitor = {
   retries: 0,
   timeout: 0,
   projectId: '',
-  title: '',
+  name: '',
   interval: 0,
   icon: '',
   active: false,
@@ -19,7 +19,7 @@ const projectId = new Types.ObjectId().toString()
 export const MonitorMetaDoc: IWebsiteMonitorMeta = {
   id: monitorId,
   projectId: projectId,
-  title: 'Example Monitor',
+  name: 'Example Monitor',
   url: 'https://example.com',
   uuid: new Types.ObjectId().toString(),
   icon: '',
@@ -121,7 +121,7 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
 //   users: [{ name: "John Doe", email: "user@example.com" }],
 //   statusCode: 200,
 //   active: true,
-//   title: "Example",
+//   name: "Example",
 // };
 
 // export const monitorResponse = {
@@ -130,7 +130,7 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
 //   users: [],
 //   statusCode: 200,
 //   active: true,
-//   title: "Example",
+//   name: "Example",
 //   online: true,
 //   _id: "5f9b0b0b9b9b9b9b9b9b9b9b",
 //   __v: 0,
@@ -146,7 +146,7 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
 //   targetStatusCode: 200,
 //   currentStatusCode: 200,
 //   active: true,
-//   title: "IkeHunter live 2",
+//   name: "IkeHunter live 2",
 //   type: "http",
 //   dateAdded: "2023-12-16T23:54:53.025Z",
 //   responseTime: -1,

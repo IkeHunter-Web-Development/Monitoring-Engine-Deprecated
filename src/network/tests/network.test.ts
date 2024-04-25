@@ -1,4 +1,5 @@
 import type { WebsiteMonitor } from 'src/models'
+import { createTestMonitor } from 'src/utils'
 import { httpRequest } from '../config'
 import { getNetworkAuth, getProjectInfo, sendRequest } from '../network'
 import type { NetworkAuthResponse } from '../types/networkTypes'
@@ -8,7 +9,6 @@ import {
   verifyUserInvalidResponse,
   verifyUserSuccessResponse
 } from '../utils/responses'
-import { generateMonitor } from 'src/utils'
 
 // mockJest()
 jest.mock('../config.ts')
@@ -44,24 +44,24 @@ describe('Network manager tests', () => {
 
   test('getting project info, valid project', async () => {
     mockRequest.mockResolvedValue(projectInfoSuccessResponse)
-    const monitor: WebsiteMonitor = await generateMonitor()
+    const monitor: WebsiteMonitor = await createTestMonitor()
 
     const token = 'valid-token'
     const res = await getProjectInfo(token, monitor.projectId)
 
-    expect(res.projectTitle).toEqual(projectInfoSuccessResponse.data.title)
+    expect(res.projectname).toEqual(projectInfoSuccessResponse.data.name)
     expect(res.companyName).toEqual(projectInfoSuccessResponse.data.company)
   })
 
   test('getting project info, invalid project', async () => {
     mockRequest.mockResolvedValue(projectInfoNotFoundResponse)
 
-    const monitor: WebsiteMonitor = await generateMonitor()
+    const monitor: WebsiteMonitor = await createTestMonitor()
 
     const token = 'valid-token'
     const res = await getProjectInfo(token, monitor.projectId)
 
-    expect(res.projectTitle).toBeUndefined()
+    expect(res.projectname).toBeUndefined()
     expect(res.companyName).toBeUndefined()
     expect(res.status).toEqual(projectInfoNotFoundResponse.status)
   })

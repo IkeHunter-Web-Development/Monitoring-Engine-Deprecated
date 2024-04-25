@@ -1,4 +1,4 @@
-import { registerWebsiteResponse } from 'src/controllers'
+import { webMonitorRegisterResponse } from 'src/controllers'
 import { EventConsumer, EventQueue } from 'src/lib'
 import { validateResponse } from 'src/utils'
 
@@ -8,7 +8,7 @@ const monitorConsumer = new EventConsumer(eventQueue, 'monitor-events')
 const handleConsumerReceiveResponse = async (data: any) => {
   try {
     const response: IResponse = await validateResponse(data)
-    await registerWebsiteResponse(response)
+    await webMonitorRegisterResponse(response)
   } catch (error) {
     console.error('Error handling website response from consumer:', error)
   }

@@ -1,23 +1,27 @@
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
+import { handleWebMonitorResponseTime } from 'src/services/monitorService'
 import { validateEvent, validateResponse } from 'src/utils'
-import { getMonitor } from './monitorResources'
+import { webMonitorGetOne } from './monitorResources'
 
-export const registerWebsiteResponse = async (response: IResponse): Promise<WebsiteResponse> => {
+export const webMonitorRegisterResponse = async (response: IResponse): Promise<WebsiteResponse> => {
   validateResponse(response)
 
-  const monitor = await getMonitor(response.monitorId)
+  const monitor = await webMonitorGetOne(response.monitorId)
   const resObject = await WebsiteResponse.create(response)
 
   const updatePayload: Partial<WebsiteMonitor> = {
-    responseTime: resObject.responseTime,
+    responseTime: response.responseTime,
     lastCheck: new Date()
   }
+
   await monitor.updateOne(updatePayload)
+
+  await handleWebMonitorResponseTime(monitor)
 
   return resObject
 }
 
-export const registerMonitorEvent = async (monitor: WebsiteMonitor, event: IEvent) => {
+export const webMonitorRegisterEvent = async (monitor: WebsiteMonitor, event: IEvent) => {
   validateEvent(event)
 
   const newEvent = await Event.create({
@@ -28,3 +32,9 @@ export const registerMonitorEvent = async (monitor: WebsiteMonitor, event: IEven
 
   return newEvent
 }
+
+export const webMonitorStatusChange = async (
+  monitor: WebsiteMonitor,
+  oldStatus: MonitorStatus,
+  newStatus: MonitorStatus
+) => {}

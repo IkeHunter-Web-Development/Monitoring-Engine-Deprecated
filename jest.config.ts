@@ -37,7 +37,10 @@ const config: JestConfigWithTsJest = {
     'docs/',
     'index.ts',
     'config/',
-    '_depricated/'
+    '_depricated/',
+    '_deprecated/',
+    'lib/',
+    'queue/'
   ],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -53,7 +56,11 @@ const config: JestConfigWithTsJest = {
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: undefined,
+  coverageThreshold: {
+    global: {
+      lines: 90
+    }
+  },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,

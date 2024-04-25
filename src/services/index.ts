@@ -1,6 +1,10 @@
 /**
  * Business Logic and Update Handlers
  *
+ * Naming:
+ * [action][resource]()
+ * Ex: handleWebMonitorResponse()
+ *
  * Services are responsible for the primary
  * business logic of the system. Any data calculation,
  * analysis, or aggregation is done here. They cannot call
@@ -12,3 +16,4 @@
  * be deferred to a service. Otherwise, it can be done in the
  * appropriate controller.
  */
+export * from './incidentService'

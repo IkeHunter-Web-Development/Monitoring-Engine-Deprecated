@@ -6,37 +6,37 @@
 export const verifyUserSuccessResponse = {
   status: 200,
   data: {
-    id: "1",
-    email: "user@example.com",
-    name: "John Doe",
-  },
-};
+    id: '1',
+    email: 'user@example.com',
+    name: 'John Doe'
+  }
+}
 
 export const verifyUserInvalidResponse = {
   status: 401,
   data: {
-    detail: "Invalid token.",
-  },
-};
+    detail: 'Invalid token.'
+  }
+}
 
 export const projectInfoSuccessResponse = {
   status: 200,
   data: {
     id: 0,
-    title: "Some Project",
+    name: 'Some Project',
     owner: 0,
-    company: "Example Company",
+    company: 'Example Company',
     users: [],
-    live_site: "https://example.com",
-    staging_site: "https://staging.example.com",
-    created_at: "2023-12-09T23:01:17.288Z",
-    links: [],
-  },
-};
+    live_site: 'https://example.com',
+    staging_site: 'https://staging.example.com',
+    created_at: '2023-12-09T23:01:17.288Z',
+    links: []
+  }
+}
 
 export const projectInfoNotFoundResponse = {
   status: 404,
   data: {
-    detail: "Not found.",
-  },
-};
+    detail: 'Not found.'
+  }
+}

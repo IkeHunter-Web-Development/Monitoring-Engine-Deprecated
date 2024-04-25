@@ -1,10 +1,11 @@
+import { Types } from 'mongoose'
 import { InvalidMonitorFieldError } from 'src/utils/exceptions'
 import { validateFullMonitor } from '../validateMonitor'
 
 const VALID_MONITOR: IWebsiteMonitor = {
   url: 'https://example.com',
   projectId: '50',
-  title: 'Example Monitor',
+  name: 'Example Monitor',
   interval: 3,
   icon: 'https://example-cdn.com/assets/icon.png',
   active: true,
@@ -28,7 +29,7 @@ describe('Monitor valid fields tests', () => {
     const monitor: IWebsiteMonitor = {
       url: VALID_MONITOR.url,
       projectId: VALID_MONITOR.projectId,
-      title: VALID_MONITOR.title
+      name: VALID_MONITOR.name
     }
 
     const isValid = validateFullMonitor(monitor)
@@ -55,8 +56,8 @@ describe('Monitor invalid fields tests', () => {
     expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
   })
 
-  it('should reject invalid title', () => {
-    monitor.title = 'm8il6T9eKcRyb82WYTbJKbx6tJqYHVT9rBnRJnNsVJo5M6929j9nUXkXXHGJf' // 61 chars
+  it('should reject invalid name', () => {
+    monitor.name = 'm8il6T9eKcRyb82WYTbJKbx6tJqYHVT9rBnRJnNsVJo5M6929j9nUXkXXHGJf' // 61 chars
 
     expect(() => validateFullMonitor(monitor)).toThrow(InvalidMonitorFieldError)
   })

@@ -47,7 +47,7 @@ export const getProjectInfo = async (token: string, projectId: string) => {
 
   return {
     status: res.status,
-    projectTitle: res.data?.title,
+    projectname: res.data?.name,
     companyName: res.data?.company
   }
 }
