@@ -5,6 +5,7 @@ credentials_*.json
 _depricated/
 test-report/
 generated-data/
+_*
 
 # Logs
 logs

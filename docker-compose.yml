@@ -11,23 +11,13 @@ services:
       - ./src:/app/src
       - ./coverage:/app/coverage
       - ./logs:/app/logs
-      - ./.git:/app/.git
+      # - ./.git:/app/.git
       - ./test-report:/app/test-report
       - ./generated-data:/app/generated-data
+    env_file:
+      - ./.env
     environment:
       - NODE_ENV=development
-      - HOST=0.0.0.0
-      - PORT=8000
-      - LOGGING_LEVEL=verbose
-      - EMAIL_USER=tests@ikehunter.dev
-      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
-      - CENTRAL_ENGINE_URL=http://localhost:8000
-      - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
-      - CENTRAL_GET_ENDPOINT=/engine/get/
-      - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
-      - AUTH_SERVICE_URL=http://localhost:8000/auth/
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=9092
     depends_on:
       - mongo-monitor
     command: npm run dev

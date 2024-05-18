@@ -7,29 +7,32 @@ services:
     ports:
       - "8000:8000"
     restart: always
+    container_name: monitor
     volumes:
       - ./src:/app/src
       - ./logs:/app/logs
+    env_file:
+      - ./.env
     environment:
-      - HOST=0.0.0.0
-      - PORT=8000
       - NODE_ENV=network
-      - LOGGING_LEVEL=verbose
-      - EMAIL_USER=tests@ikehunter.dev
-      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
-      - CENTRAL_ENGINE_URL=http://localhost:8000
-      - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
-      - CENTRAL_GET_ENDPOINT=/engine/get/
-      - MONGO_URI=mongodb://root:changeme@mongo-monitor
-      - AUTH_SERVICE_URL=http://localhost:8000/auth/
+      # - HOST=0.0.0.0
+      # - PORT=8000
+      # - LOGGING_LEVEL=verbose
+      # - EMAIL_USER=tests@ikehunter.dev
+      # - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      # - CENTRAL_ENGINE_URL=http://localhost:8000
+      # - CENTRAL_NOTIFY_ENDPOINT=/engine/notify/
+      # - CENTRAL_GET_ENDPOINT=/engine/get/
+      # - MONGO_URI=mongodb://root:changeme@mongo-monitor
+      # - AUTH_SERVICE_URL=http://localhost:8000/auth/
       
-      - GATEWAY_URL=http://proxy:8080
-      - NETWORK_TOKEN=network-token
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=9092
+      # - GATEWAY_URL=http://proxy:8080
+      # - NETWORK_TOKEN=network-token
+      # - KAFKA_HOST=kafka
+      # - KAFKA_PORT=9092
       
-      - MONGO_PORT=27017
-      - MONGO_DB=monitor
+      # - MONGO_PORT=27017
+      # - MONGO_DB=monitor
     depends_on:
       - mongo-monitor
     command: npm run dev
