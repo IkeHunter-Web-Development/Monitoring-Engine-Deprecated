@@ -82,19 +82,22 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
       id: new Types.ObjectId().toString(),
       monitorId: monitorId,
       responseTime: 300,
+      timestamp: Date.now() - 1 * (1000 * 60 * 60),
       createdAt: Date.now() - 1 * (1000 * 60 * 60)
     },
     {
       id: new Types.ObjectId().toString(),
       monitorId: monitorId,
       responseTime: 300,
-      createdAt: Date.now() - 2 * (1000 * 60 * 60)
+      createdAt: Date.now() - 2 * (1000 * 60 * 60),
+      timestamp: Date.now() - 2 * (1000 * 60 * 60)
     },
     {
       id: new Types.ObjectId().toString(),
       monitorId: monitorId,
       responseTime: 300,
-      createdAt: Date.now() - 3 * (1000 * 60 * 60)
+      createdAt: Date.now() - 3 * (1000 * 60 * 60),
+      timestamp: Date.now() - 3 * (1000 * 60 * 60)
     }
   ],
   incidents: [

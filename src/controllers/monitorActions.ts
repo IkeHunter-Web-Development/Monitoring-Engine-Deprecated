@@ -1,14 +1,17 @@
 import { produceSendEmail } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
 import { handleWebMonitorResponseTime } from 'src/services/monitorService'
-import { validateEvent, validateResponse } from 'src/utils'
+import { validateResponse } from 'src/utils'
 import { webMonitorGetOne } from './monitorResources'
 
 export const webMonitorRegisterResponse = async (response: IResponse): Promise<WebsiteResponse> => {
   validateResponse(response)
 
   const monitor = await webMonitorGetOne(response.monitorId)
-  const resObject = await WebsiteResponse.create(response)
+  const resObject = await WebsiteResponse.create({
+    ...response,
+    timestamp: new Date(response.timestamp)
+  })
   const originalStatus = monitor.status
 
   const updatePayload: Partial<WebsiteMonitor> = {
@@ -26,7 +29,7 @@ export const webMonitorRegisterResponse = async (response: IResponse): Promise<W
 }
 
 export const webMonitorRegisterEvent = async (monitor: WebsiteMonitor, message: string) => {
-  validateEvent(event)
+  // validateEvent(event)
 
   const newEvent = await Event.create({
     message,
@@ -44,7 +47,7 @@ export const webMonitorStatusChange = async (
 ) => {
   await webMonitorRegisterEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
 
-  await produceSendEmail({
+  await produceSendEmail(monitor._id.toString(), {
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),
     subject: 'Monitor Status Change',
     body: `Website monitor status changed from ${oldStatus} to ${newStatus}.`

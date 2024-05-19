@@ -10,6 +10,10 @@ export const WebsiteResponseSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  timestamp: {
+    type: Date,
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now,

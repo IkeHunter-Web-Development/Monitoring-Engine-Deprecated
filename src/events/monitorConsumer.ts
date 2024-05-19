@@ -1,6 +1,6 @@
 import { webMonitorRegisterResponse } from 'src/controllers'
 import { logger } from 'src/lib'
-import { NotImplementedError, validateResponse } from 'src/utils'
+import { validateResponse } from 'src/utils'
 import { createConsumer } from '../lib/kafka'
 
 const topic = 'monitor-events'
@@ -16,10 +16,10 @@ const handleConsumerReceiveResponse = async (data: any) => {
 
 const handleMonitorError = async (data: any) => {
   logger.error('Handle Monitor Error not implemented')
-  throw new NotImplementedError('Handle monitor error')
+  // throw new NotImplementedError('Handle monitor error')
 }
 
 export const registerMonitorConsumer = async () => {
-  createConsumer(topic, 'register-response', handleConsumerReceiveResponse)
-  createConsumer(topic, 'error', handleMonitorError)
+  createConsumer('monitor-responses', handleConsumerReceiveResponse)
+  createConsumer('monitor-errors', handleMonitorError)
 }

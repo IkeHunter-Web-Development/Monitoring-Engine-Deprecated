@@ -4,7 +4,8 @@ import { WebsiteResponse } from 'src/models'
 
 export const responseExample: IResponse = {
   monitorId: new Types.ObjectId().toString(),
-  responseTime: randomInt(10, 2000)
+  responseTime: randomInt(10, 2000),
+  timestamp: Date.now()
 }
 
 export const createTestResponse = async (

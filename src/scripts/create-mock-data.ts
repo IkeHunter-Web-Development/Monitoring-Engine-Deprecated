@@ -114,6 +114,7 @@ export const generateMockData = async () => {
       const response: IResponseMeta = {
         id: new Types.ObjectId().toString(),
         createdAt: Date.now() - i * 1000 * 60 * 60,
+        timestamp: Date.now() - i * 1000 * 60 * 60,
         monitorId: monitor.id,
         responseTime: randomInt(100, 1500)
       }

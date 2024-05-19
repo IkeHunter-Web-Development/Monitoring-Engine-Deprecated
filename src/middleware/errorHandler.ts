@@ -1,8 +1,11 @@
 import type { NextFunction, Request, Response } from 'express'
+import { logger } from 'src/lib'
 import { MonitorNotFoundError, NotImplementedError, Responses } from 'src/utils'
 
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log('API Error:', error.stack)
+  logger.error(error.stack || 'Unknown API Error.')
+  // logger.error(error.stack)
+  // console.log('API Error:', error.stack)
 
   if (error instanceof MonitorNotFoundError) {
     return next(Responses.notFound(res, error))

@@ -20,6 +20,7 @@ interface IEventMeta extends IEvent {
 interface IResponse {
   monitorId: string
   responseTime: number // ms, 0 < n < 120000ms. -1 = failed
+  timestamp: number // ms, When initially reported
 }
 interface IResponseMeta extends IResponse {
   id: string

@@ -13,7 +13,13 @@ export const isNumeric = (target: any) => {
 }
 
 export const isValidDate = (data: any): boolean => {
-  return !isNaN(new Date(data).getTime())
+  // FIXME: Year checking could give edge cases
+  const date = new Date(data)
+  return (
+    !isNaN(date.getTime()) &&
+    date.getFullYear() > 2020 &&
+    date.getFullYear() <= new Date().getFullYear() + 1
+  )
 }
 
 export const isDateInRange = (date: any, min: Date, max: Date): boolean => {

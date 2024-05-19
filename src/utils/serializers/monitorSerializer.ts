@@ -50,7 +50,8 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
       id: res._id.toString(),
       monitorId: res.monitorId.toString(),
       responseTime: res.responseTime,
-      createdAt: res.createdAt?.getTime()
+      createdAt: res.createdAt?.getTime(),
+      timestamp: res.timestamp?.getTime()
     })),
     incidents: incidents.map((incident) => ({
       id: incident._id.toString(),

@@ -20,7 +20,7 @@ describe('Monitor action controller tests', () => {
   it('should register monitor event', async () => {
     const monitor = await WebsiteMonitor.create(monitorExample)
 
-    await webMonitorRegisterEvent(monitor, eventExample)
+    await webMonitorRegisterEvent(monitor, eventExample.message)
 
     const events = await Event.find({ monitorId: monitor._id })
     expect(events.length).toEqual(1)

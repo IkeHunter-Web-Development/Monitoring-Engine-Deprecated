@@ -4,7 +4,8 @@ import { validateResponse } from '../validateResponse'
 
 const VALID_RESPONSE: IResponse = {
   monitorId: new Types.ObjectId().toString(),
-  responseTime: 500
+  responseTime: 500,
+  timestamp: Date.now()
 }
 
 describe('Response validator tests', () => {

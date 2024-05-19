@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose'
-import { produceCreateMonitor } from 'src/events'
+import { produceCreateMonitor, produceDeleteMonitor } from 'src/events'
 // import type { Subscriber } from 'src/models'
 import { Event, Incident, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import {
@@ -14,7 +14,7 @@ export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMo
   const monitor = await WebsiteMonitor.create(data)
 
   const serialized = await serializeMonitor(monitor)
-  produceCreateMonitor(serialized)
+  await produceCreateMonitor(serialized.id, serialized)
 
   return monitor
 }
@@ -44,6 +44,10 @@ export const webMonitorDelete = async (id: string | Types.ObjectId): Promise<Web
   const monitor = await webMonitorGetOne(id)
 
   await monitor.deleteOne()
+
+  const serialized = await serializeMonitor(monitor)
+  await produceDeleteMonitor(serialized.id, serialized)
+
   return monitor
 }
 
@@ -59,12 +63,7 @@ export const webMonitorGetResponses = async (
 
   return responses
 }
-// export const webMonitorGetSubscribers = (monitor: WebsiteMonitor): Subscriber[] => {
-//   // const subscribers = await Subscriber.find({ monitorId: monitor._id })
 
-//   return monitor.subscribers
-//   // return subscribers
-// // }
 export const webMonitorGetIncidents = async (monitor: WebsiteMonitor): Promise<Incident[]> => {
   const incidents = await Incident.find({ monitorId: monitor._id })
 
