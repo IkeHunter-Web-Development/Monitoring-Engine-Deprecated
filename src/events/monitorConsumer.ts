@@ -1,6 +1,6 @@
 import { webMonitorRegisterResponse } from 'src/controllers'
 import { validateResponse } from 'src/utils'
-import { createConsumer } from './kafkaClient'
+import { createConsumer } from '../lib/kafka'
 
 // const eventQueue = EventQueue.getInstance()
 // const monitorConsumer = new EventConsumer(eventQueue, 'monitor-events')

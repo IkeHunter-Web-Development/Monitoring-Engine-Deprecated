@@ -1,5 +1,6 @@
 import { Kafka, logLevel } from 'kafkajs'
 import { KAFKA_BROKERS, KAFKA_GROUP_ID } from 'src/config'
+import { logger } from './logger'
 
 export const kafka = new Kafka({
   clientId: KAFKA_GROUP_ID,
@@ -46,7 +47,7 @@ export const createConsumer = (
 ) => {
   const consumer = kafka.consumer({ groupId: KAFKA_GROUP_ID })
   consumer.connect().then(() => {
-    console.log(`Consumer for action ${action} connected to topic ${topic}.`)
+    logger.info(`Consumer for "${action}" connected to topic ${topic}.`)
     consumer.subscribe({ topic })
     consumer.run({
       eachMessage: async ({ message }) => {

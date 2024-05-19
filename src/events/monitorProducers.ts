@@ -1,6 +1,6 @@
 // import { EventProducer, EventQueue } from 'src/lib'
 
-import { createProducer } from './kafkaClient'
+import { createProducer } from '../lib/kafka'
 
 const topic = 'monitors'
 

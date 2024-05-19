@@ -73,3 +73,7 @@ export class MonitorSocket {
     })
   }
 }
+
+/** Create websocket application */
+// const app = http.createServer(server)
+// MonitorSocket.createSocket(app)

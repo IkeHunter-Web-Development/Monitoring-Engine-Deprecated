@@ -1,4 +1,4 @@
-import { createProducer } from './kafkaClient'
+import { createProducer } from '../lib/kafka'
 
 interface EmailFields {
   toEmails: string[]

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { MONGO_URI } from './constants'
+import { logger } from 'src/lib'
 
 export const setupDatabase = async (): Promise<void> => {
   await mongoose
@@ -7,9 +8,9 @@ export const setupDatabase = async (): Promise<void> => {
       autoIndex: true
     })
     .then(() => {
-      console.log('Connected to MongoDB successfully')
+      logger.info('Connected to MongoDB successfully')
     })
     .catch((err: any) => {
-      console.error.bind('Error connecting to MongoDB: ', err)
+      logger.error('Error connecting to MongoDB: ', err)
     })
 }

@@ -1,13 +1,13 @@
 import 'dotenv/config'
 
-type nodenv = 'development' | 'production' | 'test'
+type nodenv = 'development' | 'production' | 'test' | 'network'
 
 export const HOST = process.env.HOST ?? 'localhost'
 export const PORT = Number(process.env.PORT) ?? 8000
 export const NODE_ENV: nodenv = (process.env.NODE_ENV as nodenv) || 'development'
 
 export const MONGO_URI = process.env.MONGO_URI ?? 'mongodb://root:changeme@mongo-monitor:27017'
-export const LOGGING_LEVEL = process.env.LOGGING_LEVEL ?? 'info'
+export const LOG_LEVEL = process.env.LOG_LEVEL ?? 'verbose'
 
 export const GATEWAY_URL = process.env.GATEWAY_URL ?? 'http://localhost:8080'
 export const NETWORK_TOKEN = process.env.NETWORK_TOKEN ?? 'insecure'

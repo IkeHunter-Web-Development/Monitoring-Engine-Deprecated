@@ -1,8 +1,8 @@
+import { produceSendEmail } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
 import { handleWebMonitorResponseTime } from 'src/services/monitorService'
 import { validateEvent, validateResponse } from 'src/utils'
 import { webMonitorGetOne } from './monitorResources'
-import { produceSendEmail } from 'src/kafka'
 
 export const webMonitorRegisterResponse = async (response: IResponse): Promise<WebsiteResponse> => {
   validateResponse(response)
