@@ -7,10 +7,11 @@ services:
     ports:
       - "8000:8000"
     restart: always
-    container_name: monitor
+    container_name: monitor-engine
     volumes:
       - ./src:/app/src
       - ./logs:/app/logs
+      - ./package.json:/app/package.json
     env_file:
       - ./.env
     environment:

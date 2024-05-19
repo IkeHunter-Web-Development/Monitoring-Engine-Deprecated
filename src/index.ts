@@ -1,11 +1,13 @@
-import 'module-alias/register'
+// import 'module-alias/register'
 import swaggerUi from 'swagger-ui-express'
 
-import { HOST, NODE_ENV, PORT, server, setupDatabase } from 'src/config'
-import { initializeSwagger } from 'src/docs'
-import { registerMonitorConsumer } from 'src/events'
-import { logger } from 'src/lib'
-import { processCliArgs } from 'src/scripts'
+import { HOST, NODE_ENV, PORT, server, setupDatabase } from './config'
+import { initializeSwagger } from './docs'
+import { registerMonitorConsumer } from './events'
+import { logger } from './lib'
+import { processCliArgs } from './scripts'
+
+process.on('SIGTERM', () => process.exit())
 
 setupDatabase()
 

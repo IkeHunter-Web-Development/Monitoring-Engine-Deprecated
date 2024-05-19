@@ -16,8 +16,7 @@ server.use(multer().any())
 
 server.use(
   morgan(':remote-addr :method :url :status :res[content-length] - :response-time ms', {
-    immediate: true,
-    stream: { write: (message) => logger.http(message) }
+    stream: { write: (message) => logger.http(message, { service: 'express' }) }
   })
 )
 server.use(router)

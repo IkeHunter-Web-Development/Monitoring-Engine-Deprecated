@@ -1,11 +1,21 @@
 import type { Types } from 'mongoose'
+import { produceCreateMonitor } from 'src/events'
 // import type { Subscriber } from 'src/models'
 import { Event, Incident, WebsiteMonitor, WebsiteResponse } from 'src/models'
-import { MonitorNotFoundError, validateMonitorInput, validatePartialMonitorInput } from 'src/utils'
+import {
+  MonitorNotFoundError,
+  serializeMonitor,
+  validateMonitorInput,
+  validatePartialMonitorInput
+} from 'src/utils'
 
 export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
   validateMonitorInput(data)
   const monitor = await WebsiteMonitor.create(data)
+
+  const serialized = await serializeMonitor(monitor)
+  produceCreateMonitor(serialized)
+
   return monitor
 }
 export const webMonitorGetList = async (): Promise<WebsiteMonitor[]> => {

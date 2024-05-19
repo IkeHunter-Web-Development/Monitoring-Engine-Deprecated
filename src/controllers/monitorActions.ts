@@ -25,14 +25,11 @@ export const webMonitorRegisterResponse = async (response: IResponse): Promise<W
   return resObject
 }
 
-export const webMonitorRegisterEvent = async (
-  monitor: WebsiteMonitor,
-  event: { message: string } | IEvent
-) => {
+export const webMonitorRegisterEvent = async (monitor: WebsiteMonitor, message: string) => {
   validateEvent(event)
 
   const newEvent = await Event.create({
-    ...event,
+    message,
     monitorId: monitor._id,
     projectId: monitor.projectId
   })
@@ -45,9 +42,7 @@ export const webMonitorStatusChange = async (
   oldStatus: MonitorStatus,
   newStatus: MonitorStatus
 ) => {
-  await webMonitorRegisterEvent(monitor, {
-    message: `Status changed from ${oldStatus} to ${newStatus}.`
-  })
+  await webMonitorRegisterEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
 
   await produceSendEmail({
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),

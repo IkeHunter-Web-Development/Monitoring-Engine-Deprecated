@@ -6,7 +6,7 @@ const consoleTransport = new transports.Console({
     format.colorize({ all: true }),
     format.timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS' }),
     format.printf((info) => {
-      return `[${info.level}] ${info.message}`
+      return `[${info.level}] [${info.service || 'server'}] ${info.message}`
     })
   ),
   level: LOG_LEVEL
@@ -17,12 +17,11 @@ addColors({
   warn: 'yellow',
   info: 'green',
   http: 'cyan',
-  debug: 'white'
+  debug: 'grey'
 })
 
 export const logger = createLogger({
-  // level: LOG_LEVEL,
-  level: 'debug',
+  level: LOG_LEVEL,
   format: format.json(),
   transports: [consoleTransport],
   levels: {

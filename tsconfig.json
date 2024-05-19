@@ -115,6 +115,7 @@
   },
   "include": [
     "./src",
+    "./src/*",
     "./src/**/*.ts",
     "./src/**/*.json",
     "./src/types",
