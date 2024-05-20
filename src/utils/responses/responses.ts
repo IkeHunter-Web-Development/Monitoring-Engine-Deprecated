@@ -16,8 +16,8 @@ export interface ResponsePayload {
 }
 
 const formatResponse = (status: number, message?: any): ResponsePayload => {
-  // message = String(message) ?? ''
-  const defaultMessage = ResponseCodes[status] ?? 'Unknown error'
+  // message = String(message) || ''
+  const defaultMessage = ResponseCodes[status] || 'Unknown error'
   message = String(message) || null
 
   const payload: ResponsePayload = {
@@ -25,7 +25,7 @@ const formatResponse = (status: number, message?: any): ResponsePayload => {
     type: defaultMessage
   }
 
-  if (message) {
+  if (message && message !== 'undefined') {
     payload.message = message
   }
 
@@ -43,7 +43,7 @@ export const ok = (res: Response, data?: any, showStatus?: boolean): any => {
   if (showStatus) {
     return res.status(200).json(payload)
   } else {
-    return res.status(200).json(data ?? payload)
+    return res.status(200).json(data || payload)
   }
 }
 
@@ -57,7 +57,7 @@ export const created = (res: Response, data?: any, showStatus?: boolean): any =>
   if (showStatus) {
     return res.status(201).json(payload)
   } else {
-    return res.status(201).json(data ?? payload)
+    return res.status(201).json(data || payload)
   }
 }
 
@@ -79,7 +79,7 @@ export const badRequest = (res: Response, message?: any, showStatus: boolean = t
   if (showStatus) {
     return res.status(400).json(payload)
   } else {
-    return res.status(400).json(message ?? payload)
+    return res.status(400).json(message || payload)
   }
 }
 
@@ -92,7 +92,7 @@ export const unauthorized = (res: Response, message?: any, showStatus: boolean =
   if (showStatus) {
     return res.status(401).json(payload)
   } else {
-    return res.status(401).json(message ?? payload)
+    return res.status(401).json(message || payload)
   }
 }
 
@@ -106,7 +106,7 @@ export const forbidden = (res: Response, message?: any, showStatus: boolean = tr
   if (showStatus) {
     return res.status(403).json(payload)
   } else {
-    return res.status(403).json(message ?? payload)
+    return res.status(403).json(message || payload)
   }
 }
 
@@ -120,7 +120,7 @@ export const notFound = (res: Response, message?: any, showStatus: boolean = tru
   if (showStatus) {
     return res.status(404).json(payload)
   } else {
-    return res.status(404).json(message ?? payload)
+    return res.status(404).json(message || payload)
   }
 }
 
@@ -133,7 +133,7 @@ export const methodNotAllowed = (res: Response, message?: any, showStatus: boole
   if (showStatus) {
     return res.status(405).json(payload)
   } else {
-    return res.status(405).json(message ?? payload)
+    return res.status(405).json(message || payload)
   }
 }
 
@@ -146,7 +146,7 @@ export const conflict = (res: Response, message?: any, showStatus: boolean = tru
   if (showStatus) {
     return res.status(409).json(payload)
   } else {
-    return res.status(409).json(message ?? payload)
+    return res.status(409).json(message || payload)
   }
 }
 
@@ -161,7 +161,7 @@ export const gone = (res: Response, message?: any, showStatus: boolean = true): 
   if (showStatus) {
     return res.status(410).json(payload)
   } else {
-    return res.status(410).json(message ?? payload)
+    return res.status(410).json(message || payload)
   }
 }
 
@@ -180,7 +180,7 @@ export const internalServerError = (
   if (showStatus) {
     return res.status(500).json(payload)
   } else {
-    return res.status(500).json(message ?? payload)
+    return res.status(500).json(message || payload)
   }
 }
 
@@ -195,7 +195,7 @@ export const notImplemented = (res: Response, message?: any, showStatus: boolean
   if (showStatus) {
     return res.status(501).json(payload)
   } else {
-    return res.status(501).json(message ?? payload)
+    return res.status(501).json(message || payload)
   }
 }
 
@@ -208,7 +208,7 @@ export const badGateway = (res: Response, message?: any, showStatus: boolean = t
   if (showStatus) {
     return res.status(502).json(payload)
   } else {
-    return res.status(502).json(message ?? payload)
+    return res.status(502).json(message || payload)
   }
 }
 
@@ -225,7 +225,7 @@ export const serviceUnavailable = (
   if (showStatus) {
     return res.status(503).json(payload)
   } else {
-    return res.status(503).json(message ?? payload)
+    return res.status(503).json(message || payload)
   }
 }
 
@@ -238,7 +238,7 @@ export const gatewayTimeout = (res: Response, message?: any, showStatus: boolean
   if (showStatus) {
     return res.status(504).json(payload)
   } else {
-    return res.status(504).json(message ?? payload)
+    return res.status(504).json(message || payload)
   }
 }
 
@@ -255,6 +255,6 @@ export const networkAuthenticationRequired = (
   if (showStatus) {
     return res.status(511).json(payload)
   } else {
-    return res.status(511).json(message ?? payload)
+    return res.status(511).json(message || payload)
   }
 }

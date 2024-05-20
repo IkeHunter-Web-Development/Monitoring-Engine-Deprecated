@@ -5,7 +5,7 @@
  * https://kafka.js.org/docs/introduction
  */
 
-import { Kafka, Partitioners, logLevel } from 'kafkajs'
+import { Kafka, Partitioners, logLevel, type Message } from 'kafkajs'
 import { KAFKA_BROKERS, KAFKA_GROUP_ID } from 'src/config'
 import { logger } from './logger'
 
@@ -69,16 +69,23 @@ export const kafka = new Kafka({
  */
 export const createProducer =
   <T>(topic: string, action?: string) =>
-  async (key: string, data: T) => {
+  async (key: string, data: T | T[]) => {
     const producer = kafka.producer({
-      createPartitioner: Partitioners.DefaultPartitioner,
-      retry: { retries: 3 }
+      createPartitioner: Partitioners.DefaultPartitioner
     })
     await producer.connect()
+    let messages: Message[]
+
+    if (Array.isArray(data)) {
+      messages = data.map((item) => ({ key, value: JSON.stringify({ action, data: item }) }))
+    } else {
+      messages = [{ key, value: JSON.stringify({ action, data }) }]
+    }
+
     await producer
       .send({
         topic,
-        messages: [{ key, value: JSON.stringify({ action, data }) }]
+        messages
       })
       .then(() => {
         logger.debug(`Produced message for ${topic}.`)
@@ -91,6 +98,7 @@ export const createProducer =
 
 /**
  * Create a consumer for a Kafka topic.
+ *
  * @param topic - The topic to consume from.
  * @param action - The action to listen for.
  * @param callback - The callback to run when the action is received.
@@ -99,7 +107,7 @@ export const createProducer =
 export const createConsumer = async (
   topic: string,
   callback: (data: any, action?: string) => Promise<void>,
-  options?: { fromBeginning?: boolean }
+  options?: { fromBeginning?: boolean; manualCommit?: boolean }
 ) => {
   const consumer = kafka.consumer({
     groupId: `${KAFKA_GROUP_ID}-${topic}`,
@@ -110,22 +118,62 @@ export const createConsumer = async (
   await consumer
     .subscribe({
       topic,
-      fromBeginning: options?.fromBeginning || true
+      fromBeginning: options?.fromBeginning || false
     })
     .then(() => {
       logger.info(`Consumer created for ${topic}.`)
     })
-  await consumer.run({
-    eachMessage: async ({ message }) => {
-      try {
-        const payload = JSON.parse(message.value?.toString() || '')
-        const { action, data } = payload
-        logger.debug(`Consumed message for ${topic}.`)
+  if (!options?.manualCommit) {
+    await consumer.run({
+      eachMessage: async ({ message }) => {
+        try {
+          const payload = JSON.parse(message.value?.toString() || '')
+          const { action, data } = payload
+          logger.debug(`Consumed message for ${topic}.`)
 
-        await callback(data, action)
-      } catch (error) {
-        logger.error('Error handling data from event queue:', error)
+          await callback(data, action)
+        } catch (error) {
+          logger.error('Error handling data from event queue:', error)
+        }
       }
-    }
-  })
+    })
+  } else {
+    await consumer.run({
+      eachBatchAutoResolve: false,
+      eachBatch: async ({
+        batch,
+        resolveOffset,
+        heartbeat,
+        isRunning,
+        isStale,
+        pause,
+        commitOffsetsIfNecessary
+      }) => {
+        if (!isRunning() || isStale()) return
+        logger.debug(
+          `Consumed batch for ${topic} with ${batch.messages.length} ${
+            (batch.messages.length === 1 && 'message') || 'messages'
+          }.`
+        )
+        pause()
+
+        await Promise.all(
+          batch.messages.map(async (message) => {
+            if (!isRunning() || isStale()) return
+
+            const payload = JSON.parse(message.value?.toString() || '')
+            const { action, data } = payload
+
+            await callback(data, action)
+            resolveOffset(message.offset)
+
+            await heartbeat()
+          })
+        ).then(() => {
+          logger.debug(`Finished batch for ${topic}.`)
+          commitOffsetsIfNecessary()
+        })
+      }
+    })
+  }
 }

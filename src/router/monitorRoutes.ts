@@ -12,5 +12,6 @@ router.post('/monitors/', isAuthenticated, Views.createMonitorView)
 router.put('/monitors/:id', isAuthenticated, Views.updateMonitorView)
 router.patch('/monitors/:id', isAuthenticated, Views.updateMonitorView)
 router.delete('/monitors/:id', isAuthenticated, Views.deleteMonitorView)
+router.delete('/monitors/', isAuthenticated, Views.deleteMonitorsView)
 
 export const monitorRoutes = router

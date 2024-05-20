@@ -21,9 +21,10 @@ export const webMonitorRegisterResponse = async (response: IResponse): Promise<W
 
   await monitor.updateOne(updatePayload)
   await handleWebMonitorResponseTime(monitor)
+  const updatedMonitor = await webMonitorGetOne(monitor._id)
 
-  if (monitor.status !== originalStatus)
-    await webMonitorStatusChange(monitor, originalStatus, monitor.status)
+  if (updatedMonitor.status !== originalStatus)
+    await webMonitorStatusChange(updatedMonitor, originalStatus, updatedMonitor.status)
 
   return resObject
 }

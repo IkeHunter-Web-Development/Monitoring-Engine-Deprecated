@@ -5,6 +5,7 @@ import { Event, Incident, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import {
   MonitorNotFoundError,
   serializeMonitor,
+  serializeMonitors,
   validateMonitorInput,
   validatePartialMonitorInput
 } from 'src/utils'
@@ -18,8 +19,8 @@ export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMo
 
   return monitor
 }
-export const webMonitorGetList = async (): Promise<WebsiteMonitor[]> => {
-  const monitors = await WebsiteMonitor.find({})
+export const webMonitorGetList = async (query: any): Promise<WebsiteMonitor[]> => {
+  const monitors = await WebsiteMonitor.find({ ...query })
 
   return monitors
 }
@@ -49,6 +50,16 @@ export const webMonitorDelete = async (id: string | Types.ObjectId): Promise<Web
   await produceDeleteMonitor(serialized.id, serialized)
 
   return monitor
+}
+
+export const webMonitorDeleteMany = async (query: any): Promise<WebsiteMonitor[]> => {
+  const monitors = await webMonitorGetList({ ...query })
+  await WebsiteMonitor.deleteMany({ ...query })
+
+  const serialized = await serializeMonitors(monitors)
+  await produceDeleteMonitor('delete-many', serialized)
+
+  return monitors
 }
 
 export const webMonitorGetEvents = async (monitor: WebsiteMonitor): Promise<Event[]> => {

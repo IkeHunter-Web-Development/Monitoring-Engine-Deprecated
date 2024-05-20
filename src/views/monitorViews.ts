@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express'
 import {
   webMonitorCreate,
   webMonitorDelete,
+  webMonitorDeleteMany,
   webMonitorGetList,
   webMonitorGetOne,
   webMonitorUpdate
@@ -64,7 +65,7 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
     }
    *=========================== */
   try {
-    const monitors = await webMonitorGetList()
+    const monitors = await webMonitorGetList(req.query)
     const serialized = await serializeMonitors(monitors)
 
     return Responses.ok(res, serialized)
@@ -167,6 +168,28 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
 
     const monitor = await webMonitorDelete(id)
     const serialized = await serializeMonitor(monitor)
+
+    return Responses.ok(res, serialized)
+  } catch (error) {
+    return sendError(error, res, next)
+  }
+}
+
+export const deleteMonitorsView = async (req: Request, res: Response, next: NextFunction) => {
+  /** ==========================*
+    @swagger Delete multiple monitors
+    #swagger.summary = 'Delete monitors'
+    #swagger.tags = ['Monitor']
+    #swagger.description = 'Endpoint for deleting multiple monitors.'
+    #swagger.parameters['q'] = { description: 'Query' }
+    #swagger.responses[200] = {
+      description: "Monitors that were deleted successfully.",
+      schema: {$ref: "#/definitions/MonitorMetaDoc"}
+    }
+    *=========================== */
+  try {
+    const monitors = await webMonitorDeleteMany(req.query)
+    const serialized = await serializeMonitors(monitors)
 
     return Responses.ok(res, serialized)
   } catch (error) {
