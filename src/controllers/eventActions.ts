@@ -3,13 +3,23 @@ import { Event } from 'src/models'
 
 export const eventSearch = async (params: {
   monitorId?: string | Types.ObjectId
-  projectId?: string
+  projectId?: string | string[]
 }): Promise<Event[]> => {
   const { monitorId, projectId } = params
   if (!monitorId && !projectId) return []
 
-  const monitorEvents = monitorId ? await Event.find({ monitorId }) : []
-  const projectEvents = projectId ? await Event.find({ projectId }) : []
+  const events: Event[] = []
 
-  return [...monitorEvents, ...projectEvents]
+  const monitorEvents = monitorId ? await Event.find({ monitorId }) : []
+  events.push(...monitorEvents)
+
+  if (projectId && Array.isArray(projectId)) {
+    const projectEvents = await Event.find().all('projectId', projectId)
+    events.push(...projectEvents)
+  } else if (projectId) {
+    const projectEvents = await Event.find({ projectId })
+    events.push(...projectEvents)
+  }
+
+  return events
 }

@@ -1,10 +1,10 @@
 import type { Types } from 'mongoose'
 import type { Incident } from 'src/models'
 import { handleStartIncident } from 'src/services'
-import { NotImplementedError, validateIncident } from 'src/utils'
+import { NotImplementedError, validateFullIncident } from 'src/utils'
 
 export const incidentStart = async (data: IIncident): Promise<Incident> => {
-  validateIncident(data)
+  validateFullIncident(data)
 
   const incident = await handleStartIncident(data)
   throw new NotImplementedError('Start incident')

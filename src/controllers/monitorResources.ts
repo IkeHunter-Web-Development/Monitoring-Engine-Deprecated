@@ -6,12 +6,12 @@ import {
   MonitorNotFoundError,
   serializeMonitor,
   serializeMonitors,
-  validateMonitorInput,
-  validatePartialMonitorInput
+  validateFullMonitor,
+  validateMonitorInput
 } from 'src/utils'
 
 export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
-  validateMonitorInput(data)
+  validateFullMonitor(data)
   const monitor = await WebsiteMonitor.create(data)
 
   const serialized = await serializeMonitor(monitor)
@@ -35,7 +35,7 @@ export const webMonitorUpdate = async (
   id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
-  validatePartialMonitorInput(data)
+  validateMonitorInput(data)
   const monitor = await WebsiteMonitor.findOneAndUpdate({ _id: id }, data, { new: true })
   if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}.`)
 

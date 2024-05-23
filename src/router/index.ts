@@ -18,6 +18,6 @@ const router = Router()
 router.get('/', CoreController.healthCheck)
 router.use('/api/monitor', docsMiddleware, monitorRoutes)
 router.use('/api/monitor', docsMiddleware, eventRoutes)
-router.use('/api/incident', docsMiddleware, incidentRoutes)
+router.use('/api/monitor', docsMiddleware, incidentRoutes)
 
 export { router }

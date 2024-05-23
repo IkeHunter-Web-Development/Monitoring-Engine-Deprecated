@@ -7,8 +7,6 @@ import { registerMonitorConsumer } from './events'
 import { logger } from './lib'
 import { processCliArgs } from './scripts'
 
-process.on('SIGTERM', () => process.exit())
-
 setupDatabase()
 
 if (NODE_ENV === 'production' || NODE_ENV === 'network') {
@@ -18,7 +16,11 @@ if (NODE_ENV === 'production' || NODE_ENV === 'network') {
 /** Generate swagger docs */
 initializeSwagger().then(async () => {
   const swaggerDocument = await import('src/docs/swagger_output.json')
-  server.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }))
+  server.use(
+    '/api/monitor/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, { explorer: true })
+  )
 })
 
 if (process.argv.length > 2) {

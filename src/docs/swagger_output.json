@@ -596,7 +596,7 @@
           {
             "name": "projectId",
             "in": "query",
-            "description": "Project id to search events",
+            "description": "Project id to search events, pass in multiple by separating with commas",
             "type": "string"
           }
         ],
@@ -604,7 +604,13 @@
           "200": {
             "description": "Events Found",
             "schema": {
-              "$ref": "#/definitions/IncidentMetaDoc"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EventMetaDoc"
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           },
           "400": {
@@ -634,7 +640,7 @@
         }
       }
     },
-    "/api/incident/incidents": {
+    "/api/monitor/incidents": {
       "post": {
         "tags": [
           "Incidents"
@@ -725,7 +731,7 @@
         }
       }
     },
-    "/api/incident/incidents/{id}": {
+    "/api/monitor/incidents/{id}": {
       "get": {
         "tags": [
           "Incidents"
@@ -972,11 +978,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "664adf5bdbaac54e7c939985"
+          "example": "664e067c42d4273463e4942d"
         },
         "projectId": {
           "type": "string",
-          "example": "664adf5bdbaac54e7c939986"
+          "example": "664e067c42d4273463e4942e"
         },
         "name": {
           "type": "string",
@@ -988,7 +994,7 @@
         },
         "uuid": {
           "type": "string",
-          "example": "664adf5bdbaac54e7c939987"
+          "example": "664e067c42d4273463e4942f"
         },
         "icon": {
           "type": "string",
@@ -1036,11 +1042,11 @@
         },
         "updatedAt": {
           "type": "number",
-          "example": 1716096475934
+          "example": 1716303100667
         },
         "createdAt": {
           "type": "number",
-          "example": 1715923675934
+          "example": 1716130300667
         },
         "subscribers": {
           "type": "array",
@@ -1049,11 +1055,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c93998a"
+                "example": "664e067c42d4273463e49432"
               },
               "monitorId": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c939985"
+                "example": "664e067c42d4273463e4942d"
               },
               "displayName": {
                 "type": "string",
@@ -1081,11 +1087,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c93998c"
+                "example": "664e067c42d4273463e49434"
               },
               "projectId": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c939986"
+                "example": "664e067c42d4273463e4942e"
               },
               "message": {
                 "type": "string",
@@ -1093,19 +1099,19 @@
               },
               "monitorId": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c939985"
+                "example": "664e067c42d4273463e4942d"
               },
               "timestamp": {
                 "type": "number",
-                "example": 1716096475934
+                "example": 1716303100667
               },
               "createdAt": {
                 "type": "number",
-                "example": 1716096475934
+                "example": 1716303100667
               },
               "incidentId": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c93998d"
+                "example": "664e067c42d4273463e49435"
               }
             }
           }
@@ -1117,11 +1123,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c939990"
+                "example": "664e067c42d4273463e49438"
               },
               "monitorId": {
                 "type": "string",
-                "example": "664adf5bdbaac54e7c939985"
+                "example": "664e067c42d4273463e4942d"
               },
               "responseTime": {
                 "type": "number",
@@ -1129,11 +1135,11 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1716172075934
+                "example": 1716378700667
               },
               "timestamp": {
                 "type": "number",
-                "example": 1716172075934
+                "example": 1716378700667
               }
             }
           }
@@ -1173,15 +1179,15 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1716010075934
+                "example": 1716216700667
               },
               "updatedAt": {
                 "type": "number",
-                "example": 1716096475934
+                "example": 1716303100667
               },
               "resolvedAt": {
                 "type": "number",
-                "example": 1716096475934
+                "example": 1716303100667
               }
             }
           }
@@ -1214,7 +1220,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "664adf5bdbaac54e7c939984"
+          "example": "664e067c42d4273463e4942c"
         },
         "createdAt": {
           "type": "number",
@@ -1277,6 +1283,18 @@
         "message": {
           "type": "string",
           "example": ""
+        },
+        "incidentId": {
+          "type": "string",
+          "example": ""
+        },
+        "monitorId": {
+          "type": "string",
+          "example": ""
+        },
+        "timestamp": {
+          "type": "number",
+          "example": 0
         }
       }
     },

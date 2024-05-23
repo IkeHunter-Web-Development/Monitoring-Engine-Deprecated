@@ -37,7 +37,13 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
       icon: body.icon,
       active: body.active,
       reminderIntervals: body.reminderIntervals,
-      subscribers: body.subscribers,
+      subscribers: body.subscribers?.map((sub: any) => ({
+        displayName: sub?.displayName,
+        email: sub?.email,
+        phone: sub?.phone,
+        method: sub?.method,
+        userId: sub?.userId
+      })),
       url: body.url,
       checkType: body.checkType,
       retries: body.retries,

@@ -16,21 +16,26 @@ export const queryEventsView = async (req: Request, res: Response, next: NextFun
   }
   #swagger.parameters['projectId'] = {
     in: "query",
-    description: "Project id to search events",
+    description: "Project id to search events, pass in multiple by separating with commas",
     type: "string"
   }
   
   #swagger.responses[200] = { 
     "description": "Events Found",
-    "schema": { $ref: "#/definitions/IncidentMetaDoc" }  
+    "schema": [{ $ref: "#/definitions/EventMetaDoc" }]  
   }
   ** ====================== */
   try {
     const { monitorId, projectId } = req.query
 
+    let pid: string | string[] = String(projectId)
+    if (pid.includes(',')) {
+      pid = pid.split(',').map((id) => id.trim())
+    }
+
     const events = await eventSearch({
       monitorId: monitorId?.toString(),
-      projectId: projectId?.toString()
+      projectId: pid
     })
     const serialized = await serializeEvents(events)
 

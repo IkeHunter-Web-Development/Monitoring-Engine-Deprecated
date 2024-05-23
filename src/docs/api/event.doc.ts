@@ -7,5 +7,8 @@ export const EventMetaDoc: IEventMeta = {
   id: '',
   createdAt: 0,
   projectId: '',
-  message: ''
+  message: '',
+  incidentId: '',
+  monitorId: '',
+  timestamp: 0
 }

@@ -2,8 +2,14 @@ import { InvalidMonitorFieldError } from '../exceptions'
 import { isNumeric, isStringSize, isValidUrl } from './validators'
 
 export const validateFullMonitor = (monitor: any): IWebsiteMonitor => {
-  if (!monitor.projectId || !monitor.name || !monitor.url)
-    throw new InvalidMonitorFieldError('Missing required field')
+  const requiredKeys = ['projectId', 'name', 'url']
+  for (const key of requiredKeys) {
+    if (!Object.keys(monitor).includes(key) || !monitor[key])
+      throw new InvalidMonitorFieldError(`Missing required field ${key}`)
+  }
+
+  // if (!monitor.projectId || !monitor.name || !monitor.url)
+  //   throw new InvalidMonitorFieldError('Missing required field')
 
   return validateMonitorInput(monitor) as IWebsiteMonitor
 }

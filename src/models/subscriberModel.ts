@@ -24,11 +24,11 @@ export const SubscriberSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  monitorId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: 'WebsiteMonitor'
-  },
+  // monitorId: {
+  //   type: Schema.Types.ObjectId,
+  //   required: true,
+  //   ref: 'WebsiteMonitor'
+  // },
   // monitors: [
   //   {
   //     type: Schema.Types.ObjectId

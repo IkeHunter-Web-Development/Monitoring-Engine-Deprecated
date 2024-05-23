@@ -31,7 +31,7 @@ export const getNetworkAuth = async (token: string): Promise<NetworkAuthResponse
 
   return {
     status: res.status,
-    userId: res.data?.uuid,
+    userId: res.data?.id,
     projects: res.data?.projects?.map((project: { id: any; name: string }) => String(project.id))
   }
 }

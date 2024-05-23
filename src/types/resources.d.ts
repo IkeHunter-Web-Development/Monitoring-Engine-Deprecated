@@ -35,7 +35,7 @@ interface ISubscriber {
 }
 interface ISubscriberMeta extends ISubscriber {
   id: string
-  monitorId: string
+  // monitorId: string
 }
 declare interface IMonitor {
   projectId: string
