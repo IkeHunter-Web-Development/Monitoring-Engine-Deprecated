@@ -66,7 +66,7 @@ export const generateMockData = async () => {
         displayName: `${subRandomData.first_name} ${subRandomData.last_name}`,
         email: subRandomData.email,
         method: 'email',
-        monitorId: monitor.id
+        // monitorId: monitor.id
       }
       monitor.subscribers.push(subPayload)
     }

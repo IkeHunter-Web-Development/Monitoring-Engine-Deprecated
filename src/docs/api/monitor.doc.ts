@@ -42,7 +42,7 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
   subscribers: [
     {
       id: new Types.ObjectId().toString(),
-      monitorId: monitorId,
+      // monitorId: monitorId,
       displayName: 'John Doe',
       email: 'john@example.com',
       phone: '772-555-1234',
@@ -51,7 +51,7 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
     },
     {
       id: new Types.ObjectId().toString(),
-      monitorId: monitorId,
+      // monitorId: monitorId,
       displayName: 'Alex Smith',
       email: 'alex@example.com',
       phone: '772-555-5678',

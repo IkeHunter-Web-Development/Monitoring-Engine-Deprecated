@@ -57,6 +57,8 @@ export const kafka = new Kafka({
   }
 })
 
+console.log('group id:', KAFKA_GROUP_ID)
+
 /**
  * Create a producer for a Kafka topic.
  * @param topic - The topic to produce to.

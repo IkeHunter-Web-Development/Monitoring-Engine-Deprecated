@@ -1,4 +1,4 @@
-import { LOG_LEVEL } from 'src/config'
+import { LOG_LEVEL, LOG_NS } from 'src/config'
 import { addColors, createLogger, format, transports } from 'winston'
 
 const consoleTransport = new transports.Console({
@@ -6,7 +6,7 @@ const consoleTransport = new transports.Console({
     format.colorize({ all: true }),
     format.timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS' }),
     format.printf((info) => {
-      return `[${info.level}] [${info.service || 'server'}] ${info.message}`
+      return `[${info.level}] [${info.service || LOG_NS}] ${info.message}`
     })
   ),
   level: LOG_LEVEL

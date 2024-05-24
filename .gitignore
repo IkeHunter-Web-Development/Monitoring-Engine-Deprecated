@@ -6,6 +6,7 @@ _depricated/
 test-report/
 generated-data/
 _*
+.vscode/
 
 # Logs
 logs
