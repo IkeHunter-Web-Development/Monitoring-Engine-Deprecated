@@ -1,11 +1,11 @@
 import { Incident, WebsiteMonitor } from 'src/models'
 import { createTestIncidents, incidentExample, monitorExample } from 'src/utils'
 import {
-  incidentCreate,
-  incidentDelete,
-  incidentGetList,
-  incidentGetOne,
-  incidentUpdate
+  createIncident,
+  deleteIncident,
+  getIncident,
+  getIncidents,
+  updateIncident
 } from '../incidentResources'
 
 describe('Incident resource creation controller tests', () => {
@@ -18,7 +18,7 @@ describe('Incident resource creation controller tests', () => {
       cause: 'Example cause'
     }
 
-    const incident = await incidentCreate(payload)
+    const incident = await createIncident(payload)
 
     expect(incident.monitorId).toEqual(monitor._id)
     expect(incident.impact).toEqual(payload.impact)
@@ -44,7 +44,7 @@ describe('Incident resource controller tests', () => {
   it('should get incident', async () => {
     const dbIncidents = await Incident.find({})
     const dbIncident = dbIncidents[0]
-    const incidentResult = await incidentGetOne(dbIncident._id)
+    const incidentResult = await getIncident(dbIncident._id)
 
     expect(incidentResult._id).toEqual(dbIncident._id)
 
@@ -54,7 +54,7 @@ describe('Incident resource controller tests', () => {
   it('should get multiple incidents', async () => {
     await createTestIncidents(3)
     const dbIncidents = await Incident.find({})
-    const incidents = await incidentGetList()
+    const incidents = await getIncidents()
 
     expect(incidents.length).toEqual(dbIncidents.length)
   })
@@ -64,13 +64,13 @@ describe('Incident resource controller tests', () => {
       notes: dbIncident.notes + ' updated'
     }
 
-    const updatedIncident = await incidentUpdate(dbIncident._id, payload)
+    const updatedIncident = await updateIncident(dbIncident._id, payload)
 
     expect(updatedIncident.notes).toEqual(payload.notes)
   })
   it('should delete incident', async () => {
     const dbIncident = (await Incident.find({}))[0]
-    await incidentDelete(dbIncident._id)
+    await deleteIncident(dbIncident._id)
 
     const dbQuery = await Incident.find({})
     expect(dbQuery.length).toEqual(0)

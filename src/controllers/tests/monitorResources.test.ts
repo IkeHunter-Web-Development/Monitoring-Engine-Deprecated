@@ -1,9 +1,9 @@
 import { WebsiteMonitor } from 'src/models'
 import {
-  webMonitorCreate,
-  webMonitorDelete,
-  webMonitorGetOne,
-  webMonitorUpdate
+  createWebMonitor,
+  deleteWebMonitor,
+  getWebMonitor,
+  updateWebMonitor
 } from '../monitorResources'
 
 const monitorPayload: IWebsiteMonitor = {
@@ -25,7 +25,7 @@ describe('Monitor controller creation tests', () => {
     const initialMonitors = await WebsiteMonitor.find({})
     expect(initialMonitors.length).toEqual(0)
 
-    const monitor = await webMonitorCreate(monitorPayload)
+    const monitor = await createWebMonitor(monitorPayload)
     expect(monitor.name).toEqual(monitorPayload.name)
   })
 })
@@ -41,7 +41,7 @@ describe('Monitor controller tests', () => {
     const dbMonitor = await WebsiteMonitor.find({})
     const id = dbMonitor[0]?._id
 
-    const monitor = await webMonitorGetOne(id)
+    const monitor = await getWebMonitor(id)
 
     expect(monitor._id).toEqual(id)
     expect(monitor.name).toEqual(monitorPayload.name)
@@ -54,7 +54,7 @@ describe('Monitor controller tests', () => {
       name: 'Updated name'
     }
 
-    const updatedMonitor = await webMonitorUpdate(id, updatePaylod)
+    const updatedMonitor = await updateWebMonitor(id, updatePaylod)
 
     expect(updatedMonitor.name).toEqual(updatePaylod.name)
     expect(updatedMonitor.url).toEqual(monitorPayload.url)
@@ -63,7 +63,7 @@ describe('Monitor controller tests', () => {
     const dbMonitor = await WebsiteMonitor.find({})
     const id = dbMonitor[0]?._id
 
-    const deletedMonitor = await webMonitorDelete(id)
+    const deletedMonitor = await deleteWebMonitor(id)
     expect(deletedMonitor._id).toEqual(id)
 
     const dbMonitors = await WebsiteMonitor.find({})

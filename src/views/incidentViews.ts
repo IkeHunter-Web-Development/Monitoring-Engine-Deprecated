@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from 'express'
 import {
-  incidentCreate,
-  incidentDelete,
-  incidentGetList,
-  incidentGetOne,
-  incidentUpdate
+  createIncident,
+  deleteIncident,
+  getIncident,
+  getIncidents,
+  updateIncident
 } from 'src/controllers'
 
 import { Responses, sendError, serializeIncident, serializeIncidents } from 'src/utils'
@@ -38,7 +38,7 @@ export const createIncidentView = async (req: Request, res: Response, next: Next
       notes: body.notes
     }
 
-    const incident = await incidentCreate(payload)
+    const incident = await createIncident(payload)
     const serialized = serializeIncident(incident)
 
     return Responses.created(res, serialized)
@@ -60,7 +60,7 @@ export const getIncidentView = async (req: Request, res: Response, next: NextFun
   try {
     const { id } = req.params || ''
 
-    const incident = await incidentGetOne(id)
+    const incident = await getIncident(id)
     const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)
@@ -80,7 +80,7 @@ export const getIncidentsView = async (req: Request, res: Response, next: NextFu
     }
    *=====================*/
   try {
-    const incidents = await incidentGetList()
+    const incidents = await getIncidents()
     const serialized = serializeIncidents(incidents)
 
     return Responses.ok(res, serialized)
@@ -114,7 +114,7 @@ export const updateIncidentView = async (req: Request, res: Response, next: Next
       notes: body.notes
     }
 
-    const incident = await incidentUpdate(id, payload)
+    const incident = await updateIncident(id, payload)
     const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)
@@ -137,7 +137,7 @@ export const deleteIncidentView = async (req: Request, res: Response, next: Next
     let { id } = req.params
     id = id?.toString() || ''
 
-    const incident = await incidentDelete(id)
+    const incident = await deleteIncident(id)
     const serialized = serializeIncident(incident)
 
     return Responses.ok(res, serialized)

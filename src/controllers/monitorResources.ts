@@ -10,7 +10,7 @@ import {
   validateMonitorInput
 } from 'src/utils'
 
-export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
+export const createWebMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMonitor> => {
   validateFullMonitor(data)
   const monitor = await WebsiteMonitor.create(data)
 
@@ -19,19 +19,19 @@ export const webMonitorCreate = async (data: IWebsiteMonitor): Promise<WebsiteMo
 
   return monitor
 }
-export const webMonitorGetList = async (query: any): Promise<WebsiteMonitor[]> => {
+export const getWebMonitors = async (query: any): Promise<WebsiteMonitor[]> => {
   const monitors = await WebsiteMonitor.find({ ...query })
 
   return monitors
 }
-export const webMonitorGetOne = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
+export const getWebMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
   const monitor = await WebsiteMonitor.findById(id)
 
   if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}`)
 
   return monitor
 }
-export const webMonitorUpdate = async (
+export const updateWebMonitor = async (
   id: string | Types.ObjectId,
   data: Partial<IWebsiteMonitor>
 ): Promise<WebsiteMonitor> => {
@@ -41,8 +41,8 @@ export const webMonitorUpdate = async (
 
   return monitor
 }
-export const webMonitorDelete = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
-  const monitor = await webMonitorGetOne(id)
+export const deleteWebMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
+  const monitor = await getWebMonitor(id)
 
   await monitor.deleteOne()
 
@@ -52,8 +52,8 @@ export const webMonitorDelete = async (id: string | Types.ObjectId): Promise<Web
   return monitor
 }
 
-export const webMonitorDeleteMany = async (query: any): Promise<WebsiteMonitor[]> => {
-  const monitors = await webMonitorGetList({ ...query })
+export const deleteWebMonitors = async (query: any): Promise<WebsiteMonitor[]> => {
+  const monitors = await getWebMonitors({ ...query })
   await WebsiteMonitor.deleteMany({ ...query })
 
   const serialized = await serializeMonitors(monitors)
@@ -62,12 +62,12 @@ export const webMonitorDeleteMany = async (query: any): Promise<WebsiteMonitor[]
   return monitors
 }
 
-export const webMonitorGetEvents = async (monitor: WebsiteMonitor): Promise<Event[]> => {
+export const getWebMonitorEvents = async (monitor: WebsiteMonitor): Promise<Event[]> => {
   const events = await Event.find({ monitorId: monitor._id })
 
   return events
 }
-export const webMonitorGetResponses = async (
+export const getWebMonitorResponses = async (
   monitor: WebsiteMonitor
 ): Promise<WebsiteResponse[]> => {
   const responses = await WebsiteResponse.find({ monitorId: monitor._id })
@@ -75,7 +75,7 @@ export const webMonitorGetResponses = async (
   return responses
 }
 
-export const webMonitorGetIncidents = async (monitor: WebsiteMonitor): Promise<Incident[]> => {
+export const getWebMonitorIncidents = async (monitor: WebsiteMonitor): Promise<Incident[]> => {
   const incidents = await Incident.find({ monitorId: monitor._id })
 
   return incidents

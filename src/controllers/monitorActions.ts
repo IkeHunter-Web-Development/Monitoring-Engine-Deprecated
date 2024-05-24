@@ -2,12 +2,12 @@ import { produceSendEmail } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
 import { handleWebMonitorResponseTime } from 'src/services/monitorService'
 import { validateResponse } from 'src/utils'
-import { webMonitorGetOne } from './monitorResources'
+import { getWebMonitor } from './monitorResources'
 
-export const webMonitorRegisterResponse = async (response: IResponse): Promise<WebsiteResponse> => {
+export const registerWebMonitorResponse = async (response: IResponse): Promise<WebsiteResponse> => {
   validateResponse(response)
 
-  const monitor = await webMonitorGetOne(response.monitorId)
+  const monitor = await getWebMonitor(response.monitorId)
   const resObject = await WebsiteResponse.create({
     ...response,
     timestamp: new Date(response.timestamp)
@@ -21,15 +21,15 @@ export const webMonitorRegisterResponse = async (response: IResponse): Promise<W
 
   await monitor.updateOne(updatePayload)
   await handleWebMonitorResponseTime(monitor)
-  const updatedMonitor = await webMonitorGetOne(monitor._id)
+  const updatedMonitor = await getWebMonitor(monitor._id)
 
   if (updatedMonitor.status !== originalStatus)
-    await webMonitorStatusChange(updatedMonitor, originalStatus, updatedMonitor.status)
+    await handleWebMonitorStatusChange(updatedMonitor, originalStatus, updatedMonitor.status)
 
   return resObject
 }
 
-export const webMonitorRegisterEvent = async (monitor: WebsiteMonitor, message: string) => {
+export const registerWebMonitorEvent = async (monitor: WebsiteMonitor, message: string) => {
   // validateEvent(event)
 
   const newEvent = await Event.create({
@@ -41,12 +41,12 @@ export const webMonitorRegisterEvent = async (monitor: WebsiteMonitor, message: 
   return newEvent
 }
 
-export const webMonitorStatusChange = async (
+export const handleWebMonitorStatusChange = async (
   monitor: WebsiteMonitor,
   oldStatus: MonitorStatus,
   newStatus: MonitorStatus
 ) => {
-  await webMonitorRegisterEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
+  await registerWebMonitorEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
 
   await produceSendEmail(monitor._id.toString(), {
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),

@@ -1,15 +1,15 @@
 import {
-  webMonitorGetEvents,
-  webMonitorGetIncidents,
-  webMonitorGetResponses
+  getWebMonitorEvents,
+  getWebMonitorIncidents,
+  getWebMonitorResponses
 } from 'src/controllers'
 import type { WebsiteMonitor } from 'src/models'
 
 export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsiteMonitorMeta> => {
-  const events = await webMonitorGetEvents(monitor)
-  const responses = await webMonitorGetResponses(monitor)
+  const events = await getWebMonitorEvents(monitor)
+  const responses = await getWebMonitorResponses(monitor)
   const subscribers = monitor.subscribers
-  const incidents = await webMonitorGetIncidents(monitor)
+  const incidents = await getWebMonitorIncidents(monitor)
 
   return {
     projectId: monitor.projectId,

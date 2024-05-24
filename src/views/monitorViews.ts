@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from 'express'
 import {
-  webMonitorCreate,
-  webMonitorDelete,
-  webMonitorDeleteMany,
-  webMonitorGetList,
-  webMonitorGetOne,
-  webMonitorUpdate
+  createWebMonitor,
+  deleteWebMonitor,
+  deleteWebMonitors,
+  getWebMonitor,
+  getWebMonitors,
+  updateWebMonitor
 } from 'src/controllers'
 
 import { Responses, sendError, serializeMonitor, serializeMonitors } from 'src/utils'
@@ -50,7 +50,7 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
       timeout: body.timeout
     }
 
-    const monitor = await webMonitorCreate(input)
+    const monitor = await createWebMonitor(input)
     const serialized = await serializeMonitor(monitor)
 
     return Responses.created(res, serialized)
@@ -71,7 +71,7 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
     }
    *=========================== */
   try {
-    const monitors = await webMonitorGetList(req.query)
+    const monitors = await getWebMonitors(req.query)
     const serialized = await serializeMonitors(monitors)
 
     return Responses.ok(res, serialized)
@@ -100,7 +100,7 @@ export const getMonitorView = async (req: Request, res: Response, next: NextFunc
   try {
     const { id } = req.params ?? ''
 
-    const monitor = await webMonitorGetOne(id)
+    const monitor = await getWebMonitor(id)
     const serialized = await serializeMonitor(monitor)
 
     return Responses.ok(res, serialized)
@@ -148,7 +148,7 @@ export const updateMonitorView = async (req: Request, res: Response, next: NextF
       timeout: body.timeout
     }
 
-    const monitor = await webMonitorUpdate(id, input)
+    const monitor = await updateWebMonitor(id, input)
     const serialized = await serializeMonitor(monitor)
 
     return Responses.ok(res, serialized)
@@ -172,7 +172,7 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
     let { id } = req.params
     id = id?.toString() || ''
 
-    const monitor = await webMonitorDelete(id)
+    const monitor = await deleteWebMonitor(id)
     const serialized = await serializeMonitor(monitor)
 
     return Responses.ok(res, serialized)
@@ -194,7 +194,7 @@ export const deleteMonitorsView = async (req: Request, res: Response, next: Next
     }
     *=========================== */
   try {
-    const monitors = await webMonitorDeleteMany(req.query)
+    const monitors = await deleteWebMonitors(req.query)
     const serialized = await serializeMonitors(monitors)
 
     return Responses.ok(res, serialized)
