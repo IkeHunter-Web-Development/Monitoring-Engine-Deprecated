@@ -5,8 +5,8 @@ import { io, server } from './server'
 
 const PORT = 3333
 
-io.on('connection', (socket) => {
-  console.log('a user connected')
+io.on('connection', () => {
+  logger.debug('Client connected to socket.')
 })
 
 if (NODE_ENV === 'production' || NODE_ENV === 'network') {

@@ -1,5 +1,21 @@
 import { InvalidMonitorFieldError } from '../exceptions'
+import { isWebsiteAvailability } from './validateTypes'
 import { isNumeric, isStringSize, isValidUrl } from './validators'
+
+export const validateMonitorMeta = (monitor: any): IWebsiteMonitorMeta => {
+  if (monitor.availability && !isWebsiteAvailability(monitor.availability))
+    throw new InvalidMonitorFieldError(`Invalid website availability ${monitor.availability}.`)
+
+  if (monitor.responseTime && !isNumeric(monitor.responseTime))
+    throw new InvalidMonitorFieldError(`Response time needs to be a number.`)
+
+  if (monitor.subscribers) {
+    if (!Array.isArray(monitor.subscribers))
+      throw new InvalidMonitorFieldError(`Monitor subscribers need to be an array.`)
+  }
+
+  return monitor as IWebsiteMonitorMeta
+}
 
 export const validateFullMonitor = (monitor: any): IWebsiteMonitor => {
   const requiredKeys = ['projectId', 'name', 'url']

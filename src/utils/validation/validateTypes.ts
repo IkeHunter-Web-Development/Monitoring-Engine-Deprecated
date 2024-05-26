@@ -23,3 +23,15 @@ export const IncidentStatusOptions: IncidentStatus[] = [
 export const isIncidentStatus = (data: any): data is IncidentStatus => {
   return IncidentStatusOptions.includes(data)
 }
+
+export const WebsiteAvailabilityOptions: WebsiteAvailability[] = [
+  'degraded',
+  'maintenance',
+  'offline',
+  'online',
+  'pending'
+]
+
+export const isWebsiteAvailability = (data: any): data is WebsiteAvailability => {
+  return WebsiteAvailabilityOptions.includes(data)
+}

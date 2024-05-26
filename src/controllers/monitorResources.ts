@@ -1,5 +1,5 @@
 import type { Types } from 'mongoose'
-import { produceCreateMonitor, produceDeleteMonitor } from 'src/events'
+import { produceCreateMonitor, produceDeleteMonitor, produceUpdateMonitor } from 'src/events'
 // import type { Subscriber } from 'src/models'
 import { Event, Incident, WebsiteMonitor, WebsiteResponse } from 'src/models'
 import {
@@ -39,6 +39,9 @@ export const updateWebMonitor = async (
   const monitor = await WebsiteMonitor.findOneAndUpdate({ _id: id }, data, { new: true })
   if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}.`)
 
+  const serialized = await serializeMonitor(monitor)
+  produceUpdateMonitor(String(id), serialized)
+
   return monitor
 }
 export const deleteWebMonitor = async (id: string | Types.ObjectId): Promise<WebsiteMonitor> => {
@@ -54,6 +57,14 @@ export const deleteWebMonitor = async (id: string | Types.ObjectId): Promise<Web
 
 export const deleteWebMonitors = async (query: any): Promise<WebsiteMonitor[]> => {
   const monitors = await getWebMonitors({ ...query })
+  await WebsiteResponse.deleteMany().all(
+    'monitorId',
+    monitors.map((m) => m._id)
+  )
+  await Event.deleteMany().all(
+    'monitorId',
+    monitors.map((m) => m._id)
+  )
   await WebsiteMonitor.deleteMany({ ...query })
 
   const serialized = await serializeMonitors(monitors)

@@ -17,7 +17,7 @@ services:
     environment:
       - NODE_ENV=network
       - KAFKA_GROUP_ID=monitor-engine
-      - LOG_NS=monitor-server
+      - LOG_NS=server
     depends_on:
       - mongo-monitor
     command: npm run dev
@@ -55,7 +55,7 @@ services:
     environment:
       - NODE_ENV=network
       - KAFKA_GROUP_ID=monitor-socket
-      - LOG_NS=monitor-socket
+      - LOG_NS=socket
     depends_on:
       - mongo-monitor
     command: npm run socket

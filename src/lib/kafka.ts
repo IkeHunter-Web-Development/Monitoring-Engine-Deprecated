@@ -57,8 +57,6 @@ export const kafka = new Kafka({
   }
 })
 
-console.log('group id:', KAFKA_GROUP_ID)
-
 /**
  * Create a producer for a Kafka topic.
  * @param topic - The topic to produce to.
@@ -73,7 +71,8 @@ export const createProducer =
   <T>(topic: string, action?: string) =>
   async (key: string, data: T | T[]) => {
     const producer = kafka.producer({
-      createPartitioner: Partitioners.DefaultPartitioner
+      createPartitioner: Partitioners.DefaultPartitioner,
+      allowAutoTopicCreation: true
     })
     await producer.connect()
     let messages: Message[]

@@ -1,7 +1,7 @@
-import { produceSendEmail } from 'src/events'
+import { produceSendEmail, produceUpdateMonitor } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
 import { handleWebMonitorResponseTime } from 'src/services/monitorService'
-import { validateResponse } from 'src/utils'
+import { serializeMonitor, validateResponse } from 'src/utils'
 import { getWebMonitor } from './monitorResources'
 
 export const registerWebMonitorResponse = async (response: IResponse): Promise<WebsiteResponse> => {
@@ -47,6 +47,8 @@ export const handleWebMonitorStatusChange = async (
   newStatus: MonitorStatus
 ) => {
   await registerWebMonitorEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
+  const serialized = await serializeMonitor(monitor)
+  await produceUpdateMonitor(monitor._id.toString(), serialized)
 
   await produceSendEmail(monitor._id.toString(), {
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),

@@ -2,8 +2,8 @@
 
 import { createProducer } from 'src/lib'
 
-const topic = 'monitors'
+// const topic = 'monitors'
 
-export const produceCreateMonitor = createProducer<IMonitorMeta>(topic, 'create')
-export const produceUpdateMonitor = createProducer<IMonitorMeta>(topic, 'udpate')
-export const produceDeleteMonitor = createProducer<IMonitorMeta>(topic, 'delete')
+export const produceCreateMonitor = createProducer<IMonitorMeta>('monitor-create')
+export const produceUpdateMonitor = createProducer<IMonitorMeta>('monitor-update')
+export const produceDeleteMonitor = createProducer<IMonitorMeta>('monitor-delete')

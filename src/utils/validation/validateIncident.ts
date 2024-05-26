@@ -1,5 +1,5 @@
 import { isValidObjectId } from 'mongoose'
-import { isIncidentImpact, isIncidentStatus } from 'src/types/validation'
+import { isIncidentImpact, isIncidentStatus } from 'src/utils/validation/validateTypes'
 import { InvalidIncidentFieldError } from '../exceptions'
 
 const MAX_INCIDENT_CAUSE_LENGTH = 128 // chars
