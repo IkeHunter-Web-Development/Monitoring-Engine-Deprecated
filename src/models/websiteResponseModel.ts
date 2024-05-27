@@ -8,7 +8,8 @@ export const WebsiteResponseSchema = new mongoose.Schema({
   },
   responseTime: {
     type: Number,
-    required: true
+    default: null,
+    required: false
   },
   timestamp: {
     type: Date,

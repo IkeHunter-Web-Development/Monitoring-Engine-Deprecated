@@ -7,6 +7,11 @@ export const registerSocketConsumers = () => {
     const response = validateResponse(data)
     io.emit('monitor-responses', response)
   })
+  createConsumer('monitor-responses-errors', async (data: IErrorResponse) => {
+    // const response = validateResponse(data)
+    const response = validateResponse(data)
+    io.emit('monitor-responses', response)
+  })
 
   createConsumer('monitor-create', async (data: any) => {
     const monitor = validateMonitorMeta(data)

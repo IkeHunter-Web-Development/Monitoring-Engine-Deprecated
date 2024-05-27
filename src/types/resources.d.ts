@@ -19,12 +19,18 @@ interface IEventMeta extends IEvent {
 }
 interface IResponse {
   monitorId: string
-  responseTime: number // ms, 0 < n < 120000ms. -1 = failed
+  responseTime?: number // ms, 0 < n < 120000ms.
   timestamp: number // ms, When initially reported
 }
 interface IResponseMeta extends IResponse {
   id: string
   createdAt: number // Date, ms
+}
+interface IErrorResponse {
+  monitorId: string
+  timestamp: number
+  statusCode?: number
+  message?: string
 }
 interface ISubscriber {
   displayName?: string
@@ -68,7 +74,7 @@ declare interface IWebsiteMonitor extends IMonitor {
 
 declare interface IWebsiteMonitorMeta extends IMonitorMeta, IWebsiteMonitor {
   availability: WebsiteAvailability
-  responseTime: number // ms
+  responseTime?: number // ms
   subscribers: Array<ISubscriberMeta>
 }
 

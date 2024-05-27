@@ -1,74 +1,79 @@
 import type { WebsiteMonitor } from 'src/models'
 
+/**
+ * Successful website response was recorded
+ */
 export const handleWebMonitorResponseTime = async (monitor: WebsiteMonitor) => {
-  if (monitor.responseTime < 0) {
-    if (monitor.availability !== 'offline') {
-      // Website now offline
-      await handleFailedResponseNew(monitor)
-    } else {
-      // Website still offline
-      await handleFailedResponseNoChange(monitor)
-    }
-  } else {
-    if (monitor.availability !== 'online') {
-      // Website back online
-      await handleSuccessResponseNew(monitor)
-    } else {
-      // Website still online, continue
-      return
-    }
-  }
-}
-
-/** Website in unstable/down state received successful response */
-const handleSuccessResponseNew = async (monitor: WebsiteMonitor) => {
-  switch (monitor.availability) {
-    case 'offline':
-      monitor.availability = 'degraded'
+  switch (monitor.status) {
+    case 'stable':
+      break
+    case 'pending':
+    case 'alert':
+      monitor.status = 'stable'
+      break
+    case 'critical':
       monitor.status = 'alert'
+      break
+    default:
+      monitor.status = 'pending'
+  }
+
+  switch (monitor.availability) {
+    case 'online':
+      break
+    case 'offline':
+      monitor.availability = 'online'
       break
     case 'degraded':
       monitor.availability = 'online'
-      monitor.status = 'stable'
       break
     case 'maintenance':
-      monitor.availability = 'pending'
-      monitor.status = 'pending'
+      monitor.availability = 'maintenance'
       break
     case 'pending':
       monitor.availability = 'online'
-      monitor.status = 'stable'
       break
     default:
       monitor.availability = 'pending'
-      monitor.status = 'pending'
   }
+
   await monitor.save()
+  return monitor
 }
 
-/** Website in stable/up state received unsuccessful response */
-const handleFailedResponseNew = async (monitor: WebsiteMonitor) => {
-  switch (monitor.availability) {
-    case 'online':
-      monitor.availability = 'degraded'
+/**
+ * Website ping returned an error
+ */
+export const handleWebMonitorErrorResponse = async (monitor: WebsiteMonitor) => {
+  // console.l
+  switch (monitor.status) {
+    case 'critical':
+      break
+    case 'stable':
       monitor.status = 'alert'
       break
+    case 'pending':
+    case 'alert':
+      monitor.status = 'critical'
+      break
+    default:
+      monitor.status = 'alert'
+  }
+
+  switch (monitor.availability) {
+    case 'offline':
+      break
+    case 'online':
     case 'degraded':
     case 'pending':
       monitor.availability = 'offline'
-      monitor.status = 'emergency'
       break
     case 'maintenance':
-      monitor.status = 'pending'
       break
     default:
       monitor.availability = 'pending'
-      monitor.status = 'alert'
   }
-  await monitor.save()
-}
 
-/** Website in unstable/down state got another failed response */
-const handleFailedResponseNoChange = async (monitor: WebsiteMonitor) => {
+  await monitor.save()
   return monitor
 }

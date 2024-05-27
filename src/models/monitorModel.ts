@@ -9,7 +9,7 @@ import { SubscriberSchema } from './subscriberModel'
 
 // Calculated by monitor service
 
-const statusOptions: MonitorStatus[] = ['alert', 'emergency', 'pending', 'stable']
+const statusOptions: MonitorStatus[] = ['alert', 'critical', 'pending', 'stable']
 const statusDefault: MonitorStatus = 'pending'
 
 const availabilityOptions: WebsiteAvailability[] = [
@@ -99,7 +99,8 @@ export const WebsiteMonitorSchema = new Schema(
     },
     responseTime: {
       type: Number,
-      default: -1
+      default: null,
+      required: false
     }
     // lastCheck: {
     //   type: Date,

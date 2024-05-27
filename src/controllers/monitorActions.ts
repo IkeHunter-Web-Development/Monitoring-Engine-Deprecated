@@ -1,6 +1,9 @@
 import { produceSendEmail, produceUpdateMonitor } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
-import { handleWebMonitorResponseTime } from 'src/services/monitorService'
+import {
+  handleWebMonitorErrorResponse,
+  handleWebMonitorResponseTime
+} from 'src/services/monitorService'
 import { serializeMonitor, validateResponse } from 'src/utils'
 import { getWebMonitor } from './monitorResources'
 
@@ -20,13 +23,33 @@ export const registerWebMonitorResponse = async (response: IResponse): Promise<W
   }
 
   await monitor.updateOne(updatePayload)
-  await handleWebMonitorResponseTime(monitor)
-  const updatedMonitor = await getWebMonitor(monitor._id)
+  const updatedMonitor = await handleWebMonitorResponseTime(monitor)
 
   if (updatedMonitor.status !== originalStatus)
     await handleWebMonitorStatusChange(updatedMonitor, originalStatus, updatedMonitor.status)
 
   return resObject
+}
+
+export const registerWebMonitorErrorResponse = async (response: IErrorResponse) => {
+  const monitor = await getWebMonitor(response.monitorId)
+  monitor.lastCheck = new Date()
+  monitor.responseTime = undefined
+  await monitor.save()
+
+  await WebsiteResponse.create({
+    ...response,
+    monitorId: monitor._id,
+    responseTime: null,
+    timestamp: new Date(response.timestamp)
+  })
+
+  const originalStatus = monitor.status
+
+  const updatedMonitor = await handleWebMonitorErrorResponse(monitor)
+
+  if (updatedMonitor.status !== originalStatus)
+    await handleWebMonitorStatusChange(updatedMonitor, originalStatus, updatedMonitor.status)
 }
 
 export const registerWebMonitorEvent = async (monitor: WebsiteMonitor, message: string) => {

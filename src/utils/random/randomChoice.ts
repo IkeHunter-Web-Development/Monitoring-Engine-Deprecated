@@ -3,7 +3,7 @@ import { randomInt } from 'crypto'
 export const getRandomChoice = <T>(choices: Array<T>): T => choices[randomInt(0, choices.length)]
 
 export const getRandomMonitorStatus = (): MonitorStatus => {
-  const statusChoices: MonitorStatus[] = ['alert', 'emergency', 'pending', 'stable']
+  const statusChoices: MonitorStatus[] = ['alert', 'critical', 'pending', 'stable']
 
   return getRandomChoice(statusChoices)
 }
