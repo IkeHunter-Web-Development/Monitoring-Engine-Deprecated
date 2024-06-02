@@ -18,8 +18,12 @@ services:
       - ./.env:/app/.env
     # env_file:
     #   - ./.env
-    # environment:
-      # - NODE_ENV=development
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - GATEWAY_URL=http://gateway:8080
+      - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
+      - KAFKA_BROKERS=kafka:9092
     depends_on:
       - mongo-monitor
     command: npm run dev

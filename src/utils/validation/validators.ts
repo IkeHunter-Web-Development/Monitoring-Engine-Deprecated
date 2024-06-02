@@ -12,9 +12,11 @@ export const isNumeric = (target: any) => {
   return !isNaN(target)
 }
 
+export const DATE_MAX_FUTURE_MS = 1 * 24 * 60 * 60 * 1000
+
 export const isValidDate = (data: any): boolean => {
   // FIXME: Year checking could give edge cases
-  const futureOffset = Date.now() + 1 * 24 * 60 * 60 * 1000
+  const futureOffset = Date.now() + DATE_MAX_FUTURE_MS
   const date = new Date(data)
 
   return !isNaN(date.getTime()) && date.getTime() < futureOffset

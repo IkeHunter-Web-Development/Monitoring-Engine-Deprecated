@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
 import { InvalidMonitorEventFieldError } from 'src/utils/exceptions'
 import { validateFullEvent } from '../validateEvent'
+import { DATE_MAX_FUTURE_MS } from '../validators'
 
 const VALID_EVENT: IEvent = {
   projectId: '15',
@@ -55,8 +56,7 @@ describe('Event invalid fields tests', () => {
     expect(() => validateFullEvent(event)).toThrow(InvalidMonitorEventFieldError)
   })
   it('should reject invalid timestamp, in future', () => {
-    const d = new Date()
-    d.setHours(d.getHours() + 1) // +1 hour
+    const d = new Date(Date.now() + DATE_MAX_FUTURE_MS + 1000 * 60 * 60) // 1 hour over
 
     event.timestamp = d.getTime()
 
