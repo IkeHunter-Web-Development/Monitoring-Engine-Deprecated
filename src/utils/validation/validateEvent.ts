@@ -1,10 +1,10 @@
 import { isValidObjectId } from 'mongoose'
 import { InvalidMonitorEventFieldError } from '../exceptions'
-import { isDateInRange, isValidDate } from './validators'
+import { DATE_MAX_FUTURE_MS, isDateInRange, isValidDate } from './validators'
 
 const MAX_EVENT_MESSAGE_LENGTH = 255
 const TIMESTAMP_MIN_YEARS_AGO = 1
-const TIMESTAMP_MAX_HOURS_FUTURE = 1
+const TIMESTAMP_MAX_HOURS_FUTURE = DATE_MAX_FUTURE_MS / (1000 * 60 * 60)
 
 export const validateFullEvent = (data: any): IEvent => {
   if (!data.projectId || !data.message)
