@@ -85,7 +85,7 @@ const config: JestConfigWithTsJest = {
 
   // A set of global variables that need to be available in all test environments
   // globals: {
-  //   LOG_LEVEL: 'debug'
+  //   LOG_LEVEL: 'error'
   // },
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
@@ -164,7 +164,7 @@ const config: JestConfigWithTsJest = {
   // setupFiles: ['dotenv/config'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['./src/config/jest.setup.ts']
+  setupFilesAfterEnv: ['./src/config/jest.setup.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -173,7 +173,7 @@ const config: JestConfigWithTsJest = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-node",
+  testEnvironment: "jest-environment-node",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {

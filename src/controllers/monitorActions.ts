@@ -1,9 +1,6 @@
 import { produceSendEmail, produceUpdateMonitor } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
-import {
-  handleWebMonitorErrorResponse,
-  handleWebMonitorResponseTime
-} from 'src/services/monitorService'
+import { handleWebMonitorErrorResponse, handleWebMonitorResponseTime } from 'src/services'
 import { serializeMonitor, validateResponse } from 'src/utils'
 import { getWebMonitor } from './monitorResources'
 

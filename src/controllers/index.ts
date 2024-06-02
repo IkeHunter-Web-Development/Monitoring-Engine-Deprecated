@@ -10,7 +10,6 @@
  * other services to access.
  */
 
-export * from './incidentActions'
 export * from './incidentResources'
 export * from './monitorActions'
 export * from './monitorResources'
