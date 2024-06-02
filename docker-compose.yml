@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  monitor:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./coverage:/app/coverage
+      - ./logs:/app/logs
+      # - ./.git:/app/.git
+      - ./test-report:/app/test-report
+      - ./generated-data:/app/generated-data
+      - ./package.json:/app/package.json
+      - ./.env:/app/.env
+    # env_file:
+    #   - ./.env
+    # environment:
+      # - NODE_ENV=development
+    depends_on:
+      - mongo-monitor
+    command: npm run dev
+
+  
+  mongo-monitor:
+    image: mongo:6.0.9
+    container_name: mongo-monitor
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: changeme
+    volumes:
+      - mongo-monitor-data:/data/db
+    command: mongod --quiet --logpath /dev/null --bind_ip_all
+  
+  coverage:
+    image: nginx
+    ports:
+      - "8001:80"
+    volumes:
+      - ./coverage:/usr/share/nginx/html
+    logging:
+      driver: "none"
+  
+  report:
+    image: nginx
+    ports:
+      - "8002:80"
+    volumes:
+      - ./test-report:/usr/share/nginx/html
+    logging:
+      driver: "none"
+    
+volumes:
+  mongo-monitor-data:
+
+    

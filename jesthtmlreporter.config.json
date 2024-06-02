@@ -1,0 +1,7 @@
+{
+  "pageTitle": "Unit Test Report for the Monitor Engine",
+  "outputPath": "test-report/index.html",
+  "includeFailureMsg": true,
+  "includeSuiteFailure": true,
+  "statusIgnoreFilter": "passed"
+}
