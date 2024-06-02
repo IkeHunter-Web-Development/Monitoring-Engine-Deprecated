@@ -16,7 +16,10 @@ export const validateResponse = (data: any): IResponse => {
     throw new InvalidResponseFieldError(
       `Timestamp must be a valid date in ms (received ${data.timestamp}).`
     )
-  if (data.responseTime && (data.responseTime <= 0 || data.responseTime >= MAX_RESPONSE_TIME))
+  if (
+    data.responseTime != null &&
+    (data.responseTime <= 1 || data.responseTime >= MAX_RESPONSE_TIME)
+  )
     throw new InvalidResponseFieldError(
       `Response time must be between 0 and ${MAX_RESPONSE_TIME}ms`
     )

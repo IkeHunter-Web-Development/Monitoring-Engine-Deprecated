@@ -14,8 +14,10 @@ services:
       # - ./.git:/app/.git
       - ./test-report:/app/test-report
       - ./generated-data:/app/generated-data
-    env_file:
-      - ./.env
+      - ./package.json:/app/package.json
+      - ./.env:/app/.env
+    # env_file:
+    #   - ./.env
     environment:
       - NODE_ENV=development
     depends_on:
@@ -33,7 +35,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: changeme
     volumes:
-      - mongo-data-dsm:/data/db
+      - mongo-monitor-data:/data/db
     command: mongod --quiet --logpath /dev/null --bind_ip_all
   
   coverage:
@@ -55,6 +57,6 @@ services:
       driver: "none"
     
 volumes:
-  mongo-data-dsm:
+  mongo-monitor-data:
 
     

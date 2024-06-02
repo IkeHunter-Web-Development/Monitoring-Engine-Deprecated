@@ -6,7 +6,7 @@
  */
 
 import { Kafka, Partitioners, logLevel, type Message } from 'kafkajs'
-import { KAFKA_BROKERS, KAFKA_GROUP_ID } from 'src/config'
+import { KAFKA_BROKERS, KAFKA_GROUP_ID, NODE_ENV } from 'src/config'
 import { logger } from './logger'
 
 const toWinstonLogLevel = (level: logLevel) => {
@@ -43,19 +43,40 @@ const WinstonLogCreator = () => {
   }
 }
 
-export const kafka = new Kafka({
-  clientId: KAFKA_GROUP_ID,
-  brokers: KAFKA_BROKERS,
-  logLevel: logLevel.INFO,
-  logCreator: WinstonLogCreator,
-  connectionTimeout: 3000,
+const getKafkaInstance = () => {
+  if (NODE_ENV === 'network' || NODE_ENV === 'production') {
+    return new Kafka({
+      clientId: KAFKA_GROUP_ID,
+      brokers: KAFKA_BROKERS,
+      logLevel: logLevel.INFO,
+      logCreator: WinstonLogCreator,
+      connectionTimeout: 3000,
 
-  retry: {
-    retries: 3,
-    // restartOnFailure: async () => true,
-    maxRetryTime: 5000
+      retry: {
+        retries: 3,
+        // restartOnFailure: async () => true,
+        maxRetryTime: 5000
+      }
+    })
+  } else {
+    return {} as Kafka
   }
-})
+}
+
+// export const kafka = new Kafka({
+//   clientId: KAFKA_GROUP_ID,
+//   brokers: KAFKA_BROKERS,
+//   logLevel: logLevel.INFO,
+//   logCreator: WinstonLogCreator,
+//   connectionTimeout: 3000,
+
+//   retry: {
+//     retries: 3,
+//     // restartOnFailure: async () => true,
+//     maxRetryTime: 5000
+//   }
+// })
+export const kafka = getKafkaInstance()
 
 /**
  * Create a producer for a Kafka topic.
@@ -70,31 +91,33 @@ export const kafka = new Kafka({
 export const createProducer =
   <T>(topic: string, action?: string) =>
   async (key: string, data: T | T[]) => {
-    const producer = kafka.producer({
-      createPartitioner: Partitioners.DefaultPartitioner,
-      allowAutoTopicCreation: true
-    })
-    await producer.connect()
-    let messages: Message[]
+    if (NODE_ENV === 'network' || NODE_ENV === 'production') {
+      const producer = kafka.producer({
+        createPartitioner: Partitioners.DefaultPartitioner,
+        allowAutoTopicCreation: true
+      })
+      await producer.connect()
+      let messages: Message[]
 
-    if (Array.isArray(data)) {
-      messages = data.map((item) => ({ key, value: JSON.stringify({ action, data: item }) }))
-    } else {
-      messages = [{ key, value: JSON.stringify({ action, data }) }]
+      if (Array.isArray(data)) {
+        messages = data.map((item) => ({ key, value: JSON.stringify({ action, data: item }) }))
+      } else {
+        messages = [{ key, value: JSON.stringify({ action, data }) }]
+      }
+
+      await producer
+        .send({
+          topic,
+          messages
+        })
+        .then(() => {
+          logger.debug(`Produced message for ${topic}.`)
+        })
+        .catch((error) => {
+          logger.error('Error sending producer message:', error)
+        })
+      await producer.disconnect()
     }
-
-    await producer
-      .send({
-        topic,
-        messages
-      })
-      .then(() => {
-        logger.debug(`Produced message for ${topic}.`)
-      })
-      .catch((error) => {
-        logger.error('Error sending producer message:', error)
-      })
-    await producer.disconnect()
   }
 
 /**
@@ -110,71 +133,73 @@ export const createConsumer = async (
   callback: (data: any, action?: string) => Promise<void>,
   options?: { fromBeginning?: boolean; manualCommit?: boolean }
 ) => {
-  const consumer = kafka.consumer({
-    groupId: `${KAFKA_GROUP_ID}-${topic}`,
-    sessionTimeout: 10000,
-    heartbeatInterval: 1000
-  })
-  await consumer.connect()
-  await consumer
-    .subscribe({
-      topic,
-      fromBeginning: options?.fromBeginning || false
+  if (NODE_ENV === 'network' || NODE_ENV === 'production') {
+    const consumer = kafka.consumer({
+      groupId: `${KAFKA_GROUP_ID}-${topic}`,
+      sessionTimeout: 10000,
+      heartbeatInterval: 1000
     })
-    .then(() => {
-      logger.info(`Consumer created for ${topic}.`)
-    })
-  if (!options?.manualCommit) {
-    await consumer.run({
-      eachMessage: async ({ message }) => {
-        try {
-          const payload = JSON.parse(message.value?.toString() || '')
-          const { action, data } = payload
-          logger.debug(`Consumed message for ${topic}.`)
-
-          await callback(data, action)
-        } catch (error) {
-          logger.error('Error handling data from event queue:', error)
-        }
-      }
-    })
-  } else {
-    await consumer.run({
-      eachBatchAutoResolve: false,
-      eachBatch: async ({
-        batch,
-        resolveOffset,
-        heartbeat,
-        isRunning,
-        isStale,
-        pause,
-        commitOffsetsIfNecessary
-      }) => {
-        if (!isRunning() || isStale()) return
-        logger.debug(
-          `Consumed batch for ${topic} with ${batch.messages.length} ${
-            (batch.messages.length === 1 && 'message') || 'messages'
-          }.`
-        )
-        pause()
-
-        await Promise.all(
-          batch.messages.map(async (message) => {
-            if (!isRunning() || isStale()) return
-
+    await consumer.connect()
+    await consumer
+      .subscribe({
+        topic,
+        fromBeginning: options?.fromBeginning || false
+      })
+      .then(() => {
+        logger.info(`Consumer created for ${topic}.`)
+      })
+    if (!options?.manualCommit) {
+      await consumer.run({
+        eachMessage: async ({ message }) => {
+          try {
             const payload = JSON.parse(message.value?.toString() || '')
             const { action, data } = payload
+            logger.debug(`Consumed message for ${topic}.`)
 
             await callback(data, action)
-            resolveOffset(message.offset)
+          } catch (error) {
+            logger.error('Error handling data from event queue:', error)
+          }
+        }
+      })
+    } else {
+      await consumer.run({
+        eachBatchAutoResolve: false,
+        eachBatch: async ({
+          batch,
+          resolveOffset,
+          heartbeat,
+          isRunning,
+          isStale,
+          pause,
+          commitOffsetsIfNecessary
+        }) => {
+          if (!isRunning() || isStale()) return
+          logger.debug(
+            `Consumed batch for ${topic} with ${batch.messages.length} ${
+              (batch.messages.length === 1 && 'message') || 'messages'
+            }.`
+          )
+          pause()
 
-            await heartbeat()
+          await Promise.all(
+            batch.messages.map(async (message) => {
+              if (!isRunning() || isStale()) return
+
+              const payload = JSON.parse(message.value?.toString() || '')
+              const { action, data } = payload
+
+              await callback(data, action)
+              resolveOffset(message.offset)
+
+              await heartbeat()
+            })
+          ).then(() => {
+            logger.debug(`Finished batch for ${topic}.`)
+            commitOffsetsIfNecessary()
           })
-        ).then(() => {
-          logger.debug(`Finished batch for ${topic}.`)
-          commitOffsetsIfNecessary()
-        })
-      }
-    })
+        }
+      })
+    }
   }
 }
