@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'
-import { Responses } from 'src/utils'
+import { ok } from 'src/utils'
 
 /**
  * REST Api Views
@@ -19,5 +19,5 @@ export const healthCheck = (req: Request, res: Response) => {
       description: "Monitor Engine is operational."
     }
    *=========================== */
-  return Responses.ok(res, 'Monitor Engine is operational.', true)
+  return ok(res, 'Monitor Engine is operational.', true)
 }

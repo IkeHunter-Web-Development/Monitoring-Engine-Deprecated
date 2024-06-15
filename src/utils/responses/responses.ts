@@ -6,7 +6,7 @@
  * - https://enterprisecraftsmanship.com/posts/rest-api-response-codes-400-vs-500/
  */
 
-import { type Response } from 'express'
+import { type NextFunction, type Response } from 'express'
 import { ResponseCodes } from './codes'
 
 export interface ResponsePayload {
@@ -32,6 +32,15 @@ const formatResponse = (status: number, message?: any): ResponsePayload => {
   return payload
 }
 export const formatJsonResponse = formatResponse
+
+/**
+ * Send an error from a view to the error handling middleware.
+ * If unhandled in middleware, will cause a 500.
+ */
+export const errorResponse = (error: any, res: Response, next: NextFunction) => {
+  res.status(500)
+  return next(error)
+}
 
 /**
  * @response 200 - OK
