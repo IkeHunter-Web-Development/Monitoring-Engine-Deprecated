@@ -66,7 +66,10 @@ export const handleWebMonitorStatusChange = async (
   oldStatus: MonitorStatus,
   newStatus: MonitorStatus
 ) => {
-  await registerWebMonitorEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
+  await registerWebMonitorEvent(
+    monitor,
+    `${monitor.name} status changed from ${oldStatus} to ${newStatus}.`
+  )
   const serialized = await serializeMonitor(monitor)
   await produceUpdateMonitor(monitor._id.toString(), serialized)
 

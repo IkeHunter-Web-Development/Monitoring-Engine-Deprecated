@@ -978,11 +978,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "666dfab562b5596639c1d46f"
+          "example": "666f07f388c15533402db454"
         },
         "projectId": {
           "type": "string",
-          "example": "666dfab562b5596639c1d470"
+          "example": "666f07f388c15533402db455"
         },
         "name": {
           "type": "string",
@@ -994,7 +994,7 @@
         },
         "uuid": {
           "type": "string",
-          "example": "666dfab562b5596639c1d471"
+          "example": "666f07f388c15533402db456"
         },
         "icon": {
           "type": "string",
@@ -1042,11 +1042,11 @@
         },
         "updatedAt": {
           "type": "number",
-          "example": 1718397237451
+          "example": 1718466163427
         },
         "createdAt": {
           "type": "number",
-          "example": 1718224437451
+          "example": 1718293363427
         },
         "subscribers": {
           "type": "array",
@@ -1055,7 +1055,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d474"
+                "example": "666f07f388c15533402db459"
               },
               "displayName": {
                 "type": "string",
@@ -1083,11 +1083,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d476"
+                "example": "666f07f388c15533402db45b"
               },
               "projectId": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d470"
+                "example": "666f07f388c15533402db455"
               },
               "message": {
                 "type": "string",
@@ -1095,19 +1095,19 @@
               },
               "monitorId": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d46f"
+                "example": "666f07f388c15533402db454"
               },
               "timestamp": {
                 "type": "number",
-                "example": 1718397237451
+                "example": 1718466163427
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718397237451
+                "example": 1718466163427
               },
               "incidentId": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d477"
+                "example": "666f07f388c15533402db45c"
               }
             }
           }
@@ -1119,11 +1119,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d47a"
+                "example": "666f07f388c15533402db45f"
               },
               "monitorId": {
                 "type": "string",
-                "example": "666dfab562b5596639c1d46f"
+                "example": "666f07f388c15533402db454"
               },
               "responseTime": {
                 "type": "number",
@@ -1131,11 +1131,11 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718472837451
+                "example": 1718541763427
               },
               "timestamp": {
                 "type": "number",
-                "example": 1718472837451
+                "example": 1718541763427
               }
             }
           }
@@ -1175,15 +1175,15 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718310837451
+                "example": 1718379763427
               },
               "updatedAt": {
                 "type": "number",
-                "example": 1718397237451
+                "example": 1718466163427
               },
               "resolvedAt": {
                 "type": "number",
-                "example": 1718397237451
+                "example": 1718466163427
               }
             }
           }
@@ -1216,7 +1216,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "666dfab562b5596639c1d46e"
+          "example": "666f07f388c15533402db453"
         },
         "createdAt": {
           "type": "number",

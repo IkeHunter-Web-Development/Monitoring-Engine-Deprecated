@@ -1,7 +1,7 @@
 /**
  * @fileoverview User model.
  */
-import mongoose, { Schema, Types } from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 
 const notificationMethodOptions: NotificationMethod[] = ['email', 'phone']
 const defaultNotificationMethod: NotificationMethod = 'email'
@@ -24,16 +24,6 @@ export const SubscriberSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  // monitorId: {
-  //   type: Schema.Types.ObjectId,
-  //   required: true,
-  //   ref: 'WebsiteMonitor'
-  // },
-  // monitors: [
-  //   {
-  //     type: Schema.Types.ObjectId
-  //   }
-  // ],
   method: {
     // TODO: use global enum
     type: String,
