@@ -101,10 +101,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -173,10 +173,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -242,10 +242,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -314,10 +314,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -393,10 +393,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -472,10 +472,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -542,10 +542,10 @@
             "description": "Bad request"
           },
           "401": {
-            "description": "Unauthorized",
             "schema": {
               "$ref": "#/definitions/Error401"
-            }
+            },
+            "description": "Unauthorized"
           },
           "404": {
             "schema": {
@@ -978,11 +978,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "666f07f388c15533402db454"
+          "example": "6677babbf3d372c6052264ac"
         },
         "projectId": {
           "type": "string",
-          "example": "666f07f388c15533402db455"
+          "example": "6677babbf3d372c6052264ad"
         },
         "name": {
           "type": "string",
@@ -991,10 +991,6 @@
         "url": {
           "type": "string",
           "example": "https://example.com"
-        },
-        "uuid": {
-          "type": "string",
-          "example": "666f07f388c15533402db456"
         },
         "icon": {
           "type": "string",
@@ -1042,11 +1038,11 @@
         },
         "updatedAt": {
           "type": "number",
-          "example": 1718466163427
+          "example": 1719036219067
         },
         "createdAt": {
           "type": "number",
-          "example": 1718293363427
+          "example": 1718863419067
         },
         "subscribers": {
           "type": "array",
@@ -1055,7 +1051,7 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666f07f388c15533402db459"
+                "example": "6677babbf3d372c6052264b0"
               },
               "displayName": {
                 "type": "string",
@@ -1083,11 +1079,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666f07f388c15533402db45b"
+                "example": "6677babbf3d372c6052264b2"
               },
               "projectId": {
                 "type": "string",
-                "example": "666f07f388c15533402db455"
+                "example": "6677babbf3d372c6052264ad"
               },
               "message": {
                 "type": "string",
@@ -1095,19 +1091,19 @@
               },
               "monitorId": {
                 "type": "string",
-                "example": "666f07f388c15533402db454"
+                "example": "6677babbf3d372c6052264ac"
               },
               "timestamp": {
                 "type": "number",
-                "example": 1718466163427
+                "example": 1719036219067
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718466163427
+                "example": 1719036219067
               },
               "incidentId": {
                 "type": "string",
-                "example": "666f07f388c15533402db45c"
+                "example": "6677babbf3d372c6052264b3"
               }
             }
           }
@@ -1119,11 +1115,11 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "666f07f388c15533402db45f"
+                "example": "6677babbf3d372c6052264b6"
               },
               "monitorId": {
                 "type": "string",
-                "example": "666f07f388c15533402db454"
+                "example": "6677babbf3d372c6052264ac"
               },
               "responseTime": {
                 "type": "number",
@@ -1131,11 +1127,11 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718541763427
+                "example": 1719111819067
               },
               "timestamp": {
                 "type": "number",
-                "example": 1718541763427
+                "example": 1719111819067
               }
             }
           }
@@ -1175,15 +1171,15 @@
               },
               "createdAt": {
                 "type": "number",
-                "example": 1718379763427
+                "example": 1718949819067
               },
               "updatedAt": {
                 "type": "number",
-                "example": 1718466163427
+                "example": 1719036219067
               },
               "resolvedAt": {
                 "type": "number",
-                "example": 1718466163427
+                "example": 1719036219067
               }
             }
           }
@@ -1216,7 +1212,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "example": "666f07f388c15533402db453"
+          "example": "6677babbf3d372c6052264ab"
         },
         "createdAt": {
           "type": "number",

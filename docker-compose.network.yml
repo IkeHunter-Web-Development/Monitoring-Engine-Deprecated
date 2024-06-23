@@ -40,29 +40,29 @@ services:
     networks:
       - cluster
       
-  monitor-socket:
-    build:
-      context: .
-    ports:
-      - "8333:8333"
-    restart: always
-    container_name: monitor-socket
-    volumes:
-      - ./src:/app/src
-      - ./socket:/app/socket
-      - ./package.json:/app/package.json
-    env_file:
-      - ./.env
-    environment:
-      - NODE_ENV=network
-      - KAFKA_GROUP_ID=monitor-socket
-      - LOG_NS=socket
-      - PORT=8333
-    depends_on:
-      - mongo-monitor
-    command: npm run socket
-    networks:
-      - cluster
+  # monitor-socket:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - "8333:8333"
+  #   restart: always
+  #   container_name: monitor-socket
+  #   volumes:
+  #     - ./src:/app/src
+  #     - ./socket:/app/socket
+  #     - ./package.json:/app/package.json
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - NODE_ENV=network
+  #     - KAFKA_GROUP_ID=monitor-socket
+  #     - LOG_NS=socket
+  #     - PORT=8333
+  #   depends_on:
+  #     - mongo-monitor
+  #   command: npm run socket
+  #   networks:
+  #     - cluster
     
 volumes:
   mongo-data-dsm:

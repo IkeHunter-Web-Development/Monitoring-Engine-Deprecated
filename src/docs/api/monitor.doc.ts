@@ -21,7 +21,6 @@ export const MonitorMetaDoc: IWebsiteMonitorMeta = {
   projectId: projectId,
   name: 'Example Monitor',
   url: 'https://example.com',
-  uuid: new Types.ObjectId().toString(),
   icon: '',
 
   availability: 'pending',

@@ -1,11 +1,11 @@
 import dotenv from 'dotenv'
 import 'dotenv/config'
 
-type nodenv = 'development' | 'production' | 'test' | 'network'
+type nodenv = 'dev' | 'production' | 'test' | 'network'
 
 export const HOST = process.env.HOST ?? 'localhost'
 export const PORT = Number(process.env.PORT) ?? 8000
-export const NODE_ENV: nodenv = (process.env.NODE_ENV as nodenv) || 'development'
+export const NODE_ENV: nodenv = (process.env.NODE_ENV as nodenv) || 'production'
 
 if (NODE_ENV === 'test') {
   dotenv.config()

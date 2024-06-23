@@ -33,7 +33,6 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
     timeout: monitor.timeout,
 
     id: monitor._id.toString(),
-    uuid: 'TODO',
     status: monitor.status,
     lastCheck: monitor.lastCheck?.getTime(),
     createdAt: monitor.createdAt?.getTime(),

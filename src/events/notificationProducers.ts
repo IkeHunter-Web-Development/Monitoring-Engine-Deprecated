@@ -1,10 +1,14 @@
 import { createProducer } from '../lib/kafka'
 
 interface EmailFields {
-  toEmails: string[]
+  toEmails: string | string[]
   subject: string
   body: string
 }
+
+// interface EmailsFields extends Omit<EmailFields, 'toEmail'> {
+//   toEmails: string[]
+// }
 
 interface SmsFields {
   toNumbers: string[]
@@ -17,4 +21,5 @@ interface SmsFields {
 // const topic = 'notifications'
 
 export const produceSendEmail = createProducer<EmailFields>('notification-send-email')
+// export const produceSendEmails = createProducer<EmailsFields>('notification-send-emails')
 export const produceSendSms = createProducer<SmsFields>('notification-send-sms')

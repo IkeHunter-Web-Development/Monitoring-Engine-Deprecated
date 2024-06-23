@@ -7,6 +7,7 @@ test-report/
 generated-data/
 _*
 .vscode/
+.npmrc
 
 # Logs
 logs

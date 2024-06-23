@@ -1,4 +1,4 @@
-import { randomInt, randomUUID } from 'crypto'
+import { randomInt } from 'crypto'
 import { Types } from 'mongoose'
 import { WebsiteMonitor } from 'src/models'
 
@@ -19,7 +19,6 @@ export const monitorMetaExample: IWebsiteMonitorMeta = {
   availability: 'pending',
   responseTime: randomInt(500, 5000),
   id: new Types.ObjectId().toString(),
-  uuid: randomUUID(),
   status: 'stable',
   lastCheck: new Date().getTime(),
   createdAt: new Date().getTime() - 1000 * 60 * 60 * 24 * 2,

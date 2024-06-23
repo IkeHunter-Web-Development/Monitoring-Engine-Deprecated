@@ -6,7 +6,7 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { NETWORK_TOKEN, NODE_ENV } from 'src/config'
 import { getNetworkAuth, type NetworkAuthResponse } from 'src/network'
-import { Responses } from 'src/utils'
+import { networkAuthenticationRequired, unauthorized } from 'src/utils'
 
 export type AuthLocals = {
   token: string
@@ -28,7 +28,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
       description: "Network authentication required"
     }
    *===================== */
-  if (NODE_ENV === 'development') return next()
+  if (NODE_ENV === 'dev') return next()
 
   // TODO: Create secure authorization protocol for microservices
   const networkToken = req.headers['x-network-authorization'] as string
@@ -40,16 +40,13 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
   const userToken = req.headers?.authorization?.split(' ')[1]
 
   if (userToken == null) {
-    return Responses.unauthorized(res, 'User not logged in')
+    return unauthorized(res, 'User not logged in')
   }
 
   await getNetworkAuth(userToken)
     .then((networkRes: NetworkAuthResponse) => {
       if (networkRes.status !== 200 || networkRes.userId == null) {
-        return res.status(401).json({
-          status: 401,
-          message: 'Invalid network token'
-        })
+        return networkAuthenticationRequired(res, 'Invalid network token.')
       }
 
       const locals: AuthLocals = {
@@ -62,6 +59,6 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
       next()
     })
     .catch((err: Error) => {
-      return Responses.networkAuthenticationRequired(res, err.message)
+      return networkAuthenticationRequired(res, err.message)
     })
 }
