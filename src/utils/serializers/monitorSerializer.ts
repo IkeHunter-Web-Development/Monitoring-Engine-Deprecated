@@ -19,8 +19,9 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
     active: monitor.active,
     reminderIntervals: monitor.reminderIntervals,
     subscribers: subscribers.map((sub) => ({
-      id: sub._id.toString(),
+      // id: sub._id.toString(),
       // monitorId: sub.monitorId.toString(),
+      id: sub._id ? sub._id.toString() : String(Date.now()),
       displayName: sub.displayName || '',
       email: sub.email,
       phone: sub.phone,

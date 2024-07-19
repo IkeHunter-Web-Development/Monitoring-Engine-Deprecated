@@ -16,6 +16,7 @@ import { monitorRoutes } from './monitorRoutes' // absolute import for swagger
 
 const router = Router()
 router.get('/', CoreViews.healthCheck)
+router.get('/health', CoreViews.healthCheck)
 router.use('/api/monitor', docsMiddleware, monitorRoutes)
 router.use('/api/monitor', docsMiddleware, eventRoutes)
 router.use('/api/monitor', docsMiddleware, incidentRoutes)

@@ -7,6 +7,8 @@ WORKDIR /app
 
 COPY ./package.json ./package.json
 COPY ./package-lock.json ./package-lock.json
+# TODO: Regenerate npmrc file
+COPY ./.npmrc ./.npmrc 
 
 USER root
 

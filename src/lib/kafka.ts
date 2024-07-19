@@ -63,19 +63,6 @@ const getKafkaInstance = () => {
   }
 }
 
-// export const kafka = new Kafka({
-//   clientId: KAFKA_GROUP_ID,
-//   brokers: KAFKA_BROKERS,
-//   logLevel: logLevel.INFO,
-//   logCreator: WinstonLogCreator,
-//   connectionTimeout: 3000,
-
-//   retry: {
-//     retries: 3,
-//     // restartOnFailure: async () => true,
-//     maxRetryTime: 5000
-//   }
-// })
 export const kafka = getKafkaInstance()
 
 /**
@@ -171,7 +158,6 @@ export const createConsumer = async (
           heartbeat,
           isRunning,
           isStale,
-          pause,
           commitOffsetsIfNecessary
         }) => {
           if (!isRunning() || isStale()) return
@@ -180,7 +166,7 @@ export const createConsumer = async (
               (batch.messages.length === 1 && 'message') || 'messages'
             }.`
           )
-          pause()
+          // pause()
 
           await Promise.all(
             batch.messages.map(async (message) => {
