@@ -2,13 +2,13 @@
 
 set -e
 
-SVC="monitor-engine"
 TAG="latest"
-REPO="178537739852.dkr.ecr.us-east-2.amazonaws.com"
+REPO="178537739852.dkr.ecr.us-east-1.amazonaws.com"
+IMAGE="cobolt-monitor-engine"
 
-aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 178537739852.dkr.ecr.us-east-2.amazonaws.com/core-engine
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$REPO/$IMAGE"
 
-docker build --platform=linux/amd64 -t "$SVC:$TAG" .
-docker tag "$SVC:$TAG" "$REPO/$SVC"
-docker push "$REPO/$SVC"
+docker build --platform=linux/amd64 -t "$IMAGE:$TAG" .
+docker tag "$IMAGE:$TAG" "$REPO/$IMAGE"
+docker push "$REPO/$IMAGE"
 

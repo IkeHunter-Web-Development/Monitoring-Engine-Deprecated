@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
-import { MONGO_URI } from './constants'
+import { MONGO_CONNECTION_URI } from './constants'
 
-const uri = MONGO_URI ?? 'mongodb://root:changeme@mongo-monitor:27017'
+const uri = MONGO_CONNECTION_URI
 
 const connect = async (): Promise<void> => {
   await mongoose.connect(uri)
