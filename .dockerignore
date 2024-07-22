@@ -8,3 +8,4 @@
 !jesthtmlreporter.config.json
 !.env.test
 !.env
+!.npmrc

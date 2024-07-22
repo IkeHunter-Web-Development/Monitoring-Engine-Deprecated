@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
-import { MONGO_URI } from './constants'
 import { logger } from 'src/lib'
+import { MONGO_CONNECTION_URI } from './constants'
 
 export const setupDatabase = async (): Promise<void> => {
   await mongoose
-    .connect(MONGO_URI, {
-      autoIndex: true
+    .connect(MONGO_CONNECTION_URI, {
+      autoIndex: true,
+      serverSelectionTimeoutMS: 5000
     })
     .then(() => {
       logger.info('Connected to MongoDB successfully')
@@ -14,3 +15,4 @@ export const setupDatabase = async (): Promise<void> => {
       logger.error('Error connecting to MongoDB: ', err)
     })
 }
+console.log(MONGO_CONNECTION_URI)

@@ -5,25 +5,20 @@ services:
     build:
       context: .
     ports:
-      - "8000:8000"
+      - "9000:9000"
     restart: always
     volumes:
       - ./src:/app/src
       - ./coverage:/app/coverage
       - ./logs:/app/logs
-      # - ./.git:/app/.git
       - ./test-report:/app/test-report
       - ./generated-data:/app/generated-data
       - ./package.json:/app/package.json
       - ./.env:/app/.env
-    # env_file:
-    #   - ./.env
     environment:
       - HOST=0.0.0.0
-      - PORT=8000
-      - GATEWAY_URL=http://gateway:8080
+      - PORT=9000
       - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
-      - KAFKA_BROKERS=kafka:9092
     depends_on:
       - mongo-monitor
     command: npm run dev

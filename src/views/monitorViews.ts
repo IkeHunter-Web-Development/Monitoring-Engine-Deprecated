@@ -8,7 +8,7 @@ import {
   updateWebMonitor
 } from 'src/controllers'
 
-import { Responses, sendError, serializeMonitor, serializeMonitors } from 'src/utils'
+import { created, errorResponse, ok, serializeMonitor, serializeMonitors } from 'src/utils'
 
 export const createMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /**======================
@@ -53,9 +53,9 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
     const monitor = await createWebMonitor(input)
     const serialized = await serializeMonitor(monitor)
 
-    return Responses.created(res, serialized)
+    return created(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 
@@ -74,9 +74,9 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
     const monitors = await getWebMonitors(req.query)
     const serialized = await serializeMonitors(monitors)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const getMonitorView = async (req: Request, res: Response, next: NextFunction) => {
@@ -103,9 +103,9 @@ export const getMonitorView = async (req: Request, res: Response, next: NextFunc
     const monitor = await getWebMonitor(id)
     const serialized = await serializeMonitor(monitor)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 
@@ -151,9 +151,9 @@ export const updateMonitorView = async (req: Request, res: Response, next: NextF
     const monitor = await updateWebMonitor(id, input)
     const serialized = await serializeMonitor(monitor)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const deleteMonitorView = async (req: Request, res: Response, next: NextFunction) => {
@@ -175,9 +175,9 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
     const monitor = await deleteWebMonitor(id)
     const serialized = await serializeMonitor(monitor)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 
@@ -197,8 +197,8 @@ export const deleteMonitorsView = async (req: Request, res: Response, next: Next
     const monitors = await deleteWebMonitors(req.query)
     const serialized = await serializeMonitors(monitors)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }

@@ -7,7 +7,7 @@ import {
   updateIncident
 } from 'src/controllers'
 
-import { Responses, sendError, serializeIncident, serializeIncidents } from 'src/utils'
+import { created, errorResponse, ok, serializeIncident, serializeIncidents } from 'src/utils'
 
 export const createIncidentView = async (req: Request, res: Response, next: NextFunction) => {
   /**====================*
@@ -41,9 +41,9 @@ export const createIncidentView = async (req: Request, res: Response, next: Next
     const incident = await createIncident(payload)
     const serialized = serializeIncident(incident)
 
-    return Responses.created(res, serialized)
+    return created(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const getIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -63,9 +63,9 @@ export const getIncidentView = async (req: Request, res: Response, next: NextFun
     const incident = await getIncident(id)
     const serialized = serializeIncident(incident)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const getIncidentsView = async (req: Request, res: Response, next: NextFunction) => {
@@ -83,9 +83,9 @@ export const getIncidentsView = async (req: Request, res: Response, next: NextFu
     const incidents = await getIncidents()
     const serialized = serializeIncidents(incidents)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const updateIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -117,9 +117,9 @@ export const updateIncidentView = async (req: Request, res: Response, next: Next
     const incident = await updateIncident(id, payload)
     const serialized = serializeIncident(incident)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
 export const deleteIncidentView = async (req: Request, res: Response, next: NextFunction) => {
@@ -140,82 +140,8 @@ export const deleteIncidentView = async (req: Request, res: Response, next: Next
     const incident = await deleteIncident(id)
     const serialized = serializeIncident(incident)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }
-
-// export const startActiveIncidentView = async (req: Request, res: Response, next: NextFunction) => {
-//   /**====================*
-//     @swagger Start an active incident
-//     #swagger.summary = 'Start an active incident'
-//     #swagger.tags = ['Incidents']
-//     #swagger.description = ''
-//     #swagger.responses[200] = {
-//       schema: { $ref: "#/definitions/IncidentMetaDoc" },
-//       description: ""
-//     }
-//    *=====================*/
-//   try {
-//     const { body } = req
-//     const payload: IIncident = {
-//       monitorId: body.monitorId,
-//       impact: body.impact,
-//       status: body.status,
-//       cause: body.cause,
-//       displayName: body.displayName,
-//       notes: body.notes
-//     }
-
-//     const incident = await startIncident(payload)
-//     const serialized = await serializeIncident(incident)
-
-//     return Responses.created(res, serialized)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
-// export const getActiveIncidentsView = async (req: Request, res: Response, next: NextFunction) => {
-//   /**====================*
-//     @swagger Get all active incidents
-//     #swagger.summary = 'Get all active incidents'
-//     #swagger.tags = ['Incidents']
-//     #swagger.description = ''
-//     #swagger.responses[200] = {
-//       schema: { $ref: "#/definitions/IncidentMetaDoc" },
-//       description: ""
-//     }
-//    *=====================*/
-//   try {
-//     const incidents = await getActiveIncidents()
-//     const serialized = await serializeIncidents(incidents)
-
-//     return Responses.ok(res, serialized)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
-// export const endActiveIncidentView = async (req: Request, res: Response, next: NextFunction) => {
-//   /**====================*
-//     @swagger End an active incident
-//     #swagger.summary = 'End an active incident'
-//     #swagger.tags = ['Incidents']
-//     #swagger.description = ''
-//     #swagger.responses[200] = {
-//       schema: { $ref: "#/definitions/IncidentMetaDoc" },
-//       description: ""
-//     }
-//    *=====================*/
-//   try {
-//     let { id } = req.params
-//     id = id?.toString() || ''
-
-//     const incident = await endIncident(id)
-//     const serialized = await serializeIncident(incident)
-
-//     return Responses.ok(res, serialized)
-//   } catch (error) {
-//     next(error)
-//   }
-// }

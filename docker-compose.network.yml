@@ -4,8 +4,8 @@ services:
   monitor:
     build:
       context: .
-    # ports:
-      # - "8000:8000"
+    ports:
+      - "9001:9000"
     restart: always
     container_name: monitor-engine
     volumes:
@@ -17,7 +17,8 @@ services:
     environment:
       - NODE_ENV=network
       - KAFKA_GROUP_ID=monitor-engine
-      - LOG_NS=server
+      - LOG_NS=monitor
+      - PORT=9000
     depends_on:
       - mongo-monitor
     command: npm run dev
@@ -39,28 +40,29 @@ services:
     networks:
       - cluster
       
-  monitor-socket:
-    build:
-      context: .
-    ports:
-      - "3333:3333"
-    restart: always
-    container_name: monitor-socket
-    volumes:
-      - ./src:/app/src
-      - ./socket:/app/socket
-      - ./package.json:/app/package.json
-    env_file:
-      - ./.env
-    environment:
-      - NODE_ENV=network
-      - KAFKA_GROUP_ID=monitor-socket
-      - LOG_NS=socket
-    depends_on:
-      - mongo-monitor
-    command: npm run socket
-    networks:
-      - cluster
+  # monitor-socket:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - "8333:8333"
+  #   restart: always
+  #   container_name: monitor-socket
+  #   volumes:
+  #     - ./src:/app/src
+  #     - ./socket:/app/socket
+  #     - ./package.json:/app/package.json
+  #   env_file:
+  #     - ./.env
+  #   environment:
+  #     - NODE_ENV=network
+  #     - KAFKA_GROUP_ID=monitor-socket
+  #     - LOG_NS=socket
+  #     - PORT=8333
+  #   depends_on:
+  #     - mongo-monitor
+  #   command: npm run socket
+  #   networks:
+  #     - cluster
     
 volumes:
   mongo-data-dsm:

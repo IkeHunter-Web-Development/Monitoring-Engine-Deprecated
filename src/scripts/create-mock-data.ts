@@ -1,4 +1,4 @@
-import { randomInt, randomUUID } from 'crypto'
+import { randomInt } from 'crypto'
 import { writeFile } from 'fs'
 import { Types } from 'mongoose'
 import {
@@ -42,7 +42,6 @@ export const generateMockData = async () => {
       responseTime: randomInt(0, 1500),
       subscribers: [],
       id: new Types.ObjectId().toString(),
-      uuid: randomUUID(),
       status: getRandomMonitorStatus(),
       lastCheck: getNHoursAgo(randomInt(0, 24)).getTime(),
       createdAt: getNDaysAgo(daysAgoCreated).getTime(),
@@ -65,7 +64,7 @@ export const generateMockData = async () => {
         id: new Types.ObjectId().toString(),
         displayName: `${subRandomData.first_name} ${subRandomData.last_name}`,
         email: subRandomData.email,
-        method: 'email',
+        method: 'email'
         // monitorId: monitor.id
       }
       monitor.subscribers.push(subPayload)

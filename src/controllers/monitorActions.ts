@@ -1,4 +1,4 @@
-import { produceSendEmail, produceUpdateMonitor } from 'src/events'
+import { produceSendEmail, produceSendSms, produceUpdateMonitor } from 'src/events'
 import { Event, WebsiteResponse, type WebsiteMonitor } from 'src/models'
 import { handleWebMonitorErrorResponse, handleWebMonitorResponseTime } from 'src/services'
 import { serializeMonitor, validateResponse } from 'src/utils'
@@ -66,13 +66,20 @@ export const handleWebMonitorStatusChange = async (
   oldStatus: MonitorStatus,
   newStatus: MonitorStatus
 ) => {
-  await registerWebMonitorEvent(monitor, `Status changed from ${oldStatus} to ${newStatus}.`)
+  await registerWebMonitorEvent(
+    monitor,
+    `${monitor.name} status changed from ${oldStatus} to ${newStatus}.`
+  )
   const serialized = await serializeMonitor(monitor)
   await produceUpdateMonitor(monitor._id.toString(), serialized)
 
   await produceSendEmail(monitor._id.toString(), {
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),
     subject: 'Monitor Status Change',
+    body: `Website monitor status changed from ${oldStatus} to ${newStatus}.`
+  })
+  await produceSendSms(monitor._id.toString(), {
+    toNumbers: monitor.subscribers.filter((sub) => sub.phone).map((sub) => sub.phone || ''),
     body: `Website monitor status changed from ${oldStatus} to ${newStatus}.`
   })
 }

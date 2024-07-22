@@ -8,7 +8,7 @@
     "test": "npm run build && jest --testTimeout=5000 --no-cache --detectOpenHandles --forceExit --coverage",
     "test:watch": "npm run build && jest --testTimeout=5000 --forceExit --watchAll --silent --noStackTrace --coverage",
     "test:verbose": "npm run build && jest --testTimeout=5000 --detectOpenHandles --forceExit --verbose",
-    "start": "npm run build && node ./build/index.js",
+    "start": "export NODE_ENV=production && node ./build/src/index.js",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only --exit-child --pretty --debounce --ignore-watch swagger_output.json -r tsconfig-paths/register src/index.ts",
     "socket": "ts-node-dev --respawn --transpile-only --exit-child --pretty --debounce --ignore-watch swagger_output.json -r tsconfig-paths/register socket/index.ts",
@@ -50,6 +50,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@development-suite/types": "^1.0.3",
     "@shelf/jest-mongodb": "^4.1.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.18",

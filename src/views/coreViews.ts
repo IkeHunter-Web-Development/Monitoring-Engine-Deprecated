@@ -1,5 +1,7 @@
-import type { Request, Response } from 'express'
-import { Responses } from 'src/utils'
+import type { NextFunction, Request, Response } from 'express'
+import { kafka } from 'src/lib'
+import { WebsiteMonitor } from 'src/models'
+import { errorResponse, ok } from 'src/utils'
 
 /**
  * REST Api Views
@@ -8,7 +10,7 @@ import { Responses } from 'src/utils'
  * will call any necessary controller. Views cannot directly access
  * services, validators, models, or other views.
  */
-export const healthCheck = (req: Request, res: Response) => {
+export const healthCheck = async (req: Request, res: Response, next: NextFunction) => {
   /** ==========================*
     @swagger Health Check
     #swagger.summary = 'Health Check'
@@ -19,5 +21,11 @@ export const healthCheck = (req: Request, res: Response) => {
       description: "Monitor Engine is operational."
     }
    *=========================== */
-  return Responses.ok(res, 'Monitor Engine is operational.', true)
+  try {
+    await kafka.admin({ retry: { retries: 3 } }).connect()
+    await WebsiteMonitor.count()
+  } catch (e) {
+    return errorResponse(e, res, next)
+  }
+  return ok(res, 'Monitor Engine is operational.', true)
 }

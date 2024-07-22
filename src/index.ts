@@ -1,4 +1,7 @@
-// import 'module-alias/register'
+if (process.env.NODE_ENV === 'production') {
+  require('module-alias/register')
+}
+
 import swaggerUi from 'swagger-ui-express'
 
 import { HOST, NODE_ENV, PORT, server, setupDatabase } from './config'

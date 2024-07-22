@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import { searchEvents } from 'src/controllers/eventActions'
-import { Responses, sendError } from 'src/utils'
+import { errorResponse, ok } from 'src/utils'
 import { serializeEvents } from 'src/utils/serializers/eventSerializer'
 
 export const queryEventsView = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,8 +39,8 @@ export const queryEventsView = async (req: Request, res: Response, next: NextFun
     })
     const serialized = await serializeEvents(events)
 
-    return Responses.ok(res, serialized)
+    return ok(res, serialized)
   } catch (error) {
-    return sendError(error, res, next)
+    return errorResponse(error, res, next)
   }
 }

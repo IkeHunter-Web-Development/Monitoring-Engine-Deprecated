@@ -27,4 +27,9 @@ export const registerSocketConsumers = () => {
     const monitor = validateMonitorMeta(data)
     io.emit('monitor-delete', monitor)
   })
+
+  createConsumer('user-update', async (data: any) => {
+    console.log('user update:', data)
+    io.emit('user-update', data)
+  })
 }

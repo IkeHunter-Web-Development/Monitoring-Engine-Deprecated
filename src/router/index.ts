@@ -9,13 +9,14 @@
 import { Router } from 'express'
 
 import { docsMiddleware } from '../middleware/docsMiddleware'
-import * as CoreController from '../views'
+import * as CoreViews from '../views/coreViews'
 import { eventRoutes } from './eventRoutes'
 import { incidentRoutes } from './incidentRoutes'
 import { monitorRoutes } from './monitorRoutes' // absolute import for swagger
 
 const router = Router()
-router.get('/', CoreController.healthCheck)
+router.get('/', CoreViews.healthCheck)
+router.get('/health', CoreViews.healthCheck)
 router.use('/api/monitor', docsMiddleware, monitorRoutes)
 router.use('/api/monitor', docsMiddleware, eventRoutes)
 router.use('/api/monitor', docsMiddleware, incidentRoutes)

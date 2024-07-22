@@ -17,8 +17,12 @@ export const WebsiteResponseSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
+    default: Date.now
+  },
+  expireAt: {
+    type: Date,
     default: Date.now,
-    expires: 24 * 60 * 60 * 1000
+    expires: 24 * 60 * 60
   }
 })
 

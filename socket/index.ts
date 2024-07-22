@@ -3,7 +3,7 @@ import { logger } from 'src/lib/logger'
 import { registerSocketConsumers } from './consumers'
 import { io, server } from './server'
 
-const PORT = 3333
+const PORT = process.env.PORT || '8333'
 
 io.on('connection', () => {
   logger.debug('Client connected to socket.')

@@ -3,7 +3,7 @@ import { logger } from 'src/lib'
 import { validateResponse } from 'src/utils'
 import { createConsumer } from '../lib/kafka'
 
-const handleConsumerReceiveResponse = async (data: any) => {
+const handleConsumerReceiveResponse = async (data: IResponse) => {
   try {
     const response: IResponse = await validateResponse(data)
     await registerWebMonitorResponse(response)
