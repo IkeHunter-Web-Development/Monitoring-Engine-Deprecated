@@ -14,7 +14,13 @@ export const searchEvents = async (params: {
   events.push(...monitorEvents)
 
   if (projectId && Array.isArray(projectId)) {
-    const projectEvents = await Event.find().all('projectId', projectId)
+    const projectEvents = []
+
+    for (const id of projectId) {
+      const query = await Event.find({ projectId: id })
+      projectEvents.push(...query)
+    }
+
     events.push(...projectEvents)
   } else if (projectId) {
     const projectEvents = await Event.find({ projectId })

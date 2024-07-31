@@ -5,6 +5,7 @@ import { createConsumer } from '../lib/kafka'
 
 const handleConsumerReceiveResponse = async (data: IResponse) => {
   try {
+    console.log(data)
     const response: IResponse = await validateResponse(data)
     await registerWebMonitorResponse(response)
   } catch (error) {

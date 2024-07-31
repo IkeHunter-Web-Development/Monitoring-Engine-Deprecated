@@ -19,6 +19,10 @@ services:
       - KAFKA_GROUP_ID=monitor-engine
       - LOG_NS=monitor
       - PORT=9000
+      # MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
+      - MONGO_URI=mongo-monitor:27017
+      - MONGO_USER=root
+      - MONGO_PASS=changeme
     depends_on:
       - mongo-monitor
     command: npm run dev
