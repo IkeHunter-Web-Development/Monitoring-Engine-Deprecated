@@ -17,10 +17,10 @@ Test Project:
     - docker:26.1.3-dind
   script:
     - apk add --update docker-compose
-    - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/" > .npmrc
-    - echo -e "//${CI_SERVER_HOST}/api/v4/projects/59180469/packages/npm/:_authToken=$GITLAB_NPM_ACCESS_TOKEN" >> .npmrc
+    # - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/" > .npmrc
+    # - echo -e "//${CI_SERVER_HOST}/api/v4/projects/59180469/packages/npm/:_authToken=$GITLAB_NPM_ACCESS_TOKEN" >> .npmrc
 
-    # - envsubst < ./.gitlab/templates/npmrc-template.txt > .npmrc
+    - envsubst < ./.gitlab/templates/npmrc-template.txt > .npmrc
     # - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/ \n//gitlab.com/api/v4/projects/59180469/packages/npm/:_authToken=\"$GITLAB_NPM_ACCESS_TOKEN\"" > .npmrc
     # - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/" > .npmrc
     # - echo -e "//gitlab.com/api/v4/projects/59180469/packages/npm/:_authToken=\"${GITLAB_NPM_ACCESS_TOKEN}\"" >> .npmrc
