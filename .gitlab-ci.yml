@@ -19,6 +19,7 @@ Test Project:
     - apk add --update docker-compose
     - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/" > .npmrc
     - echo -e "//${CI_SERVER_HOST}/api/v4/projects/59180469/packages/npm/:_authToken=$GITLAB_NPM_ACCESS_TOKEN" >> .npmrc
+    - cat ./.npmrc
     
     - docker-compose run --rm monitor sh -c "npm config set -- //${CI_SERVER_HOST}/api/v4/projects/59180469/packages/npm/:_authToken=$GITLAB_NPM_ACCESS_TOKEN"
     - docker-compose run --rm monitor sh -c "npm config set @development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/"
