@@ -5,7 +5,7 @@ import {
 } from 'src/controllers'
 import type { WebsiteMonitor } from 'src/models'
 
-export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsiteMonitorMeta> => {
+const serialize = async (monitor: WebsiteMonitor) => {
   const events = await getWebMonitorEvents(monitor)
   const responses = await getWebMonitorResponses(monitor)
   const subscribers = monitor.subscribers
@@ -70,8 +70,18 @@ export const serializeMonitor = async (monitor: WebsiteMonitor): Promise<IWebsit
   }
 }
 
+export const serializeMonitor = async (
+  monitor: WebsiteMonitor | WebsiteMonitor[]
+): Promise<IWebsiteMonitorMeta | IWebsiteMonitorMeta[]> => {
+  if (Array.isArray(monitor)) {
+    return serializeMonitors(monitor)
+  } else {
+    return serialize(monitor)
+  }
+}
+
 export const serializeMonitors = async (
   monitors: WebsiteMonitor[]
 ): Promise<IWebsiteMonitorMeta[]> => {
-  return await Promise.all(monitors.map((monitor) => serializeMonitor(monitor)))
+  return await Promise.all(monitors.map((monitor) => serialize(monitor)))
 }

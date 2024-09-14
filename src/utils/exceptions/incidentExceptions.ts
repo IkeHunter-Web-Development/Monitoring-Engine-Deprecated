@@ -1,4 +1,6 @@
-export class IncidentNotFoundError extends Error {
+import { NotFoundError } from './generalExceptions'
+
+export class IncidentNotFoundError extends NotFoundError {
   constructor(message?: string) {
     super(message || 'Incident not found.')
     this.name = 'IncidentNotFoundError'
