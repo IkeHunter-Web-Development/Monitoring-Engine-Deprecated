@@ -15,4 +15,3 @@ export const setupDatabase = async (): Promise<void> => {
       logger.error('Error connecting to MongoDB: ', err)
     })
 }
-console.log(MONGO_CONNECTION_URI)

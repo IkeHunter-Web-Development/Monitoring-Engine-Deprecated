@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'network') {
   require('module-alias/register')
 }
 

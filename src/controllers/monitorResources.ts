@@ -15,7 +15,7 @@ export const createWebMonitor = async (data: IWebsiteMonitor): Promise<WebsiteMo
   const monitor = await WebsiteMonitor.create(data)
 
   const serialized = await serializeMonitor(monitor)
-  await produceCreateMonitor(serialized.id, serialized)
+  await produceCreateMonitor(monitor._id.toString(), serialized)
 
   return monitor
 }
@@ -50,7 +50,7 @@ export const deleteWebMonitor = async (id: string | Types.ObjectId): Promise<Web
   await monitor.deleteOne()
 
   const serialized = await serializeMonitor(monitor)
-  await produceDeleteMonitor(serialized.id, serialized)
+  await produceDeleteMonitor(String(id), serialized)
 
   return monitor
 }
@@ -82,7 +82,6 @@ export const getWebMonitorResponses = async (
   monitor: WebsiteMonitor
 ): Promise<WebsiteResponse[]> => {
   const responses = await WebsiteResponse.find({ monitorId: monitor._id })
-
   return responses
 }
 

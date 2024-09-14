@@ -1,14 +1,18 @@
 import type { NextFunction, Request, Response } from 'express'
-import {
-  createWebMonitor,
-  deleteWebMonitor,
-  deleteWebMonitors,
-  getWebMonitor,
-  getWebMonitors,
-  updateWebMonitor
-} from 'src/controllers'
+import { deleteWebMonitors } from 'src/controllers'
+import { WebsiteMonitor } from 'src/models'
 
-import { created, errorResponse, ok, serializeMonitor, serializeMonitors } from 'src/utils'
+import {
+  errorResponse,
+  ok,
+  serializeMonitor,
+  serializeMonitors,
+  validateMonitorInput
+} from 'src/utils'
+import { ResourceViewset } from 'src/utils/resourceViewset'
+
+const MonitorViewset = () =>
+  new ResourceViewset(WebsiteMonitor, serializeMonitor, validateMonitorInput)
 
 export const createMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /**======================
@@ -28,35 +32,36 @@ export const createMonitorView = async (req: Request, res: Response, next: NextF
       description: "Monitor created"
     }
    *======================*/
-  try {
-    const { body } = req
-    const input: IWebsiteMonitor = {
-      projectId: body.projectId,
-      name: body.name,
-      interval: body.interval,
-      icon: body.icon,
-      active: body.active,
-      reminderIntervals: body.reminderIntervals,
-      subscribers: body.subscribers?.map((sub: any) => ({
-        displayName: sub?.displayName,
-        email: sub?.email,
-        phone: sub?.phone,
-        method: sub?.method,
-        userId: sub?.userId
-      })),
-      url: body.url,
-      checkType: body.checkType,
-      retries: body.retries,
-      timeout: body.timeout
-    }
+  return MonitorViewset().create(req, res, next)
+  // try {
+  //   const { body } = req
+  //   const input: IWebsiteMonitor = {
+  //     projectId: body.projectId,
+  //     name: body.name,
+  //     interval: body.interval,
+  //     icon: body.icon,
+  //     active: body.active,
+  //     reminderIntervals: body.reminderIntervals,
+  //     subscribers: body.subscribers?.map((sub: any) => ({
+  //       displayName: sub?.displayName,
+  //       email: sub?.email,
+  //       phone: sub?.phone,
+  //       method: sub?.method,
+  //       userId: sub?.userId
+  //     })),
+  //     url: body.url,
+  //     checkType: body.checkType,
+  //     retries: body.retries,
+  //     timeout: body.timeout
+  //   }
 
-    const monitor = await createWebMonitor(input)
-    const serialized = await serializeMonitor(monitor)
+  //   const monitor = await createWebMonitor(input)
+  //   const serialized = await serializeMonitor(monitor)
 
-    return created(res, serialized)
-  } catch (error) {
-    return errorResponse(error, res, next)
-  }
+  //   return created(res, serialized)
+  // } catch (error) {
+  //   return errorResponse(error, res, next)
+  // }
 }
 
 export const getMonitorsView = async (req: Request, res: Response, next: NextFunction) => {
@@ -70,14 +75,15 @@ export const getMonitorsView = async (req: Request, res: Response, next: NextFun
       description: "Monitors"
     }
    *=========================== */
-  try {
-    const monitors = await getWebMonitors(req.query)
-    const serialized = await serializeMonitors(monitors)
+  return MonitorViewset().list(req, res, next)
+  // try {
+  //   const monitors = await getWebMonitors(req.query)
+  //   const serialized = await serializeMonitors(monitors)
 
-    return ok(res, serialized)
-  } catch (error) {
-    return errorResponse(error, res, next)
-  }
+  //   return ok(res, serialized)
+  // } catch (error) {
+  //   return errorResponse(error, res, next)
+  // }
 }
 export const getMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /** ==========================*
@@ -97,16 +103,17 @@ export const getMonitorView = async (req: Request, res: Response, next: NextFunc
       schema: {$ref: "#/definitions/Error404"},
     }
    *=========================== */
-  try {
-    const { id } = req.params ?? ''
+  return MonitorViewset().get(req, res, next)
+  // try {
+  //   const { id } = req.params ?? ''
 
-    const monitor = await getWebMonitor(id)
-    const serialized = await serializeMonitor(monitor)
+  //   const monitor = await getWebMonitor(id)
+  //   const serialized = await serializeMonitor(monitor)
 
-    return ok(res, serialized)
-  } catch (error) {
-    return errorResponse(error, res, next)
-  }
+  //   return ok(res, serialized)
+  // } catch (error) {
+  //   return errorResponse(error, res, next)
+  // }
 }
 
 export const updateMonitorView = async (req: Request, res: Response, next: NextFunction) => {
@@ -128,33 +135,34 @@ export const updateMonitorView = async (req: Request, res: Response, next: NextF
         description: "Monitor updated"
     }
     *======================= */
-  try {
-    const { body, params } = req
+  return MonitorViewset().update(req, res, next)
+  // try {
+  //   const { body, params } = req
 
-    let id = params.id
-    id = id?.toString() || ''
+  //   let id = params.id
+  //   id = id?.toString() || ''
 
-    const input: Partial<IWebsiteMonitor> = {
-      projectId: body.projectId,
-      name: body.name,
-      interval: body.interval,
-      icon: body.icon,
-      active: body.active,
-      reminderIntervals: body.reminderIntervals,
-      subscribers: body.subscribers,
-      url: body.url,
-      checkType: body.checkType,
-      retries: body.retries,
-      timeout: body.timeout
-    }
+  //   const input: Partial<IWebsiteMonitor> = {
+  //     projectId: body.projectId,
+  //     name: body.name,
+  //     interval: body.interval,
+  //     icon: body.icon,
+  //     active: body.active,
+  //     reminderIntervals: body.reminderIntervals,
+  //     subscribers: body.subscribers,
+  //     url: body.url,
+  //     checkType: body.checkType,
+  //     retries: body.retries,
+  //     timeout: body.timeout
+  //   }
 
-    const monitor = await updateWebMonitor(id, input)
-    const serialized = await serializeMonitor(monitor)
+  //   const monitor = await updateWebMonitor(id, input)
+  //   const serialized = await serializeMonitor(monitor)
 
-    return ok(res, serialized)
-  } catch (error) {
-    return errorResponse(error, res, next)
-  }
+  //   return ok(res, serialized)
+  // } catch (error) {
+  //   return errorResponse(error, res, next)
+  // }
 }
 export const deleteMonitorView = async (req: Request, res: Response, next: NextFunction) => {
   /** ==========================*
@@ -168,17 +176,18 @@ export const deleteMonitorView = async (req: Request, res: Response, next: NextF
       schema: {$ref: "#/definitions/MonitorMetaDoc"}
     }
     *=========================== */
-  try {
-    let { id } = req.params
-    id = id?.toString() || ''
+  return MonitorViewset().delete(req, res, next)
+  // try {
+  //   let { id } = req.params
+  //   id = id?.toString() || ''
 
-    const monitor = await deleteWebMonitor(id)
-    const serialized = await serializeMonitor(monitor)
+  //   const monitor = await deleteWebMonitor(id)
+  //   const serialized = await serializeMonitor(monitor)
 
-    return ok(res, serialized)
-  } catch (error) {
-    return errorResponse(error, res, next)
-  }
+  //   return ok(res, serialized)
+  // } catch (error) {
+  //   return errorResponse(error, res, next)
+  // }
 }
 
 export const deleteMonitorsView = async (req: Request, res: Response, next: NextFunction) => {

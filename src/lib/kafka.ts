@@ -59,7 +59,12 @@ const getKafkaInstance = () => {
       }
     })
   } else {
-    return {} as Kafka
+    // await kafka.admin({ retry: { retries: 3 } }).connect()
+    return {
+      admin: ((config: any) => ({
+        connect: async () => {}
+      })) as Kafka['admin']
+    } as Kafka
   }
 }
 

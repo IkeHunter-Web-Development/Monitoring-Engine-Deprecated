@@ -1,4 +1,3 @@
-import { Types } from 'mongoose'
 import { InvalidMonitorFieldError } from 'src/utils/exceptions'
 import { validateFullMonitor } from '../validateMonitor'
 

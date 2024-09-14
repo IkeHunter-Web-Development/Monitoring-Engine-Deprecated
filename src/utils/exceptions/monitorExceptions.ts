@@ -1,4 +1,6 @@
-export class MonitorNotFoundError extends Error {
+import { NotFoundError } from './generalExceptions'
+
+export class MonitorNotFoundError extends NotFoundError {
   constructor(message?: string) {
     super(message || 'Monitor not found.')
     this.name = 'MonitorNotFoundError'

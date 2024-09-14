@@ -14,11 +14,15 @@ services:
       - ./test-report:/app/test-report
       - ./generated-data:/app/generated-data
       - ./package.json:/app/package.json
+      - ./jest.config.ts:/app/jest.config.ts
       - ./.env:/app/.env
     environment:
       - HOST=0.0.0.0
       - PORT=9000
-      - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
+      # - MONGO_URI=mongodb://root:changeme@mongo-monitor:27017
+      - MONGO_USER=root
+      - MONGO_PASS=changeme
+      - MONGO_URI=mongo-monitor:27017
     depends_on:
       - mongo-monitor
     command: npm run dev

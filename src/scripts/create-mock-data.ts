@@ -54,6 +54,13 @@ export const generateMockData = async () => {
       url: seedData.url,
       active: true
     }
+
+    const existingMonitor = monitors.find((m) => m.name === monitor.name)
+
+    if (existingMonitor) {
+      monitor.name += ` ${monitors.length}`
+    }
+
     monitors.push(monitor)
 
     for (let i = 0; i < MAX_SUBS; i++) {
