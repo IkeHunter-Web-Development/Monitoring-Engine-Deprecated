@@ -5,6 +5,11 @@ services:
 stages:
   - Build and Test
 
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - apk update && apk add bash
+  - apk update && apk add gettext
+
 Test Project:
   stage: Build and Test
   image: docker:26.1.3
@@ -20,4 +25,3 @@ Test Project:
     - docker-compose run --rm monitor sh -c "npm run test"
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(main|production|staging)$/ || $CI_COMMIT_BRANCH =~ /^(main|production|staging)$/'
-    
