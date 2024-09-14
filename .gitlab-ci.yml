@@ -13,7 +13,7 @@ Test Project:
   script:
     - apk add --update docker-compose
     - echo -e "@development-suite:registry=https://gitlab.com/api/v4/projects/59180469/packages/npm/" > .npmrc
-    - echo -e "//gitlab.com/api/v4/projects/59180469/packages/npm/:_authToken=\"${NPM_TOKEN}\"" >> .npmrc
+    - echo -e "//gitlab.com/api/v4/projects/59180469/packages/npm/:_authToken=\"${GITLAB_ACCESS_TOKEN}\"" >> .npmrc
     - docker-compose build
     - docker-compose run --rm monitor sh -c "npm run test"
   rules:
