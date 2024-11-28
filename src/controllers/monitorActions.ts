@@ -76,10 +76,10 @@ export const handleWebMonitorStatusChange = async (
   await produceSendEmail(monitor._id.toString(), {
     toEmails: monitor.subscribers.filter((sub) => sub.email).map((sub) => sub.email || ''),
     subject: 'Monitor Status Change',
-    body: `Website monitor status changed from ${oldStatus} to ${newStatus}.`
+    body: `Website monitor ${monitor.name} status changed from ${oldStatus} to ${newStatus}.`
   })
   await produceSendSms(monitor._id.toString(), {
     toNumbers: monitor.subscribers.filter((sub) => sub.phone).map((sub) => sub.phone || ''),
-    body: `Website monitor status changed from ${oldStatus} to ${newStatus}.`
+    body: `Website monitor ${monitor.name} status changed from ${oldStatus} to ${newStatus}.`
   })
 }
