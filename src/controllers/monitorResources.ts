@@ -40,7 +40,7 @@ export const updateWebMonitor = async (
   if (!monitor) throw new MonitorNotFoundError(`Monitor not found with id ${id}.`)
 
   const serialized = await serializeMonitor(monitor)
-  produceUpdateMonitor(String(id), serialized)
+  await produceUpdateMonitor(String(id), serialized)
 
   return monitor
 }
